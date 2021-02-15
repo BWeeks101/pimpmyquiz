@@ -146,7 +146,10 @@ def admin_users():
 
     role_groups = list(mongo.db.role_groups.aggregate(role_groups_query))
 
-    return render_template("admin_users.html", users=users, user_roles=user_roles, role_groups=role_groups)
+    return render_template("admin_users.html",
+                           users=users,
+                           user_roles=user_roles,
+                           role_groups=role_groups)
 
 
 if __name__ == "__main__":
