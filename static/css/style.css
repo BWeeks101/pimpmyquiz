@@ -15,7 +15,11 @@
     line-height: 42px;   
 }
 
-nav .fas {
+nav .fa-caret-down {
     font-size: 15px;
     margin-left: 3px;
+}
+
+.collection .collection-item.avatar {
+    padding-left: 20px;
 }

@@ -25,12 +25,11 @@
                     <li><a href="#">Profile</a></li>
                     <li><a href="#">New Quiz</a></li>
                     {% if session.user|lower == "admin"|lower %}
-                        <!--<li><a href="#">Admin</a></li>-->
-                        <ul id="dropdown1" class="dropdown-content">
+                        <ul id="nav-admin-dropdown" class="dropdown-content">
                             <li><a href="{{ url_for('admin_users') }}">Users</a></li>
                             <li><a href="#!">Content</a></li>
                         </ul>
-                        <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Admin<i class="fas fa-caret-down"></i></a></li>
+                        <li><a class="dropdown-trigger" href="#!" data-target="nav-admin-dropdown">Admin<i class="fas fa-caret-down"></i></a></li>
                     {% endif %}
                     <li><a href="{{ url_for('logout') }}">Log Out</a></li>
                 {% else %}
@@ -49,7 +48,11 @@
                 <li><a href="#">Profile</a></li>
                 <li><a href="#">New Quiz</a></li>
                 {% if session.user|lower == "admin"|lower %}
-                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Admin<i class="fas fa-caret-down"></i></a></li>
+                    <ul id="sidenav-admin-dropdown" class="dropdown-content">
+                        <li><a href="{{ url_for('admin_users') }}">Users</a></li>
+                        <li><a href="#!">Content</a></li>
+                    </ul>
+                    <li><a class="dropdown-trigger" href="#!" data-target="sidenav-admin-dropdown">Admin<i class="fas fa-caret-down"></i></a></li>
                 {% endif %}
                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
             {% else %}

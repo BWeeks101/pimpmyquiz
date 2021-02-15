@@ -17,25 +17,36 @@
                                         <ul class="collection">
                                             {% for user in users if user.role == role.role %}
                                                 <li class="collection-item avatar">
-                                                    <h5>
-                                                    <i class="fas {{ user.role_icon }} fa-fw"></i>
-                                                    <span class="title">{{ user.user_id }}</span>                                                    
-                                                    </h5>
-                                                    <br>
-                                                    <i class="fas fa-envelope fa-fw"></i>
-                                                    {{ user.email }}
-                                                    <br>                                                    
-                                                    {% if user.locked == true %}
-                                                        <i class="fas fa-lock fa-fw"></i>
-                                                    {% else %}
-                                                        <i class="fas fa-unlock fa-fw"></i>
-                                                    {% endif %}
+                                                    <ul>
+                                                        <li>
+                                                            <h6>
+                                                            <i class="fas {{ user.role_icon }} fa-fw"></i>
+                                                            <span class="title">{{ user.user_id|capitalize }}</span>                                                    
+                                                            </h6>
+                                                        </li>
 
-                                                    <a href="#!" class="secondary-content light-blue-text text-darken-4"><i class="fas fa-user-edit"></i></a>
+                                                        <li>
+                                                            <h6>
+                                                                <a href="mailto:{{ user.email }}">
+                                                                    <i class="fas fa-envelope fa-fw"></i>
+                                                                    <span class="title">{{ user.email }}</span>                                                    
+                                                                </a>
+                                                            </h6>
+                                                        </li>
+                                                    </ul>
+                                                                                                        
+                                                    <a class="secondary-content light-blue-text text-darken-4" href="#!">
+                                                        {% if user.locked == True %}
+                                                            <i class="fas fa-lock fa-fw"></i>
+                                                        {% else %}
+                                                            <i class="fas fa-unlock fa-fw"></i>
+                                                        {% endif %}
+                                                        <i class="fas fa-user-edit"></i>
+                                                    </a>                                                    
                                                 </li>
                                             {% endfor %}
                                         </ul>
-                                    <ul>
+                                    </ul>
                                 </div>
                             </li>
                         {% endfor %}
