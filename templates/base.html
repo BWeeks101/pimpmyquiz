@@ -18,14 +18,19 @@
          <nav class="nav-extended text-shadow light-blue darken-1">
             <div class="nav-wrapper">
             <a href="#" class="brand-logo">Pimp My Quiz!</a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="fas fa-bars">menu</i></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="fas fa-bars"></i></a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="#">Home</a></li>
                 {% if session.user %}
                     <li><a href="#">Profile</a></li>
                     <li><a href="#">New Quiz</a></li>
                     {% if session.user|lower == "admin"|lower %}
-                        <li><a href="#">Manage Categories</a></li>
+                        <!--<li><a href="#">Admin</a></li>-->
+                        <ul id="dropdown1" class="dropdown-content">
+                            <li><a href="{{ url_for('admin_users') }}">Users</a></li>
+                            <li><a href="#!">Content</a></li>
+                        </ul>
+                        <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Admin<i class="fas fa-caret-down"></i></a></li>
                     {% endif %}
                     <li><a href="{{ url_for('logout') }}">Log Out</a></li>
                 {% else %}

@@ -14,3 +14,8 @@
     margin: 5px;
     line-height: 42px;   
 }
+
+nav .fas {
+    font-size: 15px;
+    margin-left: 3px;
+}

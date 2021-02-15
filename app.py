@@ -88,6 +88,67 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/admin_users", methods=["GET", "POST"])
+def admin_users():
+    # groups = list(mongo.db.role_groups.find().sort("role_group"))
+    # roles = list(mongo.db.user_roles.find().sort("role", 1))
+    # users = list(mongo.db.users.find().sort("user_id", 1))
+    # return render_template("admin_users.html", users=users)
+
+    user_query = [{'$lookup':
+                   {'from': 'user_roles',
+                    'localField': 'role_id',
+                    'foreignField': '_id',
+                    'as': 'role_details'}},
+                  {'$replaceRoot': {'newRoot':
+                                    {'$mergeObjects':
+                                     [{'$arrayElemAt':
+                                       ['$role_details', 0]},
+                                      '$$ROOT']}}},
+                  {'$lookup':
+                   {'from': 'role_groups',
+                    'localField': 'role_group_id',
+                    'foreignField': '_id',
+                    'as': 'role_group_details'}},
+                  {'$replaceRoot':
+                   {'newRoot':
+                    {'$mergeObjects':
+                     [{'$arrayElemAt':
+                       ['$role_group_details', 0]},
+                      '$$ROOT']}}},
+                  {'$project':
+                   {'role_group_details': 0,
+                    'role_details': 0,
+                    '_id': 0,
+                    'role_group_id': 0,
+                    'role_id': 0,
+                    'pwd': 0}}]
+    users = list(mongo.db.users.aggregate(user_query))
+
+    user_roles_query = [{'$lookup':
+                         {'from': 'role_groups',
+                          'localField': 'role_group_id',
+                          'foreignField': '_id',
+                          'as': 'role_group_details'}},
+                        {'$replaceRoot': {'newRoot':
+                                          {'$mergeObjects':
+                                           [{'$arrayElemAt':
+                                             ['$role_group_details', 0]},
+                                            '$$ROOT']}}},
+                        {'$project':
+                         {'role_group_details': 0,
+                          '_id': 0,
+                          'role_group_id': 0}}]
+    user_roles = list(mongo.db.user_roles.aggregate(user_roles_query))
+
+    role_groups_query = [{'$project':
+                          {'_id': 0}}]
+
+    role_groups = list(mongo.db.role_groups.aggregate(role_groups_query))
+
+    return render_template("admin_users.html", users=users, user_roles=user_roles, role_groups=role_groups)
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
