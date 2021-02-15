@@ -35,11 +35,17 @@ def register():
             flash("Username already exists")
             return redirect(url_for("register"))
 
+        user_role_id = (mongo.db.user_roles.find_one(
+            {'role': 'User'},
+            {'_id': 1}
+        ))['_id']
+
         register = {
-            "role_id": ObjectId("6026ba89f53ae31761a5a24a"),
+            "role_id": ObjectId(user_role_id),
             "user_id": request.form.get("user_id").lower(),
             "pwd": generate_password_hash(request.form.get("pwd")),
-            "email": request.form.get("email").lower()
+            "email": request.form.get("email").lower(),
+            "locked": False
         }
         mongo.db.users.insert_one(register)
 
@@ -90,11 +96,6 @@ def logout():
 
 @app.route("/admin_users", methods=["GET", "POST"])
 def admin_users():
-    # groups = list(mongo.db.role_groups.find().sort("role_group"))
-    # roles = list(mongo.db.user_roles.find().sort("role", 1))
-    # users = list(mongo.db.users.find().sort("user_id", 1))
-    # return render_template("admin_users.html", users=users)
-
     user_query = [{'$lookup':
                    {'from': 'user_roles',
                     'localField': 'role_id',
