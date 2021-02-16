@@ -179,24 +179,23 @@ def admin_users():
                 role_groups = list(
                     mongo.db.role_groups.aggregate(role_groups_query))
 
-                for role in user_roles:
-                    role['member_count'] = 0
-
-                for group in role_groups:
-                    group['member_count'] = 0
-
-                for group in role_groups:
-                    for user in users:
-                        if user['role_group'] == group['role_group']:
-                            group['member_count'] += 1
-
-                for role in user_roles:
-                    for user in users:
-                        if user['role'] == role['role']:
+                for user in users:
+                    for role in user_roles:
+                        if 'member_count' not in role:
+                            role['member_count'] = 0
+                        if role['role'] == user['role']:
                             role['member_count'] += 1
-
-                print(role_groups)
-                print(user_roles)
+                            for group in role_groups:
+                                if 'member_count' not in group:
+                                    group['member_count'] = 0
+                                if group['role_group'] == role['role_group']:
+                                    group['member_count'] += 1
+                                    break
+                            break
+                    if user['locked'] is True:
+                        user['locked'] = "checked"
+                    else:
+                        user['locked'] = ""
 
                 return render_template("admin_users.html",
                                        users=users,
