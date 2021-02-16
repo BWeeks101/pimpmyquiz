@@ -5,8 +5,13 @@
         <div class="col s12">    
             <ul class="collapsible light-blue-text text-darken-4">
                 {% for role_group in role_groups %}
-                <li>                
-                    <div class="collapsible-header"><i class="fas {{ role_group.role_group_icon }} fa-fw"></i>{{ role_group.role_group }} ({{ role_group.member_count }})</div>
+                <li>
+                    {% if role_group.member_count == 0 %}
+                        <div class="collapsible-header grey-text text-lighten-1">
+                    {% else %}
+                        <div class="collapsible-header">
+                    {% endif %}
+                            <i class="fas {{ role_group.role_group_icon }} fa-fw"></i>{{ role_group.role_group }} ({{ role_group.member_count }})</div>
                     <div class="collapsible-body">
                         <ul class="collapsible">
                             {% for role in user_roles if role.role_group == role_group.role_group %}
