@@ -1,60 +1,64 @@
 {% extends "base.html" %}
 {% block content %}
     <h3 class="light-blue-text text-darken-4 center-align">Manage Users</h3>
-<div class="row">
-    <div class="col s12">    
-        <ul class="collapsible light-blue-text text-darken-4">
-            {% for role_group in role_groups %}
-            <li>                
-                <div class="collapsible-header"><i class="fas {{ role_group.role_group_icon }} fa-fw"></i>{{ role_group.role_group }}</div>
-                <div class="collapsible-body">
-                    <ul class="collapsible">
-                        {% for role in user_roles if role.role_group == role_group.role_group %}
-                            <li>
-                                <div class="collapsible-header"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }}</div>
-                                <div class="collapsible-body">
-                                    <ul class="collapsible">
-                                        <ul class="collection">
-                                            {% for user in users if user.role == role.role %}
-                                                <li class="collection-item avatar">
-                                                    <ul>
-                                                        <li>
-                                                            <h6>
-                                                            <i class="fas {{ user.role_icon }} fa-fw"></i>
-                                                            <span class="title">{{ user.user_id|capitalize }}</span>                                                    
-                                                            </h6>
-                                                        </li>
+    <div class="row">
+        <div class="col s12">    
+            <ul class="collapsible light-blue-text text-darken-4">
+                {% for role_group in role_groups %}
+                <li>                
+                    <div class="collapsible-header"><i class="fas {{ role_group.role_group_icon }} fa-fw"></i>{{ role_group.role_group }} ({{ role_group.member_count }})</div>
+                    <div class="collapsible-body">
+                        <ul class="collapsible">
+                            {% for role in user_roles if role.role_group == role_group.role_group %}
+                                <li>
+                                    {% if role.member_count == 0 %}
+                                        <div class="dummy-collapsible-header grey-text text-lighten-1"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>
+                                    {% else %}
+                                        <div class="collapsible-header"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>                                    
+                                        <div class="collapsible-body">                                        
+                                            <ul class="collapsible">
+                                                <ul class="collection">                                                
+                                                    {% for user in users if user.role == role.role %}
+                                                        <li class="collection-item avatar">
+                                                            <ul>
+                                                                <li>
+                                                                    <h6>
+                                                                    <i class="fas {{ user.role_icon }} fa-fw"></i>
+                                                                    <span class="title">{{ user.user_id|capitalize }}</span>                                                    
+                                                                    </h6>
+                                                                </li>
 
-                                                        <li>
-                                                            <h6>
-                                                                <a href="mailto:{{ user.email }}">
-                                                                    <i class="fas fa-envelope fa-fw"></i>
-                                                                    <span class="title">{{ user.email }}</span>                                                    
-                                                                </a>
-                                                            </h6>
+                                                                <li>
+                                                                    <h6>
+                                                                        <a href="mailto:{{ user.email }}">
+                                                                            <i class="fas fa-envelope fa-fw"></i>
+                                                                            <span class="title">{{ user.email }}</span>                                                    
+                                                                        </a>
+                                                                    </h6>
+                                                                </li>
+                                                            </ul>
+                                                                                                                
+                                                            <a class="secondary-content light-blue-text text-darken-4" href="#!">
+                                                                {% if user.locked == True %}
+                                                                    <i class="fas fa-lock fa-fw"></i>
+                                                                {% else %}
+                                                                    <i class="fas fa-unlock fa-fw"></i>
+                                                                {% endif %}
+                                                                <i class="fas fa-user-edit"></i>
+                                                            </a>                                                    
                                                         </li>
-                                                    </ul>
-                                                                                                        
-                                                    <a class="secondary-content light-blue-text text-darken-4" href="#!">
-                                                        {% if user.locked == True %}
-                                                            <i class="fas fa-lock fa-fw"></i>
-                                                        {% else %}
-                                                            <i class="fas fa-unlock fa-fw"></i>
-                                                        {% endif %}
-                                                        <i class="fas fa-user-edit"></i>
-                                                    </a>                                                    
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </ul>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>        
+                                                    {% endfor %}                                                
+                                                </ul>
+                                            </ul>                                        
+                                        </div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>        
+        </div>
     </div>
-</div>
 {% endblock %}

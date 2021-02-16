@@ -10,7 +10,7 @@
     margin: 5px;
 }
 
-.collapsible-header .col strong {
+.collapsible-header .col strong, .dummy-collapsible-header .col strong {
     margin: 5px;
     line-height: 42px;   
 }
@@ -22,4 +22,29 @@ nav .fa-caret-down {
 
 .collection .collection-item.avatar {
     padding-left: 20px;
+}
+
+.dummy-collapsible-header {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-tap-highlight-color: transparent;
+	line-height: 1.5;
+	padding: 1rem;
+	background-color: #fff;
+	border-bottom: 1px solid #ddd;
+}
+
+.dummy-collapsible-header i {
+	width: 2rem;
+	font-size: 1.6rem;
+	display: inline-block;
+	text-align: center;
+	margin-right: 1rem;
+}
+
+.dummy collapsible-header i::before {
+	font-size: 1.6rem;
+	text-align: center;
 }

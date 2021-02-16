@@ -21,6 +21,9 @@ mongo = PyMongo(app)
 @app.route("/")
 @app.route("/home")
 def home():
+    if 'user' not in session:
+        return redirect(url_for("login"))
+
     return render_template("home.html")
 
 
@@ -62,13 +65,19 @@ def login():
     if request.method == "POST":
         # check if username exists in db
         existing_user = mongo.db.users.find_one(
-            {"user_id": request.form.get("user_id").lower()})
+            {"user_id": request.form.get("user_id").lower()},
+            {"_id": 0, "user_id": 1, "pwd": 1, "role_id": 1})
+
+        user_role = mongo.db.user_roles.find_one(
+            {"_id": ObjectId(existing_user['role_id'])},
+            {"_id": 0, "role": 1})
 
         if existing_user:
             # ensure hashed password matches user input
             if check_password_hash(
                     existing_user["pwd"], request.form.get("pwd")):
                 session["user"] = request.form.get("user_id").lower()
+                session["user_role"] = user_role['role'].lower()
                 flash("Welcome, {}".format(
                     request.form.get("user_id")))
                 return redirect(url_for(
@@ -88,69 +97,118 @@ def login():
 
 @app.route("/logout")
 def logout():
-    # remove user from session cookies
-    flash("You have been logged out")
-    session.pop("user")
+    if 'user' in session:
+        # remove user from session cookies
+        flash("You have been logged out")
+        session.pop("user")
+
     return redirect(url_for("login"))
 
 
 @app.route("/admin_users", methods=["GET", "POST"])
 def admin_users():
-    user_query = [{'$lookup':
-                   {'from': 'user_roles',
-                    'localField': 'role_id',
-                    'foreignField': '_id',
-                    'as': 'role_details'}},
-                  {'$replaceRoot': {'newRoot':
-                                    {'$mergeObjects':
-                                     [{'$arrayElemAt':
-                                       ['$role_details', 0]},
-                                      '$$ROOT']}}},
-                  {'$lookup':
-                   {'from': 'role_groups',
-                    'localField': 'role_group_id',
-                    'foreignField': '_id',
-                    'as': 'role_group_details'}},
-                  {'$replaceRoot':
-                   {'newRoot':
-                    {'$mergeObjects':
-                     [{'$arrayElemAt':
-                       ['$role_group_details', 0]},
-                      '$$ROOT']}}},
-                  {'$project':
-                   {'role_group_details': 0,
-                    'role_details': 0,
-                    '_id': 0,
-                    'role_group_id': 0,
-                    'role_id': 0,
-                    'pwd': 0}}]
-    users = list(mongo.db.users.aggregate(user_query))
+    if 'user' not in session:
+        print('Not Logged In')
+    else:
+        is_admin = mongo.db.users.find_one(
+            {'user_id': session['user'].lower()},
+            {'_id': 0, 'role_id': 1})
+        role = mongo.db.user_roles.find_one(
+            {'_id': ObjectId(is_admin['role_id'])})
+        is_admin = mongo.db.role_groups.find_one(
+            {'_id': ObjectId(role['role_group_id'])})
+        if is_admin['role_group'] == 'Administrators Group':
+            is_admin = True
+        else:
+            is_admin = False
+        role = role['role']
+        print(is_admin)
+        print(role)
+        if is_admin is True:
+            if role == 'Global Admin' or role == 'User Admin':
+                print('OK - ' + role)
+                user_query = [{'$lookup':
+                              {'from': 'user_roles',
+                               'localField': 'role_id',
+                               'foreignField': '_id',
+                               'as': 'role_details'}},
+                              {'$replaceRoot': {'newRoot':
+                                                {'$mergeObjects':
+                                                 [{'$arrayElemAt':
+                                                  ['$role_details', 0]},
+                                                  '$$ROOT']}}},
+                              {'$lookup':
+                              {'from': 'role_groups',
+                               'localField': 'role_group_id',
+                               'foreignField': '_id',
+                               'as': 'role_group_details'}},
+                              {'$replaceRoot':
+                              {'newRoot':
+                               {'$mergeObjects':
+                                [{'$arrayElemAt':
+                                 ['$role_group_details', 0]},
+                                 '$$ROOT']}}},
+                              {'$project':
+                              {'role_group_details': 0,
+                               'role_details': 0,
+                               '_id': 0,
+                               'role_group_id': 0,
+                               'role_id': 0,
+                               'pwd': 0}}]
+                users = list(mongo.db.users.aggregate(user_query))
 
-    user_roles_query = [{'$lookup':
-                         {'from': 'role_groups',
-                          'localField': 'role_group_id',
-                          'foreignField': '_id',
-                          'as': 'role_group_details'}},
-                        {'$replaceRoot': {'newRoot':
-                                          {'$mergeObjects':
-                                           [{'$arrayElemAt':
-                                             ['$role_group_details', 0]},
-                                            '$$ROOT']}}},
-                        {'$project':
-                         {'role_group_details': 0,
-                          '_id': 0,
-                          'role_group_id': 0}}]
-    user_roles = list(mongo.db.user_roles.aggregate(user_roles_query))
+                user_roles_query = [{'$lookup':
+                                    {'from': 'role_groups',
+                                     'localField': 'role_group_id',
+                                     'foreignField': '_id',
+                                     'as': 'role_group_details'}},
+                                    {'$replaceRoot': {'newRoot':
+                                                      {'$mergeObjects':
+                                                       [{'$arrayElemAt':
+                                                        ['$role_group_details',
+                                                         0]}, '$$ROOT']}}},
+                                    {'$project':
+                                    {'role_group_details': 0,
+                                     '_id': 0,
+                                     'role_group_id': 0}}]
+                user_roles = list(
+                    mongo.db.user_roles.aggregate(user_roles_query))
 
-    role_groups_query = [{'$project':
-                          {'_id': 0}}]
+                role_groups_query = [{'$project': {'_id': 0}}]
 
-    role_groups = list(mongo.db.role_groups.aggregate(role_groups_query))
+                role_groups = list(
+                    mongo.db.role_groups.aggregate(role_groups_query))
 
-    return render_template("admin_users.html",
-                           users=users,
-                           user_roles=user_roles,
-                           role_groups=role_groups)
+                for role in user_roles:
+                    role['member_count'] = 0
+
+                for group in role_groups:
+                    group['member_count'] = 0
+
+                for group in role_groups:
+                    for user in users:
+                        if user['role_group'] == group['role_group']:
+                            group['member_count'] += 1
+
+                for role in user_roles:
+                    for user in users:
+                        if user['role'] == role['role']:
+                            role['member_count'] += 1
+
+                print(role_groups)
+                print(user_roles)
+
+                return render_template("admin_users.html",
+                                       users=users,
+                                       user_roles=user_roles,
+                                       role_groups=role_groups)
+            else:
+                print('Not Ok - ' + role)
+        else:
+            print('Permission Denied - ' + role)
+
+    flash("Permission Denied")
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
