@@ -66,7 +66,7 @@ def login():
         # check if username exists in db
         existing_user = mongo.db.users.find_one(
             {"user_id": request.form.get("user_id").lower()},
-            {"_id": 0, "user_id": 1, "pwd": 1, "role_id": 1})
+            {"_id": 0, "user_id": 1, "pwd": 1, "role_id": 1, "locked": 1})
 
         user_role = mongo.db.user_roles.find_one(
             {"_id": ObjectId(existing_user['role_id'])},
@@ -76,6 +76,10 @@ def login():
             # ensure hashed password matches user input
             if check_password_hash(
                     existing_user["pwd"], request.form.get("pwd")):
+                if existing_user["locked"] is True:
+                    # account is locked
+                    flash("Your account is currently locked.")
+                    return redirect(url_for("login"))
                 session["user"] = request.form.get("user_id").lower()
                 session["user_role"] = user_role['role'].lower()
                 flash("Welcome, {}".format(
