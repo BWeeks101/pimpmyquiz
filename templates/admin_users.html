@@ -24,6 +24,62 @@
                                             <ul class="collapsible">
                                                 <ul class="collection">                                                
                                                     {% for user in users if user.role == role.role %}
+                                                        <!-- Modal Structure -->
+                                                        <div id="{{ user.user_id }}-modal" class="modal">
+                                                            <form class="col s12" method="POST" action="">                                                                    
+                                                                    <div class="modal-content">
+                                                                        <!-- title and close button -->
+                                                                        <div class="modal-title-row row">
+                                                                            <div class="col s11">
+                                                                                <h4>{{ user.user_id|capitalize }}</h4>
+                                                                            </div>
+                                                                            <div class="col s1 modal-close-button">
+                                                                                <a class="modal-action modal-close light-blue-text text-darken-4" href="#">&times</a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- locked -->
+                                                                        <div class="row">
+                                                                            <div class="input-field col s12 user-locked-container">
+                                                                                <i class="fas fa-lock prefix light-blue-text text-darken-4"></i>
+                                                                                <label id="{{ user.user_id }}-user-locked">
+                                                                                    <input type="checkbox" {{ user.locked }}/>
+                                                                                    <span>User Locked?</span>
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- email -->
+                                                                        <div class="row">
+                                                                            <div class="input-field col s12">
+                                                                                <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
+                                                                                <input id="{{ user.user_id }}-email" name="email" type="email" class="validate" value="{{ user.email }}" required>
+                                                                                <label for="{{ user.user_id }}-email">Email</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- username -->
+                                                                        <div class="row">
+                                                                            <div class="input-field col s12">
+                                                                                <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
+                                                                                <input id="{{ user.user_id }}-user_id" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="{{ user.user_id }}" required>
+                                                                                <label for="{{ user.user_id }}-user_id">User Id</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- password -->
+                                                                        <div class="row">
+                                                                            <div class="input-field col s12">
+                                                                                <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                                                                                <input id="{{ user.user_id }}-pwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" required>
+                                                                                <label for="{{ user.user_id }}-pwd">Password</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- save changes -->
+                                                                        <div class="row modal-action-container">
+                                                                            <button type="submit" class="modal-close col s12 btn-large light-blue darken-4 text-shadow">
+                                                                                Save Changes <i class="fas fa-sign-in-alt"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                        </div>
                                                         <li class="collection-item avatar">
                                                             <ul>
                                                                 <li>
@@ -43,7 +99,7 @@
                                                                 </li>
                                                             </ul>
                                                                                                                 
-                                                            <a class="secondary-content light-blue-text text-darken-4" href="#!">
+                                                            <a class="secondary-content light-blue-text text-darken-4 modal-trigger" href="#{{ user.user_id }}-modal">
                                                                 {% if user.locked == True %}
                                                                     <i class="fas fa-lock fa-fw"></i>
                                                                 {% else %}

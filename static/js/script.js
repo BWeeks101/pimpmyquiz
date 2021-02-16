@@ -12,6 +12,7 @@ $(document).ready(function() {
         }
     });
     $('select').formSelect();
+    $('.modal').modal();
 
     function validateMaterializeSelect() {
         let classValid = {
