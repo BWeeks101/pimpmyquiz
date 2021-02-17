@@ -71,6 +71,15 @@
                                                                                 <label for="{{ user.user_id }}-pwd">Password</label>
                                                                             </div>
                                                                         </div>
+                                                                        <!-- password confirmation -->
+                                                                        <div class="row">
+                                                                            <div class="input-field col s12">
+                                                                                <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                                                                                <input id="{{ user.user_id }}-cPwd" name="cPwd" type="password" required>
+                                                                                <label for="{{ user.user_id }}-cPwd">Password Confirmation</label>
+                                                                                <span id="{{ user.user_id }}-cPwdHlp" class="helper-text" data-error=""></span>
+                                                                            </div>
+                                                                        </div>                                                                                                                                                
                                                                         <!-- save changes -->
                                                                         <div class="row modal-action-container">
                                                                             <button type="submit" class="modal-close col s12 btn-large light-blue darken-4 text-shadow">
@@ -122,4 +131,18 @@
             </ul>        
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    {% for user in users %}
+            $("#{{ user.user_id }}-pwd").on("focusout", function () {
+                pWordValidation("{{ user.user_id }}-pwd", "{{ user.user_id }}-cPwd");
+            });
+        
+            $("#{{ user.user_id }}-cPwd").on("keyup", function () {
+                pWordValidation("{{ user.user_id }}-pwd", "{{ user.user_id }}-cPwd");
+            });
+    {% endfor %}
+</script>
 {% endblock %}
