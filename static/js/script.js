@@ -1,3 +1,47 @@
+/* ============================================ */
+/* Password Confirmation Code Modified From */
+/* https://jsfiddle.net/SirusDoma/ayf832td/ */
+/* By Sirus Doma */
+/* https://jsfiddle.net/user/SirusDoma/fiddles/ */
+/* ============================================ */
+/* Validates a password confirmation input against a paired password input */
+/* DO NOT: */
+/*      assign the 'validate' class to the password confirmation input */
+/* DO: */
+/*      assign the 'validate' attribute to the password confirmation input */
+/* Call on: */
+/*      password input focusout */
+/*      password confirmation input keyup */
+/*      form submission */
+/* Requires: */
+/*      pWordInput: Element Id of Password Input Element */
+/*      pWordConfInput: Element Id of Password Confirmation Input Element */
+/*      NB: pWordConfInput requires a helper-text element with */
+/*          an element Id equivalent to pWordConfInput + "Hlp" */
+/*      Eg: */
+/*          if the confirmation input element Id is "confirmationInput" */
+/*          Then the helper-text element Id should be "confirmationInputHlp" */
+function pWordValidation(pWordInput, pWordConfInput) {
+    pWordInput = "#" + pWordInput;
+    pWordConfInput = "#" + pWordConfInput;
+    let pWordConfHelper = pWordConfInput + "Hlp";
+    let hlptxt = "Passwords do not match.";
+    if (($(pWordInput).val() !== $(pWordConfInput).val()) ||
+        ($(pWordInput).hasClass("invalid"))) {
+        $(pWordConfInput).removeClass("valid").
+        addClass("invalid");
+        if ($(pWordInput).hasClass("invalid")) {
+            hlptxt = "Invalid Password.";
+        }
+        $(pWordConfHelper).attr("data-error", hlptxt);
+        return false;
+    }
+    $(pWordConfInput).removeClass("invalid").
+    addClass("valid");
+    $(pWordConfHelper).attr("data-error", "");
+    return true;
+}
+
 $(document).ready(function() {
     $('.sidenav').sidenav({edge: "right"});
     $(".dropdown-trigger").dropdown();
@@ -74,25 +118,6 @@ $(document).ready(function() {
     /* https://jsfiddle.net/SirusDoma/ayf832td/ */
     /* By Sirus Doma */
     /* https://jsfiddle.net/user/SirusDoma/fiddles/ */
-
-    function pWordValidation(firstElem, secondElem) {
-        let hlptxt = "Passwords do not match.";
-        if (($(firstElem).val() !== $(secondElem).val()) ||
-            ($(firstElem).hasClass("invalid"))) {
-            $(secondElem).removeClass("valid").
-            addClass("invalid");
-            if ($(firstElem).hasClass("invalid")) {
-                hlptxt = "Invalid Password.";
-            }
-            $(secondElem + "Hlp").attr("data-error", hlptxt);
-            return false;
-        }
-        $(secondElem).removeClass("invalid").
-        addClass("valid");
-        $(secondElem + "Hlp").attr("data-error", "");
-        return true;
-    }
-
     $("#pwd").on("focusout", function () {
         pWordValidation("#pwd", "#cPwd");
     });
