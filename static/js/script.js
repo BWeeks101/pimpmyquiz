@@ -69,4 +69,35 @@ $(document).ready(function() {
         });
     }
     validateMaterializeSelect();
+
+    /* Password Confirmation Code Modified From */
+    /* https://jsfiddle.net/SirusDoma/ayf832td/ */
+    /* By Sirus Doma */
+    /* https://jsfiddle.net/user/SirusDoma/fiddles/ */
+
+    function pWordValidation(firstElem, secondElem) {
+        let hlptxt = "Passwords do not match.";
+        if (($(firstElem).val() !== $(secondElem).val()) ||
+            ($(firstElem).hasClass("invalid"))) {
+            $(secondElem).removeClass("valid").
+            addClass("invalid");
+            if ($(firstElem).hasClass("invalid")) {
+                hlptxt = "Invalid Password.";
+            }
+            $(secondElem + "Hlp").attr("data-error", hlptxt);
+            return false;
+        }
+        $(secondElem).removeClass("invalid").
+        addClass("valid");
+        $(secondElem + "Hlp").attr("data-error", "");
+        return true;
+    }
+
+    $("#pwd").on("focusout", function () {
+        pWordValidation("#pwd", "#cPwd");
+    });
+
+    $("#cPwd").on("keyup", function () {
+        pWordValidation("#pwd", "#cPwd");
+    });
 });
