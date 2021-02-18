@@ -43,7 +43,7 @@
                 </div>
                 <!-- register -->
                 <div class="row">
-                    <button type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return pWordValidation('pwd', 'cPwd');">
+                    <button type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return regValidate(pWordValidation('pwd', 'cPwd'));">
                         Register <i class="fas fa-sign-in-alt"></i>
                     </button>
                 </div>
@@ -57,4 +57,30 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $("#pwd").on("focusout", function () {
+        pWordValidation("pwd", "cPwd");
+    });
+
+    $("#pwd").on("keyup", function () {
+        pWordValidation("pwd", "cPwd");
+    });
+
+    $("#cPwd").on("keyup", function () {
+        pWordValidation("pwd", "cPwd");
+    });
+
+    function regValidate(funcResult) {
+        if (funcResult === true) {
+            $("#pwd").off("focusout");
+            $("#pwd").off("keyup");
+            $("#cPwd").off("focusout");
+            return true;
+        }
+        return false;
+    }
+</script>
 {% endblock %}
