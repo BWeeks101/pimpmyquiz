@@ -8,7 +8,7 @@
 /* DO NOT: */
 /*      assign the 'validate' class to the password confirmation input */
 /* DO: */
-/*      assign the 'validate' attribute to the password confirmation input */
+/*      assign the 'required' attribute to the password confirmation input */
 /* Call on: */
 /*      password input focusout */
 /*      password confirmation input keyup */
@@ -27,10 +27,12 @@ function pWordValidation(pWordInput, pWordConfInput) {
     let pWordConfHelper = pWordConfInput + "Hlp";
     let hlptxt = "Passwords do not match.";
     if (($(pWordInput).val() !== $(pWordConfInput).val()) ||
-        ($(pWordInput).hasClass("invalid"))) {
+        $(pWordInput).hasClass("invalid") ||
+        $(pWordInput).val().length === 0) {
         $(pWordConfInput).removeClass("valid").
         addClass("invalid");
-        if ($(pWordInput).hasClass("invalid")) {
+        if ($(pWordInput).hasClass("invalid") ||
+            $(pWordInput).val().length === 0) {
             hlptxt = "Invalid Password.";
         }
         $(pWordConfHelper).attr("data-error", hlptxt);
@@ -40,6 +42,15 @@ function pWordValidation(pWordInput, pWordConfInput) {
     addClass("valid");
     $(pWordConfHelper).attr("data-error", "");
     return true;
+}
+
+function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
+    checkBox = "#" + checkBox;
+    let result = true;
+    if ($(checkBox).is(":checked")) {
+        result = pWordValidation(pWordInput, pWordConfInput);
+    }
+    return result;
 }
 
 $(document).ready(function() {
@@ -119,10 +130,14 @@ $(document).ready(function() {
     /* By Sirus Doma */
     /* https://jsfiddle.net/user/SirusDoma/fiddles/ */
     $("#pwd").on("focusout", function () {
-        pWordValidation("#pwd", "#cPwd");
+        pWordValidation("pwd", "cPwd");
+    });
+
+    $("#pwd").on("keyup", function () {
+        pWordValidation("pwd", "cPwd");
     });
 
     $("#cPwd").on("keyup", function () {
-        pWordValidation("#pwd", "#cPwd");
+        pWordValidation("pwd", "cPwd");
     });
 });
