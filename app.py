@@ -129,6 +129,32 @@ def admin_users():
         print(is_admin)
         print(role)
         if is_admin is True:
+            if request.method == "POST":
+                existing_user = mongo.db.users.find_one(
+                    {"user_id": request.form.get("orig_user_id").lower()},
+                    {"_id": 1})
+
+                update_user = {
+                    "user_id": request.form.get("user_id").lower(),
+                    "email": request.form.get("email").lower(),
+                }
+
+                update_user["locked"] = False
+
+                if request.form.get("locked"):
+                    update_user["locked"] = True
+
+                if request.form.get("pwd"):
+                    update_user["pwd"] = generate_password_hash(
+                        request.form.get("pwd"))
+
+                mongo.db.users.update_one(
+                    {"_id": existing_user["_id"]},
+                    {"$set": update_user})
+
+                flash("User Details Updated")
+                return redirect(url_for("admin_users"))
+
             if role == 'Global Admin' or role == 'User Admin':
                 print('OK - ' + role)
                 user_query = [{'$lookup':
