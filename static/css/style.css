@@ -75,12 +75,12 @@ form .modal-content .input-field {
     margin-bottom: 0;
 }
 
-.user-locked-container {
+.checkbox-container {
     height: 54px;
     margin-top: 0;
 }
 
-.user-locked-container label {
+.checkbox-container label {
     position: initial;
     display: inline-block;
     width: calc(100% - 3rem) !important;
@@ -91,14 +91,13 @@ form .modal-content .input-field {
     margin-top: -1rem;
 }
 
-.user-locked-container label span {
-    padding-left: 25px !important;
-    color: #000;
+.checkbox-container.noicon label {
+    margin-left: 3rem;
 }
 
-.user-locked-container label .user-locked-divider {
-    border-bottom: 1px solid #9e9e9e;
-    margin-top: 8px;
+.checkbox-container label span {
+    padding-left: 25px !important;
+    color: #000;
 }
 
 /* Style the materialize checkbox color to match our primary font color */
@@ -113,4 +112,8 @@ form .modal-content .input-field {
 
 .modal-action-container button, .modal-action-container button i {
     font-size: 1.2rem;
+}
+
+.hidden {
+    display: none;
 }
