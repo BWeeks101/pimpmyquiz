@@ -32,6 +32,7 @@
                                                                         <div class="modal-title-row row">
                                                                             <div class="col s11">
                                                                                 <h4>{{ user.user_id|capitalize }}</h4>
+                                                                                <input class="hidden" name="orig_user_id" type="text" value="{{ user.user_id }}">
                                                                             </div>
                                                                             <div class="col s1 modal-close-button">
                                                                                 <a class="modal-action modal-close light-blue-text text-darken-4" href="#">&times</a>
@@ -39,10 +40,10 @@
                                                                         </div>
                                                                         <!-- locked -->
                                                                         <div class="row">
-                                                                            <div class="input-field col s12 user-locked-container">
+                                                                            <div class="input-field col s12 checkbox-container">
                                                                                 <i class="fas fa-lock prefix light-blue-text text-darken-4"></i>
                                                                                 <label id="{{ user.user_id }}-user-locked">
-                                                                                    <input type="checkbox" {{ user.locked }}/>
+                                                                                    <input name="locked" type="checkbox" {{ user.locked }}/>
                                                                                     <span>User Locked?</span>
                                                                                 </label>
                                                                             </div>
@@ -63,27 +64,38 @@
                                                                                 <label for="{{ user.user_id }}-user_id">User Id</label>
                                                                             </div>
                                                                         </div>
-                                                                        <!-- password -->
-                                                                        <div class="row">
-                                                                            <div class="input-field col s12">
-                                                                                <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                                                                                <input id="{{ user.user_id }}-pwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" required>
-                                                                                <label for="{{ user.user_id }}-pwd">Password</label>
-                                                                                <span class="helper-text" data-error="Invalid Password."></span>
+                                                                        <!-- <div class="card-panel"> -->
+                                                                            <!-- change password? -->
+                                                                            <div class="row">
+                                                                                <div class="input-field col s12 checkbox-container noicon">                                                                                    
+                                                                                    <label id="{{ user.user_id }}-change-password">
+                                                                                        <input id="{{ user.user_id }}-change-password-input" type="checkbox"/>
+                                                                                        <span>Change Password?</span>
+                                                                                    </label>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <!-- password confirmation -->
-                                                                        <div class="row">
-                                                                            <div class="input-field col s12">
-                                                                                <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                                                                                <input id="{{ user.user_id }}-cPwd" name="cPwd" type="password" required>
-                                                                                <label for="{{ user.user_id }}-cPwd">Password Confirmation</label>
-                                                                                <span id="{{ user.user_id }}-cPwdHlp" class="helper-text" data-error=""></span>
+                                                                            <!-- password -->
+                                                                            <div class="row">
+                                                                                <div class="input-field col s12">
+                                                                                    <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                                                                                    <input id="{{ user.user_id }}-pwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
+                                                                                    <label for="{{ user.user_id }}-pwd">Password</label>
+                                                                                    <span class="helper-text" data-error="Invalid Password."></span>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>                                                                                                                                                
+                                                                            <!-- password confirmation -->
+                                                                            <div class="row">
+                                                                                <div class="input-field col s12">
+                                                                                    <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                                                                                    <input id="{{ user.user_id }}-cPwd" name="cPwd" type="password" disabled="true" required>
+                                                                                    <label for="{{ user.user_id }}-cPwd">Password Confirmation</label>
+                                                                                    <span id="{{ user.user_id }}-cPwdHlp" class="helper-text" data-error=""></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        <!-- </div> -->
                                                                         <!-- save changes -->
                                                                         <div class="row modal-action-container">
-                                                                            <button type="submit" class="modal-close col s12 btn-large light-blue darken-4 text-shadow">
+                                                                            <button type="submit" class="modal-close col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return modalPWordValidation('{{ user.user_id }}-change-password-input', '{{ user.user_id }}-pwd', '{{ user.user_id }}-cPwd');">
                                                                                 Save Changes <i class="fas fa-sign-in-alt"></i>
                                                                             </button>
                                                                         </div>
@@ -140,9 +152,23 @@
             $("#{{ user.user_id }}-pwd").on("focusout", function () {
                 pWordValidation("{{ user.user_id }}-pwd", "{{ user.user_id }}-cPwd");
             });
+
+            $("#{{ user.user_id }}-pwd").on("keyup", function () {
+                pWordValidation("{{ user.user_id }}-pwd", "{{ user.user_id }}-cPwd");
+            });
         
             $("#{{ user.user_id }}-cPwd").on("keyup", function () {
                 pWordValidation("{{ user.user_id }}-pwd", "{{ user.user_id }}-cPwd");
+            });
+
+            $("#{{ user.user_id }}-change-password-input").on("change", function() {
+                if ($("#{{ user.user_id }}-change-password-input").is(":checked")) {
+                    $("#{{ user.user_id }}-pwd").prop("disabled", false);
+                    $("#{{ user.user_id }}-cPwd").prop("disabled", false);
+                    return;
+                };
+                $("#{{ user.user_id }}-pwd").prop("disabled", true);
+                $("#{{ user.user_id }}-cPwd").prop("disabled", true);
             });
     {% endfor %}
 </script>
