@@ -30,7 +30,7 @@
                             <li><a href="#!">Content</a></li>
                         </ul>
                         <li><a class="dropdown-trigger" href="#!" data-target="nav-admin-dropdown">Admin<i class="fas fa-caret-down"></i></a></li>
-                    {% elif session.user_role == "user admin" %}
+                    {% elif session.user_role == "user account admin" %}
                         <li><a href="{{ url_for('admin_users') }}">User Admin</a></li>
                     {% elif session.user_role == "content admin" %}
                         <li><a href="#!">Content Admin</a></li>
@@ -57,7 +57,7 @@
                         <li><a href="#!">Content</a></li>
                     </ul>
                     <li><a class="dropdown-trigger" href="#!" data-target="sidenav-admin-dropdown">Admin<i class="fas fa-caret-down"></i></a></li>
-                {% elif session.user_role == "user admin" %}
+                {% elif session.user_role == "user account admin" %}
                     <li><a href="{{ url_for('admin_users') }}">User Admin</a></li>
                 {% elif session.user_role == "content admin" %}
                     <li><a href="#!">Content Admin</a></li>
