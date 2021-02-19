@@ -40,35 +40,51 @@
                         <label for="modalUserId">User Id</label>
                     </div>
                 </div>
-                <!-- <div class="card-panel"> -->
-                    <!-- change password? -->
-                    <div class="row">
-                        <div class="input-field col s12 checkbox-container noicon">                                                                                    
-                            <label id="modalChangePassword">
-                                <input id="modalChangePasswordInput" type="checkbox"/>
-                                <span>Change Password?</span>
-                            </label>
-                        </div>
+                <!-- group/role selection -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i id="modalUserRoleIcon" class="prefix light-blue-text text-darken-4 fas"></i>
+                        <select id="modalUserRole" name="role">
+                            {% for role_group in role_groups %}
+                            <optgroup label='<i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i> {{ role_group.role_group }}'>
+                                {% for role in user_roles if role.role_group == role_group.role_group %}                            
+                                <optgroup label='<div class="subopt" onclick="optionClick(this);"><i class="fas {{ role.role_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ role.role }}</span></div>'>
+                                    <option value="{{ role.role }}">{{ role.role }}</option>
+                                </optgroup>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                        <label>User Role</label>
                     </div>
-                    <!-- password -->
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                            <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
-                            <label for="modalUserPwd">Password</label>
-                            <span class="helper-text" data-error="Invalid Password."></span>
-                        </div>
+                </div>
+                <!-- change password? -->
+                <div class="row">
+                    <div class="input-field col s12 checkbox-container noicon">                                                                                    
+                        <label id="modalChangePassword">
+                            <input id="modalChangePasswordInput" type="checkbox"/>
+                            <span>Change Password?</span>
+                        </label>
                     </div>
-                    <!-- password confirmation -->
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                            <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
-                            <label for="modalUserCpwd">Password Confirmation</label>
-                            <span id="modalUserCpwdHlp" class="helper-text" data-error=""></span>
-                        </div>
+                </div>
+                <!-- password -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                        <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
+                        <label for="modalUserPwd">Password</label>
+                        <span class="helper-text" data-error="Invalid Password."></span>
                     </div>
-                <!-- </div> -->
+                </div>
+                <!-- password confirmation -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                        <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
+                        <label for="modalUserCpwd">Password Confirmation</label>
+                        <span id="modalUserCpwdHlp" class="helper-text" data-error=""></span>
+                    </div>
+                </div>                
                 <!-- save changes -->
                 <div class="row modal-action-container">
                     <button type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return modalValidate();">
@@ -89,7 +105,7 @@
                     {% else %}
                         <div class="collapsible-header">
                     {% endif %}
-                            <i class="fas {{ role_group.role_group_icon }} fa-fw"></i>{{ role_group.role_group }} ({{ role_group.member_count }})</div>
+                            <i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i>{{ role_group.role_group }} ({{ role_group.member_count }})</div>
                     <div class="collapsible-body">
                         <ul class="collapsible">
                             {% for role in user_roles if role.role_group == role_group.role_group %}
@@ -97,7 +113,7 @@
                                     {% if role.member_count == 0 %}
                                         <div class="dummy-collapsible-header grey-text text-lighten-1"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>
                                     {% else %}
-                                        <div class="collapsible-header"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>                                    
+                                        <div class="collapsible-header"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>                                    
                                         <div class="collapsible-body">                                        
                                             <ul class="collapsible">
                                                 <ul class="collection">                                                    
@@ -106,7 +122,7 @@
                                                             <ul>
                                                                 <li>
                                                                     <h6>
-                                                                    <i class="fas {{ user.role_icon }} fa-fw"></i>
+                                                                    <i class="fas {{ user.role_icon["class"] }} fa-fw"></i>
                                                                     <span class="title">{{ user.user_id|capitalize }}</span>                                                    
                                                                     </h6>
                                                                 </li>
@@ -148,6 +164,7 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/editusers.js') }}"></script>
 <script>
-    let userList = createUserArray({{ users | tojson }});    
+    let userList = createUserArray({{ users | tojson }});
+    let roleList = createRoleArray({{ user_roles | tojson }});
 </script>
 {% endblock %}

@@ -117,3 +117,20 @@ form .modal-content .input-field {
 .hidden {
     display: none;
 }
+
+/* MaterializeCSS Select Box Style Overrides */
+.subopt i {
+    margin-left: 1rem;
+}
+
+.subopt span:hover {
+    border-bottom: 1px solid #01579b;
+}
+
+.optgroup-option {
+    display: none;
+}
+
+.select-dropdown.dropdown-content li {
+	background-color: rgba(0,0,0,0.08);
+}

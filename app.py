@@ -129,30 +129,39 @@ def admin_users():
         print(is_admin)
         print(role)
         if is_admin is True:
-            if request.method == "POST":
-                existing_user = mongo.db.users.find_one(
-                    {"user_id": request.form.get("orig_user_id").lower()},
-                    {"_id": 1})
-
-                update_user = {
-                    "user_id": request.form.get("user_id").lower(),
-                    "email": request.form.get("email").lower(),
-                    "locked": request.form.get("locked")
-                }
-
-                if request.form.get("pwd"):
-                    update_user["pwd"] = generate_password_hash(
-                        request.form.get("pwd"))
-
-                mongo.db.users.update_one(
-                    {"_id": existing_user["_id"]},
-                    {"$set": update_user})
-
-                flash("User Details Updated")
-                return redirect(url_for("admin_users"))
-
             if role == 'Global Admin' or role == 'User Admin':
                 print('OK - ' + role)
+
+                # POST Method
+                if request.method == "POST":
+                    existing_user = mongo.db.users.find_one(
+                        {"user_id": request.form.get("orig_user_id").lower()},
+                        {"_id": 1})
+
+                    update_user = {
+                        "user_id": request.form.get("user_id").lower(),
+                        "email": request.form.get("email").lower(),
+                        "locked": request.form.get("locked")
+                    }
+
+                    role = mongo.db.user_roles.find_one(
+                        {"role": request.form.get("role")},
+                        {"_id": 1})
+
+                    update_user["role_id"] = ObjectId(role["_id"])
+
+                    if request.form.get("pwd"):
+                        update_user["pwd"] = generate_password_hash(
+                            request.form.get("pwd"))
+
+                    mongo.db.users.update_one(
+                        {"_id": existing_user["_id"]},
+                        {"$set": update_user})
+
+                    flash("User Details Updated")
+                    return redirect(url_for("admin_users"))
+
+                # GET Method
                 user_query = [{'$lookup':
                               {'from': 'user_roles',
                                'localField': 'role_id',

@@ -1,3 +1,5 @@
+/* global pWordValidation, userList, roleList */
+
 function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
     checkBox = "#" + checkBox;
     let result = false;
@@ -7,23 +9,52 @@ function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
     return result;
 }
 
+// eslint-disable-next-line no-unused-vars
+function createRoleArray(pyList) {
+    console.log(pyList);
+    let roleArr = [];
+    pyList.forEach(function (obj) {
+        roleArr.push({"role": obj.role,
+            "role_icon": obj.role_icon.class});
+    });
+    return roleArr;
+}
+
+function getRole(roleId) {
+    let result = false;
+    roleList.forEach(function (role) {
+        if (role.role === roleId) {
+            result = {"role": role.role,
+                "role_icon": role.role_icon};
+            return true; //Stop iterating when we find the specified role
+        }
+    });
+    return result;
+}
+
+// eslint-disable-next-line no-unused-vars
 function createUserArray(pyList) {
+    console.log(pyList);
     let usrArr = [];
     pyList.forEach(function (obj) {
         usrArr.push({"user_id": obj.user_id,
             "email": obj.email,
-            "locked": obj.locked});
+            "locked": obj.locked,
+            "group": obj.role_group,
+            "role": obj.role});
     });
     return usrArr;
 }
 
-function getUser(user_id) {
+function getUser(userId) {
     let result = false;
     userList.forEach(function (user) {
-        if (user.user_id === user_id) {
+        if (user.user_id === userId) {
             result = {"user_id": user.user_id,
                 "email": user.email,
-                "locked": user.locked};
+                "locked": user.locked,
+                "group": user.group,
+                "role": user.role};
             return true; //Stop iterating when we find the specified user
         }
     });
@@ -61,10 +92,38 @@ function modalStopListeners() {
     $("#modalChangePasswordInput").off("change");
 }
 
-function popModal(user_id) {
-    let user = getUser(user_id);
-    console.log(user_id);
-    console.log(user);
+
+function modalGetUserRoleIconClass() {
+    let role = $('#modalUserRole')[0].value;
+    return getRole(role).role_icon;
+}
+
+function modalSetUserRoleIcon() {
+    let iconClass = modalGetUserRoleIconClass();
+    $('#modalUserRoleIcon').addClass(iconClass);
+}
+
+function modalClearUserRoleIcon() {
+    let iconClass = modalGetUserRoleIconClass();
+    $('#modalUserRoleIcon').removeClass(iconClass);
+}
+
+function modalSetInitialUserRoleSelectValue(role) {
+    modalClearUserRoleIcon();
+    let options = document.querySelectorAll(
+        '#modalUserRoleIcon ~ .select-wrapper ul li.optgroup-option');
+    options.forEach(function (option) {
+        if (option.innerText === role) {
+            option.click();
+            return true;
+        }
+    });
+    modalSetUserRoleIcon();
+}
+
+// eslint-disable-next-line no-unused-vars
+function popModal(userId) {
+    let user = getUser(userId);
     $('#modalTitle').html(user.user_id);
     $('#modalUserLockedInput')[0].checked = user.locked;
     $('#modalOrigUserId').val(user.user_id);
@@ -72,10 +131,20 @@ function popModal(user_id) {
     $('#modalUserEmail ~ label').addClass("active");
     $('#modalUserId').val(user.user_id);
     $('#modalUserId ~ label').addClass("active");
+    modalSetInitialUserRoleSelectValue(user.role);
 
     modalCreateListeners();
 }
 
+// eslint-disable-next-line no-unused-vars
+function optionClick(obj) {
+    modalClearUserRoleIcon();
+    obj.parentElement.parentElement.
+        nextElementSibling.firstElementChild.click();
+    modalSetUserRoleIcon();
+}
+
+// eslint-disable-next-line no-unused-vars
 function modalValidate() {
     let valid = modalPWordValidation("modalChangePasswordInput",
                                      "modalUserPwd",

@@ -22,6 +22,7 @@
 /*      Eg: */
 /*          if the confirmation input element Id is "confirmationInput" */
 /*          Then the helper-text element Id should be "confirmationInputHlp" */
+// eslint-disable-next-line no-unused-vars
 function pWordValidation(pWordInput, pWordConfInput) {
     pWordInput = "#" + pWordInput;
     pWordConfInput = "#" + pWordConfInput;
@@ -59,7 +60,7 @@ $(function() {
     //         done: "Select"
     //     }
     // });
-    // $('select').formSelect();
+    $('select').formSelect();
     $('.modal').modal();
 
     // function validateMaterializeSelect() {
