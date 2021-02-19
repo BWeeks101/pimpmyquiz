@@ -129,7 +129,7 @@ def admin_users():
         print(is_admin)
         print(role)
         if is_admin is True:
-            if role == 'Global Admin' or role == 'User Admin':
+            if role == 'Global Admin' or role == 'User Account Admin':
                 print('OK - ' + role)
 
                 # POST Method
