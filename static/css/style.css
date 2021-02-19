@@ -100,6 +100,17 @@ form .modal-content .input-field {
     color: #000;
 }
 
+#modalChangePasswordCollapsible {
+	margin: 0;
+	border: none;
+	box-shadow: none;
+}
+
+#modalChangePasswordCollapsible .collapsible-header, #modalChangePasswordCollapsible .collapsible-body {
+    padding: 0;
+    border: none;
+}
+
 /* Style the materialize checkbox color to match our primary font color */
 [type="checkbox"]:checked + span:not(.lever)::before {
     border-right: 2px solid #01579b;

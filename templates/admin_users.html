@@ -24,22 +24,6 @@
                         </label>
                     </div>
                 </div>
-                <!-- email -->
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
-                        <input id="modalUserEmail" name="email" type="email" class="validate" value="" required>
-                        <label for="modalUserEmail">Email</label>
-                    </div>
-                </div>
-                <!-- username -->
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
-                        <input id="modalUserId" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                        <label for="modalUserId">User Id</label>
-                    </div>
-                </div>
                 <!-- group/role selection -->
                 <div class="row">
                     <div class="input-field col s12">
@@ -57,6 +41,22 @@
                         </select>
                         <label>User Role</label>
                     </div>
+                </div>                
+                <!-- email -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
+                        <input id="modalUserEmail" name="email" type="email" class="validate" value="" required>
+                        <label for="modalUserEmail">Email</label>
+                    </div>
+                </div>
+                <!-- username -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
+                        <input id="modalUserId" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
+                        <label for="modalUserId">User Id</label>
+                    </div>
                 </div>
                 <!-- change password? -->
                 <div class="row">
@@ -67,24 +67,31 @@
                         </label>
                     </div>
                 </div>
-                <!-- password -->
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                        <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
-                        <label for="modalUserPwd">Password</label>
-                        <span class="helper-text" data-error="Invalid Password."></span>
-                    </div>
-                </div>
-                <!-- password confirmation -->
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                        <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
-                        <label for="modalUserCpwd">Password Confirmation</label>
-                        <span id="modalUserCpwdHlp" class="helper-text" data-error=""></span>
-                    </div>
-                </div>                
+                <ul id="modalChangePasswordCollapsible" class="collapsible light-blue-text text-darken-4">
+                    <li>
+                        <div class="collapsible-header"></div>
+                        <div class="collapsible-body">
+                            <!-- password -->
+                            <div id="modalUserPwdRow" class="row">
+                                <div class="input-field col s12">
+                                    <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                                    <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
+                                    <label for="modalUserPwd">Password</label>
+                                    <span class="helper-text" data-error="Invalid Password."></span>
+                                </div>
+                            </div>
+                            <!-- password confirmation -->
+                            <div id="modalUserCpwdRow" class="row">
+                                <div class="input-field col s12">
+                                    <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
+                                    <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
+                                    <label for="modalUserCpwd">Password Confirmation</label>
+                                    <span id="modalUserCpwdHlp" class="helper-text" data-error=""></span>
+                                </div>
+                            </div>                
+                        </div>
+                    </li>
+                </ul>
                 <!-- save changes -->
                 <div class="row modal-action-container">
                     <button type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return modalValidate();">
@@ -94,6 +101,8 @@
             </div>
         </form>
     </div>
+
+    <!-- Collapsible Content -->
     <h3 class="light-blue-text text-darken-4 center-align">Manage Users</h3>
     <div class="row">
         <div class="col s12">    
@@ -164,6 +173,7 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/editusers.js') }}"></script>
 <script>
+    // Convert mongoDB data to JS global arrays for use in this template
     let userList = createUserArray({{ users | tojson }});
     let roleList = createRoleArray({{ user_roles | tojson }});
 </script>

@@ -1,4 +1,5 @@
-/* global pWordValidation, userList, roleList */
+/* global pWordValidation, userList, roleList, M,
+modalChangePasswordCollapsible */
 
 function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
     checkBox = "#" + checkBox;
@@ -75,13 +76,17 @@ function modalCreateListeners() {
     });
 
     $("#modalChangePasswordInput").on("change", function() {
+        let changePasswordCollapsible = M.Collapsible.
+                getInstance(modalChangePasswordCollapsible);
         if ($("#modalChangePasswordInput").is(":checked")) {
             $("#modalUserPwd").prop("disabled", false);
             $("#modalUserCpwd").prop("disabled", false);
+            changePasswordCollapsible.open();
             return;
         }
         $("#modalUserPwd").prop("disabled", true);
         $("#modalUserCpwd").prop("disabled", true);
+        changePasswordCollapsible.close();
     });
 }
 
