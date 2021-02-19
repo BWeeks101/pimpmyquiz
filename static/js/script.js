@@ -17,16 +17,12 @@
 /* Requires: */
 /*      pWordInput: Element Id of Password Input Element */
 /*      pWordConfInput: Element Id of Password Confirmation Input Element */
-/*      NB: pWordConfInput requires a helper-text element with */
-/*          an element Id equivalent to pWordConfInput + "Hlp" */
-/*      Eg: */
-/*          if the confirmation input element Id is "confirmationInput" */
-/*          Then the helper-text element Id should be "confirmationInputHlp" */
+/*      NB: pWordConfInput requires an immediate next sibling label element */
 // eslint-disable-next-line no-unused-vars
 function pWordValidation(pWordInput, pWordConfInput) {
     pWordInput = "#" + pWordInput;
     pWordConfInput = "#" + pWordConfInput;
-    let pWordConfHelper = pWordConfInput + "Hlp";
+    let pWordConfHelper = pWordConfInput + "~ label";
     let hlptxt = "Passwords do not match.";
     if (($(pWordInput).val() !== $(pWordConfInput).val()) ||
         $(pWordInput).hasClass("invalid") ||
@@ -42,7 +38,6 @@ function pWordValidation(pWordInput, pWordConfInput) {
     }
     $(pWordConfInput).removeClass("invalid").
     addClass("valid");
-    $(pWordConfHelper).attr("data-error", "");
     return true;
 }
 

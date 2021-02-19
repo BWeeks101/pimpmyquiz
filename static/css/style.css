@@ -91,7 +91,7 @@ form .modal-content .input-field {
     margin-top: -1rem;
 }
 
-.checkbox-container.noicon label {
+.checkbox-container.no-icon label {
     margin-left: 3rem;
 }
 
@@ -144,4 +144,8 @@ form .modal-content .input-field {
 
 .select-dropdown.dropdown-content li {
 	background-color: rgba(0,0,0,0.08);
+}
+
+.select-wrapper input.select-dropdown:focus {
+	border-bottom: 1px solid #9e9e9e;
 }

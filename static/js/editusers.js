@@ -62,17 +62,33 @@ function getUser(userId) {
     return result;
 }
 
+function modalHelperLabel (elem) {
+    elem = "#" + elem;
+    let label = `${elem} ~ label`;
+    let labelText = $(label).data("default");
+    let labelColor = '';
+    if ($(elem)[0].classList.contains('invalid')) {
+        labelText = $(label).data("error");
+        labelColor = "#F44336";
+    }
+    $(label).html(labelText).
+        css("color", labelColor);
+}
+
 function modalCreateListeners() {
     $("#modalUserPwd").on("focusout", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
+        modalHelperLabel("modalUserPwd");
     });
 
     $("#modalUserPwd").on("keyup", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
+        modalHelperLabel("modalUserPwd");
     });
 
     $("#modalUserCpwd").on("keyup", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
+        modalHelperLabel("modalUserCpwd");
     });
 
     $("#modalChangePasswordInput").on("change", function() {
@@ -88,9 +104,19 @@ function modalCreateListeners() {
         $("#modalUserCpwd").prop("disabled", true);
         changePasswordCollapsible.close();
     });
+
+    $("#modalUserId").on("focusout", function () {
+        modalHelperLabel("modalUserId");
+    });
+
+    $("#modalUserEmail").on("focusout", function () {
+        modalHelperLabel("modalUserEmail");
+    });
 }
 
 function modalStopListeners() {
+    $("#modalUserId").off("focusout");
+    $("#modalUserEmail").off("focusout");
     $("#modalUserPwd").off("focusout");
     $("#modalUserPwd").off("keyup");
     $("#modalUserCpwd").off("keyup");
@@ -129,7 +155,7 @@ function modalSetInitialUserRoleSelectValue(role) {
 // eslint-disable-next-line no-unused-vars
 function popModal(userId) {
     let user = getUser(userId);
-    $('#modalTitle').html(user.user_id);
+    //$('#modalTitle').html(user.user_id);
     $('#modalUserLockedInput')[0].checked = user.locked;
     $('#modalOrigUserId').val(user.user_id);
     $('#modalUserEmail').val(user.email);

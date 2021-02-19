@@ -7,26 +7,32 @@
                 <!-- title and close button -->
                 <div class="modal-title-row row">
                     <div class="col s11">
-                        <h4 id="modalTitle"></h4>
-                        <input id="modalOrigUserId" class="hidden" name="orig_user_id" type="text" value="">
+                        <h4 id="modalTitle">Edit User</h4>                        
                     </div>
                     <div class="col s1 modal-close-button">
                         <a class="modal-action modal-close light-blue-text text-darken-4" href="#">&times</a>
                     </div>
                 </div>
-                <!-- locked -->
+                <!-- username -->
                 <div class="row">
-                    <div class="input-field col s12 checkbox-container">
-                        <i class="fas fa-lock prefix light-blue-text text-darken-4"></i>
-                        <label id="modalUserLocked">
-                            <input id="modalUserLockedInput" name="locked" type="checkbox"/>
-                            <span>User Locked?</span>
-                        </label>
+                    <div class="input-field col s12">
+                        <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
+                        <input id="modalUserId" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
+                        <label for="modalUserId" data-error="Invalid Username." data-default="User Id">User Id</label>                        
+                        <input id="modalOrigUserId" class="hidden" name="orig_user_id" type="text" value="">
+                    </div>
+                </div>
+                <!-- email -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
+                        <input id="modalUserEmail" name="email" type="email" class="validate" value="" required>
+                        <label for="modalUserEmail" data-error="Invalid Email Address." data-default="Email">Email</label>
                     </div>
                 </div>
                 <!-- group/role selection -->
                 <div class="row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s12 select-container">
                         <i id="modalUserRoleIcon" class="prefix light-blue-text text-darken-4 fas"></i>
                         <select id="modalUserRole" name="role">
                             {% for role_group in role_groups %}
@@ -42,25 +48,19 @@
                         <label>User Role</label>
                     </div>
                 </div>                
-                <!-- email -->
+                <!-- locked -->
                 <div class="row">
-                    <div class="input-field col s12">
-                        <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
-                        <input id="modalUserEmail" name="email" type="email" class="validate" value="" required>
-                        <label for="modalUserEmail">Email</label>
-                    </div>
-                </div>
-                <!-- username -->
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
-                        <input id="modalUserId" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                        <label for="modalUserId">User Id</label>
+                    <div class="input-field col s12 checkbox-container">
+                        <i class="fas fa-lock prefix light-blue-text text-darken-4"></i>
+                        <label id="modalUserLocked">
+                            <input id="modalUserLockedInput" name="locked" type="checkbox"/>
+                            <span>User Locked?</span>
+                        </label>
                     </div>
                 </div>
                 <!-- change password? -->
                 <div class="row">
-                    <div class="input-field col s12 checkbox-container noicon">                                                                                    
+                    <div class="input-field col s12 checkbox-container no-icon no-bottom-margin">                                                                                    
                         <label id="modalChangePassword">
                             <input id="modalChangePasswordInput" type="checkbox"/>
                             <span>Change Password?</span>
@@ -76,8 +76,7 @@
                                 <div class="input-field col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
                                     <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
-                                    <label for="modalUserPwd">Password</label>
-                                    <span class="helper-text" data-error="Invalid Password."></span>
+                                    <label for="modalUserPwd" data-error="Invalid Password." data-default="Password">Password</label>                                    
                                 </div>
                             </div>
                             <!-- password confirmation -->
@@ -85,8 +84,7 @@
                                 <div class="input-field col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
                                     <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
-                                    <label for="modalUserCpwd">Password Confirmation</label>
-                                    <span id="modalUserCpwdHlp" class="helper-text" data-error=""></span>
+                                    <label for="modalUserCpwd" data-error="" data-default="Password Confirmation">Password Confirmation</label>
                                 </div>
                             </div>                
                         </div>
