@@ -85,6 +85,20 @@ function modalUserLockedToggleIcon () {
             addClass("fa-unlock light-blue-text");
 }
 
+function modalChangePasswordToggle () {
+    let changePasswordCollapsible = M.Collapsible.
+            getInstance(modalChangePasswordCollapsible);
+    if ($("#modalChangePasswordInput").is(":checked")) {
+        $("#modalUserPwd").prop("disabled", false);
+        $("#modalUserCpwd").prop("disabled", false);
+        changePasswordCollapsible.open();
+        return;
+    }
+    $("#modalUserPwd").prop("disabled", true);
+    $("#modalUserCpwd").prop("disabled", true);
+    changePasswordCollapsible.close();
+}
+
 function modalCreateListeners() {
     $("#modalUserPwd").on("focusout", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
@@ -107,17 +121,7 @@ function modalCreateListeners() {
 
 
     $("#modalChangePasswordInput").on("change", function() {
-        let changePasswordCollapsible = M.Collapsible.
-                getInstance(modalChangePasswordCollapsible);
-        if ($("#modalChangePasswordInput").is(":checked")) {
-            $("#modalUserPwd").prop("disabled", false);
-            $("#modalUserCpwd").prop("disabled", false);
-            changePasswordCollapsible.open();
-            return;
-        }
-        $("#modalUserPwd").prop("disabled", true);
-        $("#modalUserCpwd").prop("disabled", true);
-        changePasswordCollapsible.close();
+        modalChangePasswordToggle();
     });
 
     $("#modalUserId").on("focusout", function () {
