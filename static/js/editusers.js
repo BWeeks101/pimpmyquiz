@@ -75,6 +75,16 @@ function modalHelperLabel (elem) {
         css("color", labelColor);
 }
 
+function modalUserLockedToggleIcon () {
+    if ($("#modalUserLockedInput").is(":checked")) {
+        $("#modalUserLockedIcon").removeClass("fa-unlock light-blue-text").
+            addClass("fa-lock red-text");
+        return;
+    }
+    $("#modalUserLockedIcon").removeClass("fa-lock red-text").
+            addClass("fa-unlock light-blue-text");
+}
+
 function modalCreateListeners() {
     $("#modalUserPwd").on("focusout", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
@@ -90,6 +100,11 @@ function modalCreateListeners() {
         pWordValidation("modalUserPwd", "modalUserCpwd");
         modalHelperLabel("modalUserCpwd");
     });
+
+    $("#modalUserLockedInput").on("change", function () {
+        modalUserLockedToggleIcon();
+    });
+
 
     $("#modalChangePasswordInput").on("change", function() {
         let changePasswordCollapsible = M.Collapsible.
@@ -120,6 +135,7 @@ function modalStopListeners() {
     $("#modalUserPwd").off("focusout");
     $("#modalUserPwd").off("keyup");
     $("#modalUserCpwd").off("keyup");
+    $("#modalUserLockedInput").off("change");
     $("#modalChangePasswordInput").off("change");
 }
 
@@ -157,6 +173,7 @@ function popModal(userId) {
     let user = getUser(userId);
     //$('#modalTitle').html(user.user_id);
     $('#modalUserLockedInput')[0].checked = user.locked;
+    modalUserLockedToggleIcon();
     $('#modalOrigUserId').val(user.user_id);
     $('#modalUserEmail').val(user.email);
     $('#modalUserEmail ~ label').addClass("active");
