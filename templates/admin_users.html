@@ -120,7 +120,7 @@
                                     {% if role.member_count == 0 %}
                                         <div class="dummy-collapsible-header grey-text text-lighten-1"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>
                                     {% else %}
-                                        <div class="collapsible-header"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>                                    
+                                        <div class="collapsible-header" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>                                    
                                         <div class="collapsible-body">                                        
                                             <ul class="collapsible">
                                                 <ul class="collection">                                                    
@@ -129,7 +129,7 @@
                                                             <ul>
                                                                 <li>
                                                                     <h6>
-                                                                    <i class="fas {{ user.role_icon["class"] }} fa-fw"></i>
+                                                                    <i class="fas {{ role.role_icon["class"] }} fa-fw"></i>
                                                                     <span class="title">{{ user.user_id|capitalize }}</span>                                                    
                                                                     </h6>
                                                                 </li>
