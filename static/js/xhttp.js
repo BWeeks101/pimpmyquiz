@@ -1,11 +1,12 @@
 /* global getRole, createUserArray */
 
 let recordPositions = [];
+let userSearchPositions = {};
 let userList;
 
 function addRecordPositions(obj) {
-    if (obj.role) {
-        let result;
+    let result;
+    if ('role' in obj) {
         recordPositions.forEach(function (record) {
             record = record.obj;
             if (record.role === obj.role) {
@@ -29,27 +30,49 @@ function addRecordPositions(obj) {
             }
             recordPositions.push({obj});
         }
+    } else if ('search' in obj) {
+        userSearchPositions = {
+            'search': obj.search,
+            'totalPages': 1,
+            'currentPage': 1
+        };
+
+        if ('totalPages' in obj) {
+            userSearchPositions.totalPages = obj.totalPages;
+        }
+
+        if ('currentPage' in obj) {
+            userSearchPositions.currentPage = obj.currentPage;
+        }
     }
 }
 
-function getRecordPosition(role) {
+function getRecordPosition(key) {
     let result = false;
-    recordPositions.forEach(function (record) {
-        record = record.obj;
-        if (record.role !== role) {
-            return;
-        }
-        result = {"role": record.role,
-            "totalPages": record.totalPages,
-            "currentPage": record.currentPage};
-    });
+    if ('role' in key) {
+        recordPositions.forEach(function (record) {
+            record = record.obj;
+            if (record.role !== key.role) {
+                return;
+            }
+            result = {"role": record.role,
+                "totalPages": record.totalPages,
+                "currentPage": record.currentPage};
+        });
+    } else if ('search' in key) {
+        result = {
+            "search": userSearchPositions.search,
+            "totalPages": userSearchPositions.totalPages,
+            "currentPage": userSearchPositions.currentPage
+        };
+    }
     return result;
 }
 
 function buildRequestString(requestObj) {
     let request = requestObj.type;
     let keys;
-    if (requestObj.params) {
+    if ('params' in requestObj) {
         request += '?';
         keys = Object.keys(requestObj.params);
         keys.forEach(function (key, idx) {
@@ -63,7 +86,7 @@ function buildRequestString(requestObj) {
     return request;
 }
 
-function updateRecordControls(elem, role) {
+function updateRecordControls(elem, key) {
     let rowControls = elem.previousElementSibling;
     let first = rowControls.firstElementChild;
     let prev = first.nextElementSibling;
@@ -71,7 +94,15 @@ function updateRecordControls(elem, role) {
     let totalPagesSpan = rowControls.querySelector('span.totalPages');
     let next = rowControls.lastElementChild;
     let last = next.previousElementSibling;
-    let record = getRecordPosition(role);
+    let record;
+    if ('role' in key) {
+        record = getRecordPosition({'role': key.role});
+    } else if ('search' in key) {
+        record = getRecordPosition({'search': key.search});
+        if (!record) {
+            return;
+        }
+    }
     let currentPage = record.currentPage;
     let totalPages = record.totalPages;
 
@@ -166,16 +197,22 @@ function xHttpRenderResult(elem, result) {
         let i = 0;
         headers.each(function () {
             let header = headers[i];
-            let role = header.getAttribute('data-role');
+            let key = {'role': header.getAttribute('data-role')};
             let elem = header.nextElementSibling.querySelector('.results-data');
-            updateRecordControls(elem, role);
+            updateRecordControls(elem, key);
             i += 1;
         });
     }
 
-    addRecordPositions(result.request);
-    refreshCollapsibleHeaders(result.totals);
-    refreshRecordControls();
+    let html = result.html;
+    if (result.type === "userSearch") {
+        addRecordPositions(result.request);
+        updateRecordControls(elem, {'search': result.request.search});
+    } else if (result.type === "getUsers") {
+        addRecordPositions(result.request);
+        refreshCollapsibleHeaders(result.totals);
+        refreshRecordControls();
+    }
     // eslint-disable-next-line no-unused-vars
     userList = createUserArray(result.user_data);
     elem.innerHTML = html;
@@ -223,113 +260,231 @@ function xHttpRequest(requestObj, elem) {
     xhttp.send();
 }
 
-function getFirstRecord(elem, role) {
+function getFirstRecord(elem, key) {
     let currentPage = 1;
-    addRecordPositions({role, currentPage});
-    let request = {
-        'type':
-            'getUsers',
-        'params':
-            {'page': currentPage, role}
-    };
-    updateRecordControls(elem, role);
+    let addRecordObj;
+    let request;
+    if ('search' in key) {
+        addRecordObj = ({'search': key.search, currentPage});
+        request = {
+            'type':
+                'userSearch',
+            'params': {
+                'searchStr': key.search,
+                'page': currentPage
+            }
+        };
+    } else if ('role' in key) {
+        addRecordObj = ({'role': key.role, currentPage});
+        request = {
+            'type':
+                'getUsers',
+            'params': {
+                'role': key.role,
+                'page': currentPage
+            }
+        };
+    }
+    addRecordPositions(addRecordObj);
+    updateRecordControls(elem, key);
     xHttpRequest(request, elem);
 }
 
 // eslint-disable-next-line no-unused-vars
-function getLastRecord(elem, role) {
-    let totalPages = getRecordPosition(role).totalPages;
+function getLastRecord(elem, key) {
+    let totalPages = getRecordPosition(key).totalPages;
     let currentPage = totalPages;
-    addRecordPositions({role, currentPage});
-    let request = {
-        'type':
+    let addRecordObj;
+    let request;
+    if ('search' in key) {
+        addRecordObj = ({'search': key.search, currentPage});
+        request = {
+            'type':
+                'userSearch',
+            'params': {
+                'searchStr': key.search,
+                'page': currentPage
+            }
+        };
+    } else if ('role' in key) {
+        addRecordObj = {'role': key.role, currentPage};
+        request = {
+            'type':
             'getUsers',
-        'params':
-            {'page': currentPage, role}
-    };
-    updateRecordControls(elem, role);
+            'params': {
+                'role': key.role,
+                'page': currentPage
+            }
+        };
+    }
+    addRecordPositions(addRecordObj);
+    updateRecordControls(elem, key);
     xHttpRequest(request, elem);
 }
 
 // eslint-disable-next-line no-unused-vars
-function getNextRecord(elem, role) {
-    let totalPages = getRecordPosition(role).totalPages;
-    let currentPage = getRecordPosition(role).currentPage;
+function getNextRecord(elem, key) {
+    let record = getRecordPosition(key);
+    let totalPages = record.totalPages;
+    let currentPage = record.currentPage;
     if (currentPage < totalPages) {
         currentPage += 1;
     }
-    addRecordPositions({role, currentPage});
-    let request = {
-        'type':
+    let addRecordObj;
+    let request;
+    if ('search' in key) {
+        addRecordObj = ({'search': key.search, currentPage});
+        request = {
+            'type':
+                'userSearch',
+            'params': {
+                'searchStr': key.search,
+                'page': currentPage
+            }
+        };
+    } else if ('role' in key) {
+        addRecordObj = {'role': key.role, currentPage};
+        request = {
+            'type':
             'getUsers',
-        'params':
-            {'page': currentPage, role}
-    };
-    updateRecordControls(elem, role);
+            'params': {
+                'role': key.role,
+                'page': currentPage
+            }
+        };
+    }
+    addRecordPositions(addRecordObj);
+    updateRecordControls(elem, key);
     xHttpRequest(request, elem);
 }
 
 // eslint-disable-next-line no-unused-vars
-function getPrevRecord(elem, role) {
-    let currentPage = getRecordPosition(role).currentPage;
+function getPrevRecord(elem, key) {
+    let currentPage = getRecordPosition(key).currentPage;
     if (currentPage > 1) {
         currentPage -= 1;
     }
-    addRecordPositions({role, currentPage});
-    let request = {
-        'type':
+    let addRecordObj;
+    let request;
+    if ('search' in key) {
+        addRecordObj = ({'search': key.search, currentPage});
+        request = {
+            'type':
+                'userSearch',
+            'params': {
+                'searchStr': key.search,
+                'page': currentPage
+            }
+        };
+    } else if ('role' in key) {
+        addRecordObj = {'role': key.role, currentPage};
+        request = {
+            'type':
             'getUsers',
-        'params':
-            {'page': currentPage, role}
-    };
-    updateRecordControls(elem, role);
+            'params': {
+                'role': key.role,
+                'page': currentPage
+            }
+        };
+    }
+    addRecordPositions(addRecordObj);
+    updateRecordControls(elem, key);
     xHttpRequest(request, elem);
 }
 
-function getCurrentRecord(elem, role) {
-    let recordPosition = getRecordPosition(role);
+function getCurrentRecord(elem, key) {
+    let recordPosition = getRecordPosition(key);
     let totalPages = recordPosition.totalPages;
     let currentPage = recordPosition.currentPage;
-    if (!recordPosition) {
-        totalPages = Math.ceil((getRole(role).member_count) / 10);
-        currentPage = 1;
-        addRecordPositions({role, totalPages, currentPage});
+    let request;
+    if ('search' in key) {
+        request = {
+            'type':
+                'userSearch',
+            'params': {
+                'searchStr': key.search,
+                'page': currentPage
+            }
+        };
+    } else if ('role' in key) {
+        if (!recordPosition) {
+            totalPages = Math.ceil((getRole(key.role).member_count) / 10);
+            currentPage = 1;
+        }
+        addRecordPositions({'role': key.role, totalPages, currentPage});
+        request = {
+            'type':
+                'getUsers',
+            'params': {
+                'role': key.role,
+                'page': currentPage
+            }
+        };
     }
-    let request = {
-        'type':
-            'getUsers',
-        'params':
-            {'page': currentPage, role}
-    };
-    updateRecordControls(elem, role);
+    updateRecordControls(elem, key);
     xHttpRequest(request, elem);
 }
 
-function getSelectedRecord(elem, role, recordNum) {
-    let recordPosition = getRecordPosition(role);
+function getSelectedRecord(elem, key, pageNum) {
+    let recordPosition = getRecordPosition(key);
     let totalPages = recordPosition.totalPages;
-    let currentPage = Math.ceil(Number(recordNum));
-    console.log(currentPage);
-    if (!recordPosition) {
-        totalPages = Math.ceil((getRole(role).member_count) / 10);
-        currentPage = 1;
+    let currentPage = Math.ceil(Number(pageNum));
+    let request;
+    if ('search' in key) {
+        request = {
+            'type':
+                'userSearch',
+            'params': {
+                'searchStr': key.search,
+                'page': currentPage
+            }
+        };
+    } else if ('role' in key) {
+        if (!recordPosition) {
+            totalPages = Math.ceil((getRole(key.role).member_count) / 10);
+            currentPage = 1;
+        }
+        addRecordPositions({'role': key.role, totalPages, currentPage});
+        request = {
+            'type':
+            'getUsers',
+            'params': {
+                'role': key.role,
+                'page': currentPage
+            }
+        };
     }
-    addRecordPositions({role, totalPages, currentPage});
+    updateRecordControls(elem, key);
+    xHttpRequest(request, elem);
+}
+
+// eslint-disable-next-line no-unused-vars
+function getSearchResults(self) {
+    let value = $('#userSearchResults')[0].value;
+    if (value === "" || value === undefined || value.len() < 2) {
+        return;
+    }
     let request = {
         'type':
-            'getUsers',
-        'params':
-            {'page': currentPage, role}
+            'userSearch',
+        'params': {
+            'searchStr': value,
+            'page': 1
+        }
     };
-    updateRecordControls(elem, role);
-    xHttpRequest(request, elem);
+    addRecordPositions({
+        'search': request.params.searchStr,
+        'currentPage': 1
+    });
+    self.parentElement.nextElementSibling.firstElementChild.
+        classList.remove('hidden');
+    xHttpRequest(request, $('#userSearchResults')[0]);
 }
 
 function listenToUserRoleCollapsibleHeaders() {
     let roleHeaders = $(
         ".collapsible-user-roles .collapsible-header[data-role]"
     );
-    console.log(roleHeaders);
     let i = 0;
     roleHeaders.each(function() {
         let idArr = roleHeaders[i].getAttribute('data-role').
@@ -350,10 +505,36 @@ function listenToUserRoleCollapsibleHeaders() {
             let renderSelector = `#${id} ~ .collapsible-body `;
             renderSelector += `.collapsible .results-data`;
             let renderTarget = $(renderSelector)[0];
-            let role;
+            let key;
             if (!self.parentElement.classList.contains("active")) {
-                role = self.getAttribute("data-role");
-                getCurrentRecord(renderTarget, role);
+                key = {'role': self.getAttribute("data-role")};
+                getCurrentRecord(renderTarget, key);
+            }
+        });
+        i += 1;
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToUserSearchCollapsibleHeaders() {
+    let searchHeaders = $(
+        ".collapsible-search .collapsible-header"
+    );
+    let i = 0;
+    searchHeaders.each(function() {
+        let id = "userSearchCollapsible";
+        searchHeaders[i].setAttribute("id", id);
+
+        $(`#${id}`).on("click", function () {
+            let self = $(`#${id}`)[0];
+            let renderSelector = `#${id} ~ .collapsible-body `;
+            renderSelector += `.collapsible .results-data`;
+            let renderTarget = $(renderSelector)[0];
+            let key = {'search': getRecordPosition({'search': ''}).search};
+            if (key.search) {
+                if (!self.parentElement.classList.contains("active")) {
+                    getCurrentRecord(renderTarget, key);
+                }
             }
         });
         i += 1;
@@ -368,11 +549,20 @@ function listenToPageNumberInputs() {
         let totalRecordsSpan = self.nextElementSibling.nextElementSibling;
 
         function listenerAction() {
-            let role = self.parentElement.parentElement.parentElement.
-                    previousElementSibling.getAttribute('data-role');
+            let isSearch = self.parentElement.parentElement.
+                parentElement.classList.contains('user-search');
+            let role;
+            let key;
+            if (isSearch) {
+                key = {'search': userSearchPositions.search};
+            } else {
+                role = self.parentElement.parentElement.parentElement.
+                        previousElementSibling.getAttribute('data-role');
+                key = {role};
+            }
             let pageNumber = Math.ceil(Number(self.value));
             if (isNaN(pageNumber) || self.value === "") {
-                self.value = getRecordPosition(role).currentPage;
+                self.value = getRecordPosition(key).currentPage;
                 return;
             }
             let totalRecords = Number(totalRecordsSpan.innerHTML);
@@ -383,13 +573,22 @@ function listenToPageNumberInputs() {
                 pageNumber = 1;
             }
             self.value = pageNumber;
-            getSelectedRecord(target, role, pageNumber);
+            getSelectedRecord(target, key, pageNumber);
         }
 
         function listenerReset() {
-            let role = self.parentElement.parentElement.parentElement.
+            let isSearch = self.parentElement.parentElement.
+                parentElement.classList.contains('user-search');
+            let role;
+            let key;
+            if (isSearch) {
+                key = {'search': userSearchPositions.search};
+            } else {
+                role = self.parentElement.parentElement.parentElement.
                     previousElementSibling.getAttribute('data-role');
-            self.value = getRecordPosition(role).currentPage;
+                key = {role};
+            }
+            self.value = getRecordPosition(key).currentPage;
         }
 
         pageNumberInputs[i].addEventListener('keyup', function (e) {
@@ -410,23 +609,34 @@ function listenToPageNumberInputs() {
 // eslint-disable-next-line no-unused-vars
 function getRecord(record, self) {
     let target = self.parentElement.nextElementSibling;
-    let role = self.parentElement.parentElement.parentElement.
-        previousElementSibling.getAttribute("data-role");
+    let isSearch = self.parentElement.parentElement.
+        parentElement.classList.contains('user-search');
+    let role;
+    let key;
+    if (isSearch) {
+        key = {'search': userSearchPositions.search};
+    } else {
+        role = self.parentElement.parentElement.parentElement.
+            previousElementSibling.getAttribute("data-role");
+        key = {role};
+    }
+
     switch (record) {
     case 'first':
-        getFirstRecord(target, role);
+        getFirstRecord(target, key);
         break;
     case 'prev':
-        getPrevRecord(target, role);
+        getPrevRecord(target, key);
         break;
     case 'next':
-        getNextRecord(target, role);
+        getNextRecord(target, key);
         break;
     case 'last':
-        getLastRecord(target, role);
+        getLastRecord(target, key);
         break;
     }
 }
 
 listenToUserRoleCollapsibleHeaders();
+listenToUserSearchCollapsibleHeaders();
 listenToPageNumberInputs();
