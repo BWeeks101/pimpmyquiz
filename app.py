@@ -631,7 +631,9 @@ def userSearch():
             }
         }]
         user_data = list(mongo.db.users.aggregate(searchQuery))
-        total_users = int(user_data[0]['total_results'][0]['total'])
+        total_users = 0
+        if user_data[0]['total_results']:
+            total_users = int(user_data[0]['total_results'][0]['total'])
 
         # Calculate total pages based on:
         #   total users / number of returned records
@@ -644,24 +646,30 @@ def userSearch():
         total_pages = (total_users // limit) + (total_users % limit > 0)
 
         html = '<ul class="collection">'
-        for user in user_data[0]['results']:
-            html += '<li class="collection-item avatar">'
-            html += '<ul><li><h6><i class="fas '
-            html += user['role_icon']['class'] + ' fa-fw"></i>'
-            html += '<span class="title">' + user['user_id']
-            html += '</span></h6></li><li><h6>'
-            html += '<a href="mailto:' + user['email'] + '">'
-            html += '<i class="fas fa-envelope fa-fw"></i><span class="title">'
-            html += user['email'] + '</span></a></h6></li></ul>'
-            html += '<a class="secondary-content light-blue-text '
-            html += 'text-darken-4  modal-trigger" href="#editUserModal" '
-            html += 'onclick="popModal(\'' + user['user_id'] + '\')">'
-            if (user['locked']):
-                html += '<i class="red-text text-darken-4 fas fa-lock fa-fw">'
-                html += '</i>'
-            else:
-                html += '<i class="fas fa-unlock fa-fw"></i>'
-            html += '<i class="fas fa-user-edit"></i></a></li>'
+        if user_data[0]['results']:
+            for user in user_data[0]['results']:
+                html += '<li class="collection-item avatar">'
+                html += '<ul><li><h6><i class="fas '
+                html += user['role_icon']['class'] + ' fa-fw"></i>'
+                html += '<span class="title">' + user['user_id']
+                html += '</span></h6></li><li><h6>'
+                html += '<a href="mailto:' + user['email'] + '">'
+                html += '<i class="fas fa-envelope fa-fw"></i>'
+                html += '<span class="title">'
+                html += user['email'] + '</span></a></h6></li></ul>'
+                html += '<a class="secondary-content light-blue-text '
+                html += 'text-darken-4  modal-trigger" href="#editUserModal" '
+                html += 'onclick="popModal(\'' + user['user_id'] + '\')">'
+                if (user['locked']):
+                    html += '<i class="red-text text-darken-4 fas fa-lock '
+                    html += 'fa-fw"></i>'
+                else:
+                    html += '<i class="fas fa-unlock fa-fw"></i>'
+                html += '<i class="fas fa-user-edit"></i></a></li>'
+        else:
+            html += '<li class="collection-item avatar search-no-results">'
+            html += '<ul><li><h6><i class="fas fa-info fa-fw"></i>'
+            html += '<span class="title">No Results.</span></h6></li>'
         html += '</ul>'
 
         results = {
