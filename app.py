@@ -109,10 +109,26 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/admin_users", methods=["GET", "POST"])
-def admin_users():
+# Is user authorised for this function?
+# not in session: always returns false
+# auth_criteria: Required object.
+#               auth (optional)
+#                   Boolean.  Is user logged in?
+#               is_admin (optional)
+#                   Boolean. Is user a member of an admin role?
+#               role (optional)
+#                   String or List. Authorised user roles.
+# Evaluates properties of user against auth_criteria
+# If we have a match, return true.  Otherwise return false.
+# returns: object.
+#               auth
+#                   Boolean.  Is the user authorised?
+#               reason
+#                   String (user not in session) or
+#                   Object (returning user properties)
+def auth_user(auth_criteria):
     if 'user' not in session:
-        print('Not Logged In')
+        return {'auth': False, 'reason': 'Not Logged In'}
     else:
         is_admin = mongo.db.users.find_one(
             {'user_id': session['user'].lower()},
@@ -126,117 +142,553 @@ def admin_users():
         else:
             is_admin = False
         role = role['role']
-        print(is_admin)
-        print(role)
-        if is_admin is True:
-            if role == 'Global Admin' or role == 'User Account Admin':
-                print('OK - ' + role)
-
-                # POST Method
-                if request.method == "POST":
-                    existing_user = mongo.db.users.find_one(
-                        {"user_id": request.form.get("orig_user_id").lower()},
-                        {"_id": 1})
-
-                    update_user = {
-                        "user_id": request.form.get("user_id").lower(),
-                        "email": request.form.get("email").lower(),
-                        "locked": request.form.get("locked")
-                    }
-
-                    role = mongo.db.user_roles.find_one(
-                        {"role": request.form.get("role")},
-                        {"_id": 1})
-
-                    update_user["role_id"] = ObjectId(role["_id"])
-
-                    if request.form.get("pwd"):
-                        update_user["pwd"] = generate_password_hash(
-                            request.form.get("pwd"))
-
-                    mongo.db.users.update_one(
-                        {"_id": existing_user["_id"]},
-                        {"$set": update_user})
-
-                    flash("User Details Updated")
-                    return redirect(url_for("admin_users"))
-
-                # GET Method
-                user_query = [{'$lookup':
-                              {'from': 'user_roles',
-                               'localField': 'role_id',
-                               'foreignField': '_id',
-                               'as': 'role_details'}},
-                              {'$replaceRoot': {'newRoot':
-                                                {'$mergeObjects':
-                                                 [{'$arrayElemAt':
-                                                  ['$role_details', 0]},
-                                                  '$$ROOT']}}},
-                              {'$lookup':
-                              {'from': 'role_groups',
-                               'localField': 'role_group_id',
-                               'foreignField': '_id',
-                               'as': 'role_group_details'}},
-                              {'$replaceRoot':
-                              {'newRoot':
-                               {'$mergeObjects':
-                                [{'$arrayElemAt':
-                                 ['$role_group_details', 0]},
-                                 '$$ROOT']}}},
-                              {'$project':
-                              {'role_group_details': 0,
-                               'role_details': 0,
-                               '_id': 0,
-                               'role_group_id': 0,
-                               'role_id': 0,
-                               'pwd': 0}}]
-                users = list(mongo.db.users.aggregate(user_query))
-
-                user_roles_query = [{'$lookup':
-                                    {'from': 'role_groups',
-                                     'localField': 'role_group_id',
-                                     'foreignField': '_id',
-                                     'as': 'role_group_details'}},
-                                    {'$replaceRoot': {'newRoot':
-                                                      {'$mergeObjects':
-                                                       [{'$arrayElemAt':
-                                                        ['$role_group_details',
-                                                         0]}, '$$ROOT']}}},
-                                    {'$project':
-                                    {'role_group_details': 0,
-                                     '_id': 0,
-                                     'role_group_id': 0}}]
-                user_roles = list(
-                    mongo.db.user_roles.aggregate(user_roles_query))
-
-                role_groups_query = [{'$project': {'_id': 0}}]
-
-                role_groups = list(
-                    mongo.db.role_groups.aggregate(role_groups_query))
-
-                for user in users:
-                    for role in user_roles:
-                        if 'member_count' not in role:
-                            role['member_count'] = 0
-                        if role['role'] == user['role']:
-                            role['member_count'] += 1
-                            for group in role_groups:
-                                if 'member_count' not in group:
-                                    group['member_count'] = 0
-                                if group['role_group'] == role['role_group']:
-                                    group['member_count'] += 1
-                                    break
-                            break
-
-                return render_template("admin_users.html",
-                                       users=users,
-                                       user_roles=user_roles,
-                                       role_groups=role_groups)
-            else:
-                print('Not Ok - ' + role)
+        auth_vals = {'auth': True, 'is_admin': is_admin, 'role': role}
+        score = 0
+        score_target = len(auth_criteria.keys())
+        # print('Auth Requires Score of: ' + str(score_target))
+        for key in auth_criteria.keys():
+            # print('Key: ' + str(key))
+            # print(auth_criteria[key])
+            if (auth_criteria[key] == auth_vals[key]):
+                # print(auth_vals[key])
+                # print('Match!')
+                score += 1
+            elif (type(auth_criteria[key]) is list and key == 'role'):
+                # print("It's a list!")
+                for auth_role in auth_criteria[key]:
+                    if auth_role == auth_vals[key]:
+                        # print(auth_vals[key])
+                        # print('Match!')
+                        score += 1
+                        break
+        # print('score: ' + str(score))
+        if (score == score_target):
+            return {'auth': True, 'reason': auth_vals}
         else:
-            print('Permission Denied - ' + role)
+            return {'auth': False, 'reason': auth_vals}
 
+
+@app.route("/admin_users", methods=["GET", "POST"])
+def admin_users():
+    auth_criteria = {
+        'is_admin': True,
+        'role': [
+            'Global Admin',
+            'User Account Admin'
+        ]
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        # POST Method
+        if request.method == "POST":
+            # Edit User Form Submission
+            existing_user = mongo.db.users.find_one(
+                {"user_id": request.form.get("orig_user_id").lower()},
+                {"_id": 1})
+
+            update_user = {
+                "user_id": request.form.get("user_id").lower(),
+                "email": request.form.get("email").lower(),
+                "locked": request.form.get("locked")
+            }
+
+            role = mongo.db.user_roles.find_one(
+                {"role": request.form.get("role")},
+                {"_id": 1})
+
+            # Only allow a Global Admin to add users to the
+            # Global Admin or User Account Admin roles
+            if (request.form.get("role") == "Global Admin" or
+                    request.form.get("role") == "User Account Admin"):
+                if auth_state['reason']['role'] == "Global Admin":
+                    update_user["role_id"] = ObjectId(role["_id"])
+                else:
+                    flash("Not Authorised to Add User to " +
+                          request.form.get("role") + " Role")
+            else:
+                update_user["role_id"] = ObjectId(role["_id"])
+
+            if request.form.get("pwd"):
+                update_user["pwd"] = generate_password_hash(
+                    request.form.get("pwd"))
+
+            mongo.db.users.update_one(
+                {"_id": existing_user["_id"]},
+                {"$set": update_user})
+
+            flash("User Details Updated")
+            return redirect(url_for("admin_users"))
+
+        # GET Method
+        global_admin = mongo.db.user_roles.find_one(
+            {"role": "Global Admin"},
+            {"_id": 1})['_id']
+
+        user_account_admin = mongo.db.user_roles.find_one(
+            {"role": "User Account Admin"},
+            {"_id": 1})['_id']
+
+        user_data_query = [{
+                '$match': {
+                    'role_id': {
+                        '$nin': [
+                            ObjectId(global_admin),
+                            ObjectId(user_account_admin)
+                        ]
+                    }
+                }
+            }, {
+                '$lookup': {
+                    'from': 'user_roles',
+                    'localField': 'role_id',
+                    'foreignField': '_id',
+                    'as': 'role_details'
+                }
+            }, {
+                '$replaceRoot': {
+                    'newRoot': {
+                        '$mergeObjects': [{
+                            '$arrayElemAt': [
+                                '$role_details', 0
+                            ]
+                        }, '$$ROOT']
+                    }
+                }
+            }, {
+                '$lookup': {
+                    'from': 'role_groups',
+                    'localField': 'role_group_id',
+                    'foreignField': '_id',
+                    'as': 'role_group_details'
+                }
+            }, {
+                '$replaceRoot': {
+                    'newRoot': {
+                        '$mergeObjects': [{
+                            '$arrayElemAt': [
+                                '$role_group_details', 0
+                            ]
+                        }, '$$ROOT']
+                    }
+                }
+            }, {
+                '$project': {
+                    'role_group_details': 0,
+                    'role_details': 0,
+                    '_id': 0,
+                    'role_group_id': 0,
+                    'role_id': 0,
+                    'pwd': 0
+                }
+            }, {
+                '$sort': {
+                    'role_group': 1,
+                    'role': 1,
+                    'user_id': 1
+                }
+            }, {
+                '$facet': {
+                    'roles': [{
+                        '$group': {
+                            '_id': {
+                                'role': '$role',
+                                'group': '$role_group',
+                                'icon': '$role_icon',
+                                'desc': '$role_desc'
+                            },
+                            'member_count': {
+                                '$sum': 1
+                            }
+                        }
+                    }, {
+                        '$sort': {
+                            '_id.role': 1
+                        }
+                    }],
+                    'groups': [{
+                        '$group': {
+                            '_id': {
+                                'group': '$role_group',
+                                'icon': '$role_group_icon'
+                            },
+                            'member_count': {
+                                '$sum': 1
+                            }
+                        }
+                    }, {
+                        '$sort': {
+                            '_id.group': 1
+                        }
+                    }],
+                    'total_users': [{
+                        '$group': {
+                            '_id': 'null',
+                            'total': {
+                                '$sum': 1
+                            }
+                        }
+                    }]
+                }
+            }]
+
+        # If user is Global Admin, remove the Global Admin and
+        # User Account Admin role restrictions from the query
+        if auth_state['reason']['role'] == 'Global Admin':
+            user_data_query.pop(0)
+
+        user_data = list(mongo.db.users.aggregate(user_data_query))
+        user_roles = list()
+        role_groups = list()
+        total_users = int(user_data[0]['total_users'][0]['total'])
+
+        for role in user_data[0]['roles']:
+            user_roles.append({
+                'role': role['_id']['role'],
+                'role_group': role['_id']['group'],
+                'role_icon': role['_id']['icon'],
+                'role_desc': role['_id']['desc'],
+                'member_count': role['member_count']
+            })
+
+        for group in user_data[0]['groups']:
+            role_groups.append({
+                'role_group': group['_id']['group'],
+                'role_group_icon': group['_id']['icon'],
+                'member_count': group['member_count']
+            })
+
+        return render_template(
+            "admin_users.html",
+            user_roles=user_roles,
+            role_groups=role_groups
+        )
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("home"))
+
+
+# Return user, role membership and role group membership counts
+# Access restricted to Global Admin and User Account Admin.
+def getUserTotals():
+    auth_criteria = {
+        'is_admin': True,
+        'role': [
+            'Global Admin',
+            'User Account Admin'
+        ]
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        global_admin = mongo.db.user_roles.find_one(
+            {"role": "Global Admin"},
+            {"_id": 1})['_id']
+
+        user_account_admin = mongo.db.user_roles.find_one(
+            {"role": "User Account Admin"},
+            {"_id": 1})['_id']
+
+        query = [{
+            '$match': {
+                        'role_id': {
+                            '$nin': [
+                                ObjectId(global_admin),
+                                ObjectId(user_account_admin)
+                            ]
+                        }
+                    }
+                }, {
+            '$lookup': {
+                'from': 'user_roles',
+                'localField': 'role_id',
+                'foreignField': '_id',
+                'as': 'role_details'
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [{
+                        '$arrayElemAt': [
+                            '$role_details',
+                            0
+                        ]
+                    }, '$$ROOT']
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'role_groups',
+                'localField': 'role_group_id',
+                'foreignField': '_id',
+                'as': 'role_group_details'
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [{
+                        '$arrayElemAt': [
+                            '$role_group_details',
+                            0
+                        ]
+                    }, '$$ROOT']
+                }
+            }
+        }, {
+            '$project': {
+                'role_group_details': 0,
+                'role_group_icon': 0,
+                'role_details': 0,
+                'role_icon': 0,
+                '_id': 0,
+                'role_group_id': 0,
+                'role_id': 0,
+                'pwd': 0
+            }
+        }, {
+            '$sort': {
+                'role_group': 1,
+                'role': 1,
+                'user_id': 1
+            }
+        }, {
+            '$facet': {
+                'roles': [{
+                    '$group': {
+                        '_id': {
+                            'role': '$role',
+                            'group': '$role_group',
+                            'desc': '$role_desc'
+                        },
+                        'member_count': {
+                            '$sum': 1
+                        }
+                    }
+                }, {
+                    '$sort': {
+                        '_id.role': 1
+                    }
+                }],
+                'groups': [{
+                    '$group': {
+                        '_id': {
+                            'group': '$role_group'
+                        },
+                        'member_count': {
+                            '$sum': 1
+                        }
+                    }
+                }, {
+                    '$sort': {
+                        '_id.group': 1
+                    }
+                }],
+                'total_users': [{
+                    '$group': {
+                        '_id': 'null',
+                        'total': {
+                            '$sum': 1
+                        }
+                    }
+                }]
+            }
+        }]
+
+        # If user is Global Admin, remove the Global Admin and
+        # User Account Admin role restrictions from the query
+        if auth_state['reason']['role'] == 'Global Admin':
+            query.pop(0)
+
+        data = list(mongo.db.users.aggregate(query))[0]
+        user_roles = list()
+        role_groups = list()
+
+        for role in data['roles']:
+            user_roles.append({
+                'role': role['_id']['role'],
+                'role_group': role['_id']['group'],
+                'role_desc': role['_id']['desc'],
+                'member_count': role['member_count']
+            })
+
+        for group in data['groups']:
+            role_groups.append({
+                'role_group': group['_id']['group'],
+                'member_count': group['member_count']
+            })
+
+        results = {
+            'user_roles': user_roles,
+            'role_groups': role_groups,
+            'total_users': data['total_users'][0]['total']
+        }
+
+        return results
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+
+
+# Get Users
+# Return batch of 10 users for specified role group.
+# Access restricted to Global Admin and User Account Admin.
+@app.route("/getUsers")
+def getUsers():
+    auth_criteria = {
+        'is_admin': True,
+        'role': [
+            'Global Admin',
+            'User Account Admin'
+        ]
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        # Get Batch of 10 Users
+        page = int(request.args.get('page'))
+        role = request.args.get('role')
+        limit = 10
+        print('PAGE: ' + str(page))
+        print('ROLE: ' + role)
+        print('LIMIT: ' + str(limit))
+
+        user_role_id = (mongo.db.user_roles.find_one(
+            {'role': role},
+            {'_id': 1}
+        ))['_id']
+
+        totals = getUserTotals()
+
+        for user_role in totals['user_roles']:
+            if user_role['role'] == role:
+                member_count = user_role['member_count']
+                break
+
+        # Calculate total pages based on:
+        #   total role membership / number of returned records
+        # member_count // limit
+        #   divide number of members by the page limit, returning an integer
+        #   (floor division)
+        # member_count % limit > 0
+        #   if remainder of member_count / limit is greater than 0, add 1
+        #   (modulus operation, then if result > 0 return 1 (true))
+        total_pages = (member_count // limit) + (member_count % limit > 0)
+        print('TOTAL PAGES: ' + str(total_pages))
+
+        if (page > total_pages):
+            page = total_pages
+
+        skip = (page * limit) - limit
+        query = [{
+            '$match': {
+                'role_id': ObjectId(user_role_id)
+            }
+        }, {
+            '$lookup': {
+                'from': 'user_roles',
+                'localField': 'role_id',
+                'foreignField': '_id',
+                'as': 'role_details'
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [{
+                        '$arrayElemAt': [
+                            '$role_details',
+                            0
+                        ]
+                    }, '$$ROOT']
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'role_groups',
+                'localField': 'role_group_id',
+                'foreignField': '_id',
+                'as': 'role_group_details'
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [{
+                        '$arrayElemAt': [
+                            '$role_group_details',
+                            0
+                        ]
+                    }, '$$ROOT']
+                }
+            }
+        }, {
+            '$project': {
+                'role_group_details': 0,
+                'role_group_icon': 0,
+                'role_details': 0,
+                'role_desc': 0,
+                '_id': 0,
+                'role_group_id': 0,
+                'role_id': 0,
+                'pwd': 0
+            }
+        }, {
+            '$sort': {
+                'role_group': 1,
+                'role': 1,
+                'user_id': 1
+            }
+        }, {
+            '$skip': skip
+        }, {
+            '$limit': limit
+        }]
+
+        user_data = list(mongo.db.users.aggregate(query))
+        # print(user_data)
+
+        html = '<ul class="collection">'
+        for user in user_data:
+            html += '<li class="collection-item avatar">'
+            html += '<ul><li><h6><i class="fas '
+            html += user['role_icon']['class'] + ' fa-fw"></i>'
+            html += '<span class="title">' + user['user_id']
+            html += '</span></h6></li><li><h6>'
+            html += '<a href="mailto:' + user['email'] + '">'
+            html += '<i class="fas fa-envelope fa-fw"></i><span class="title">'
+            html += user['email'] + '</span></a></h6></li></ul>'
+            html += '<a class="secondary-content light-blue-text '
+            html += 'text-darken-4  modal-trigger" href="#editUserModal" '
+            html += 'onclick="popModal(\'' + user['user_id'] + '\')">'
+            if (user['locked']):
+                html += '<i class="red-text text-darken-4 fas fa-lock fa-fw">'
+                html += '</i>'
+            else:
+                html += '<i class="fas fa-unlock fa-fw"></i>'
+            html += '<i class="fas fa-user-edit"></i></a></li>'
+        html += '</ul>'
+
+        results = {
+            'request': {
+                'role': role,
+                'currentPage': page,
+                'totalPages': total_pages
+            },
+            'totals': {
+                'user_roles': totals['user_roles'],
+                'role_groups': totals['role_groups']
+            },
+            'html': html,
+            'user_data': user_data
+        }
+
+        return results
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
     flash("Permission Denied")
     return redirect(url_for("home"))
 
