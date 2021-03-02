@@ -12,10 +12,10 @@ function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
 
 // eslint-disable-next-line no-unused-vars
 function createRoleArray(pyList) {
-    console.log(pyList);
     let roleArr = [];
     pyList.forEach(function (obj) {
         roleArr.push({"role": obj.role,
+            "member_count": obj.member_count,
             "role_icon": obj.role_icon.class});
     });
     return roleArr;
@@ -26,6 +26,7 @@ function getRole(roleId) {
     roleList.forEach(function (role) {
         if (role.role === roleId) {
             result = {"role": role.role,
+                "member_count": role.member_count,
                 "role_icon": role.role_icon};
             return true; //Stop iterating when we find the specified role
         }
@@ -35,7 +36,6 @@ function getRole(roleId) {
 
 // eslint-disable-next-line no-unused-vars
 function createUserArray(pyList) {
-    console.log(pyList);
     let usrArr = [];
     pyList.forEach(function (obj) {
         usrArr.push({"user_id": obj.user_id,
@@ -119,7 +119,6 @@ function modalCreateListeners() {
         modalUserLockedToggleIcon();
     });
 
-
     $("#modalChangePasswordInput").on("change", function() {
         modalChangePasswordToggle();
     });
@@ -201,7 +200,6 @@ function modalValidate() {
     let valid = modalPWordValidation("modalChangePasswordInput",
                                      "modalUserPwd",
                                      "modalUserCpwd");
-    console.log(valid);
     if (valid === true) {
         modalStopListeners();
         return true;
