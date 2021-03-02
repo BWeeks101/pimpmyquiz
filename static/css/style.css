@@ -184,6 +184,17 @@ form .user-search .search-radio-row {
     border-color: #01579b;
 }
 
+.search-no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-no-results h6 {
+    margin: 0;
+}
+
 /* MaterializeCSS Spinner Style Overrides */
 .spinner-layer {
     border-color: #01579b;
