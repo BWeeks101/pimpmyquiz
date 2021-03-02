@@ -533,6 +533,157 @@ def getUserTotals():
     print(auth_state['reason'])
 
 
+# User Search
+# Access restricted to Global Admin and User Account Admin.
+@app.route("/userSearch")
+def userSearch():
+    auth_criteria = {
+        'is_admin': True,
+        'role': [
+            'Global Admin',
+            'User Account Admin'
+        ]
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        page = int(request.args.get('page'))
+        searchStr = request.args.get('searchStr')
+        limit = 10
+        skip = (page * limit) - limit
+        searchQuery = [{
+            "$search": {
+                "wildcard": {
+                    "query": request.args.get('searchStr'),
+                    "path": ["user_id", "email"],
+                    "allowAnalyzedField": True
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'user_roles',
+                'localField': 'role_id',
+                'foreignField': '_id',
+                'as': 'role_details'
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [{
+                        '$arrayElemAt': [
+                            '$role_details',
+                            0
+                        ]
+                    }, '$$ROOT']
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'role_groups',
+                'localField': 'role_group_id',
+                'foreignField': '_id',
+                'as': 'role_group_details'
+            }
+        }, {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [{
+                        '$arrayElemAt': [
+                            '$role_group_details',
+                            0
+                        ]
+                    }, '$$ROOT']
+                }
+            }
+        }, {
+            '$facet': {
+                'results': [{
+                    '$project': {
+                        'role_group_details': 0,
+                        'role_group_icon': 0,
+                        'role_details': 0,
+                        'role_desc': 0,
+                        '_id': 0,
+                        'role_group_id': 0,
+                        'role_id': 0,
+                        'pwd': 0
+                    }
+                }, {
+                    '$sort': {
+                        'role_group': 1,
+                        'role': 1,
+                        'user_id': 1
+                    }
+                }, {
+                    '$skip': skip
+                }, {
+                    '$limit': limit
+                }],
+                'total_results': [{
+                    '$group': {
+                        '_id': 'null',
+                        'total': {
+                            '$sum': 1
+                        }
+                    }
+                }]
+            }
+        }]
+        user_data = list(mongo.db.users.aggregate(searchQuery))
+        total_users = int(user_data[0]['total_results'][0]['total'])
+
+        # Calculate total pages based on:
+        #   total users / number of returned records
+        # total_users // limit
+        #   divide number of users by the page limit, returning an integer
+        #   (floor division)
+        # total_users % limit > 0
+        #   if remainder of total_users / limit is greater than 0, add 1
+        #   (modulus operation, then if result > 0 return 1 (true))
+        total_pages = (total_users // limit) + (total_users % limit > 0)
+
+        html = '<ul class="collection">'
+        for user in user_data[0]['results']:
+            html += '<li class="collection-item avatar">'
+            html += '<ul><li><h6><i class="fas '
+            html += user['role_icon']['class'] + ' fa-fw"></i>'
+            html += '<span class="title">' + user['user_id']
+            html += '</span></h6></li><li><h6>'
+            html += '<a href="mailto:' + user['email'] + '">'
+            html += '<i class="fas fa-envelope fa-fw"></i><span class="title">'
+            html += user['email'] + '</span></a></h6></li></ul>'
+            html += '<a class="secondary-content light-blue-text '
+            html += 'text-darken-4  modal-trigger" href="#editUserModal" '
+            html += 'onclick="popModal(\'' + user['user_id'] + '\')">'
+            if (user['locked']):
+                html += '<i class="red-text text-darken-4 fas fa-lock fa-fw">'
+                html += '</i>'
+            else:
+                html += '<i class="fas fa-unlock fa-fw"></i>'
+            html += '<i class="fas fa-user-edit"></i></a></li>'
+        html += '</ul>'
+
+        results = {
+            'request': {
+                'search': searchStr,
+                'currentPage': page,
+                'totalPages': total_pages
+            },
+            'total_results': total_users,
+            'type': 'userSearch',
+            'html': html,
+            'user_data': user_data
+        }
+
+        return results
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("home"))
+
+
 # Get Users
 # Return batch of 10 users for specified role group.
 # Access restricted to Global Admin and User Account Admin.
@@ -672,6 +823,7 @@ def getUsers():
         html += '</ul>'
 
         results = {
+            'type': 'getUsers',
             'request': {
                 'role': role,
                 'currentPage': page,
