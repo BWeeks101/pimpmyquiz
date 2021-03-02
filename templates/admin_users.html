@@ -103,57 +103,38 @@
     <!-- Collapsible Content -->
     <h3 class="light-blue-text text-darken-4 center-align">Manage Users</h3>
     <div class="row">
-        <div class="col s12">    
-            <ul class="collapsible light-blue-text text-darken-4">
+        <div class="col s12">
+            <ul class="collapsible collapsible-role-groups light-blue-text text-darken-4">
                 {% for role_group in role_groups %}
                 <li>
                     {% if role_group.member_count == 0 %}
-                        <div class="collapsible-header grey-text text-lighten-1">
+                        <div class="dummy-collapsible-header grey-text text-lighten-1" data-role-group="{{ role_group.role_group }}">
                     {% else %}
-                        <div class="collapsible-header">
+                        <div class="collapsible-header" data-role-group="{{ role_group.role_group }}">
                     {% endif %}
-                            <i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i>{{ role_group.role_group }} ({{ role_group.member_count }})</div>
+                            <i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role_group.role_group }} (<span>{{ role_group.member_count }}</span>)</span></div>
                     <div class="collapsible-body">
-                        <ul class="collapsible">
+                        <ul class="collapsible collapsible-user-roles">
                             {% for role in user_roles if role.role_group == role_group.role_group %}
                                 <li>
                                     {% if role.member_count == 0 %}
-                                        <div class="dummy-collapsible-header grey-text text-lighten-1"><i class="fas {{ role.role_icon }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>
+                                        <div class="dummy-collapsible-header grey-text text-lighten-1" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role.role_desc }} (<span>{{ role.member_count }}</span>)<span></div>
                                     {% else %}
-                                        <div class="collapsible-header" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i>{{ role.role_desc }} ({{ role.member_count }})</div>                                    
+                                        <div class="collapsible-header" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role.role_desc }} (<span>{{ role.member_count }}</span>)<span></div>
                                         <div class="collapsible-body">                                        
                                             <ul class="collapsible">
-                                                <ul class="collection">                                                    
-                                                    {% for user in users if user.role == role.role %}                                                        
-                                                        <li class="collection-item avatar">
-                                                            <ul>
-                                                                <li>
-                                                                    <h6>
-                                                                    <i class="fas {{ role.role_icon["class"] }} fa-fw"></i>
-                                                                    <span class="title">{{ user.user_id|capitalize }}</span>                                                    
-                                                                    </h6>
-                                                                </li>
-
-                                                                <li>
-                                                                    <h6>
-                                                                        <a href="mailto:{{ user.email }}">
-                                                                            <i class="fas fa-envelope fa-fw"></i>
-                                                                            <span class="title">{{ user.email }}</span>                                                    
-                                                                        </a>
-                                                                    </h6>
-                                                                </li>
-                                                            </ul>                                                                                                                
-                                                            <a class="secondary-content light-blue-text text-darken-4 modal-trigger" href="#editUserModal" onclick="popModal('{{ user.user_id }}')">
-                                                                {% if user.locked %}
-                                                                    <i class="red-text text-darken-4 fas fa-lock fa-fw"></i>
-                                                                {% else %}
-                                                                    <i class="fas fa-unlock fa-fw"></i>
-                                                                {% endif %}
-                                                                <i class="fas fa-user-edit"></i>
-                                                            </a>                                                    
-                                                        </li>
-                                                    {% endfor %}                                                
-                                                </ul>
+                                                <div class="results-control">
+                                                    <a href="#" onclick="getRecord('first', this);">First</a>
+                                                    <a href="#" onclick="getRecord('prev', this);">Prev</a>
+                                                    <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
+                                                    <span>of</span>
+                                                    <span class="totalPages"></span>
+                                                    <a href="#" onclick="getRecord('next', this);">Next</a>
+                                                    <a href="#" onclick="getRecord('last', this);">Last</a>
+                                                </div>                                                    
+                                                <div class="results-data">
+                                                    <!--returned records go here-->
+                                                </div>
                                             </ul>                                        
                                         </div>
                                     {% endif %}
@@ -171,8 +152,7 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/editusers.js') }}"></script>
 <script>
-    // Convert mongoDB data to JS global arrays for use in this template
-    let userList = createUserArray({{ users | tojson }});
+    // Convert mongoDB data to JS global array for use in this template
     let roleList = createRoleArray({{ user_roles | tojson }});
 </script>
 {% endblock %}
