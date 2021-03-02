@@ -32,9 +32,7 @@ function addRecordPositions(obj) {
         }
     } else if ('search' in obj) {
         userSearchPositions = {
-            'search': obj.search,
-            'totalPages': 1,
-            'currentPage': 1
+            'search': obj.search
         };
 
         if ('totalPages' in obj) {
@@ -92,8 +90,8 @@ function updateRecordControls(elem, key) {
     let prev = first.nextElementSibling;
     let pageNumberInput = rowControls.querySelector('input.pageNumber');
     let totalPagesSpan = rowControls.querySelector('span.totalPages');
-    let next = rowControls.lastElementChild;
-    let last = next.previousElementSibling;
+    let last = rowControls.lastElementChild;
+    let next = last.previousElementSibling;
     let record;
     if ('role' in key) {
         record = getRecordPosition({'role': key.role});
@@ -105,19 +103,35 @@ function updateRecordControls(elem, key) {
     }
     let currentPage = record.currentPage;
     let totalPages = record.totalPages;
+    if (totalPages > 0) {
+        if (rowControls.classList.contains('hidden')) {
+            rowControls.classList.remove('hidden');
+        }
+    } else if (totalPages === 0 && !rowControls.classList.contains('hidden')) {
+        rowControls.classList.add('hidden');
+    }
 
     pageNumberInput.value = currentPage;
-    totalPagesSpan.innerHTML = totalPages;
+    if (totalPages !== undefined) {
+        totalPagesSpan.innerHTML = totalPages;
+    }
 
     if (Number(currentPage) === 1) {
         first.classList.add('grey-text');
         first.classList.add('text-lighten-1');
         prev.classList.add('grey-text');
         prev.classList.add('text-lighten-1');
-        next.classList.remove('grey-text');
-        next.classList.remove('text-lighten-1');
-        last.classList.remove('grey-text');
-        last.classList.remove('text-lighten-1');
+        if (totalPages > currentPage) {
+            next.classList.remove('grey-text');
+            next.classList.remove('text-lighten-1');
+            last.classList.remove('grey-text');
+            last.classList.remove('text-lighten-1');
+        } else {
+            next.classList.add('grey-text');
+            next.classList.add('text-lighten-1');
+            last.classList.add('grey-text');
+            last.classList.add('text-lighten-1');
+        }
     } else if (currentPage < totalPages) {
         first.classList.remove('grey-text');
         first.classList.remove('text-lighten-1');
@@ -460,7 +474,8 @@ function getSelectedRecord(elem, key, pageNum) {
 
 // eslint-disable-next-line no-unused-vars
 function getSearchResults(self) {
-    let value = $('#userSearch')[0].value;
+    let value = self.parentElement.previousElementSibling.
+        firstElementChild.querySelector('input').value;
     if (value === "" || value === undefined || value.len < 2) {
         return;
     }
@@ -476,8 +491,6 @@ function getSearchResults(self) {
         'search': request.params.searchStr,
         'currentPage': 1
     });
-    self.parentElement.nextElementSibling.firstElementChild.
-        classList.remove('hidden');
     xHttpRequest(request, $('#userSearchResults')[0]);
 }
 
