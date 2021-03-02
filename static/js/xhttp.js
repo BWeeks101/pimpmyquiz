@@ -460,8 +460,8 @@ function getSelectedRecord(elem, key, pageNum) {
 
 // eslint-disable-next-line no-unused-vars
 function getSearchResults(self) {
-    let value = $('#userSearchResults')[0].value;
-    if (value === "" || value === undefined || value.len() < 2) {
+    let value = $('#userSearch')[0].value;
+    if (value === "" || value === undefined || value.len < 2) {
         return;
     }
     let request = {
