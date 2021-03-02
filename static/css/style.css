@@ -54,7 +54,7 @@ nav .fa-caret-down {
     max-width: 512px;
 }
 
-form .modal-content .row {
+form .modal-content .row, form .user-search .row {
     margin-bottom: 10px;
 }
 
@@ -71,8 +71,12 @@ form .modal-content .row {
     margin-top: -.5rem;  
 }
 
-form .modal-content .input-field {
+form .modal-content .input-field, form .user-search .input-field {
     margin-bottom: 0;
+}
+
+form .user-search .search-radio-row {
+    margin: 0;
 }
 
 .checkbox-container {
@@ -117,11 +121,11 @@ form .modal-content .input-field {
     border-bottom: 2px solid #01579b;
 }
 
-.modal-action-container, .form-action-container {
+.modal-action-container, .search-action-container {
     margin-bottom: 0 !important;
 }
 
-.modal-action-container button, .modal-action-container button i {
+.modal-action-container button, .modal-action-container button i, .search-action-container button, .search-action-container button i {
     font-size: 1.2rem;
 }
 
