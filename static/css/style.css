@@ -111,13 +111,13 @@ form .modal-content .input-field {
     border: none;
 }
 
-/* Style the materialize checkbox color to match our primary font color */
+/* MaterializeCSS Checkbox Style Overrides */
 [type="checkbox"]:checked + span:not(.lever)::before {
     border-right: 2px solid #01579b;
     border-bottom: 2px solid #01579b;
 }
 
-.modal-action-container {
+.modal-action-container, .form-action-container {
     margin-bottom: 0 !important;
 }
 
@@ -148,4 +148,44 @@ form .modal-content .input-field {
 
 .select-wrapper input.select-dropdown:focus {
 	border-bottom: 1px solid #9e9e9e;
+}
+
+.results-control {
+    width: 100%;
+    text-align: center;
+}
+
+.results-control * {    
+    font-size: 1rem !important;
+}
+
+.results-control .pageNumber, .results-control .totalPages {
+    width: 2.35rem !important;
+    text-align: center !important;
+    display: inline-block;
+}
+
+.results-control .pageNumber {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid;
+    border-color: #9E9E9E;
+    padding: 0;
+    height: 3rem;
+    margin-bottom: 8px;
+}
+
+.results-control .pageNumber:focus {
+    border-color: #01579b;
+}
+
+/* MaterializeCSS Spinner Style Overrides */
+.spinner-layer {
+    border-color: #01579b;
+}
+
+.preloader-container {
+    width: 100%;
+    text-align: center;
 }
