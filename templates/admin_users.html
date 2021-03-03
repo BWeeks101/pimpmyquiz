@@ -2,12 +2,12 @@
 {% block content %}
     <!-- Modal Structure -->
     <div id="editUserModal" class="modal">
-        <form class="col s12" method="POST" action="">                                                                    
+        <form class="col s12" method="POST" action="">
             <div class="modal-content">
                 <!-- title and close button -->
                 <div class="modal-title-row row">
                     <div class="col s11">
-                        <h4 id="modalTitle">Edit User</h4>                        
+                        <h4 id="modalTitle">Edit User</h4>
                     </div>
                     <div class="col s1 modal-close-button">
                         <a class="modal-action modal-close light-blue-text text-darken-4" href="#">&times</a>
@@ -18,7 +18,7 @@
                     <div class="input-field col s12">
                         <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
                         <input id="modalUserId" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                        <label for="modalUserId" data-error="Invalid Username." data-default="User Id">User Id</label>                        
+                        <label for="modalUserId" data-error="Invalid Username." data-default="User Id">User Id</label>
                         <input id="modalOrigUserId" class="hidden" name="orig_user_id" type="text" value="">
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                         <select id="modalUserRole" name="role">
                             {% for role_group in role_groups %}
                             <optgroup label='<i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i> {{ role_group.role_group }}'>
-                                {% for role in user_roles if role.role_group == role_group.role_group %}                            
+                                {% for role in user_roles if role.role_group == role_group.role_group %}
                                 <optgroup label='<div class="subopt" onclick="modalOptionClick(this);"><i class="fas {{ role.role_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ role.role }}</span></div>'>
                                     <option value="{{ role.role }}">{{ role.role }}</option>
                                 </optgroup>
@@ -47,7 +47,7 @@
                         </select>
                         <label>User Role</label>
                     </div>
-                </div>                
+                </div>
                 <!-- locked -->
                 <div class="row">
                     <div class="input-field col s12 checkbox-container">
@@ -60,7 +60,7 @@
                 </div>
                 <!-- change password? -->
                 <div class="row">
-                    <div class="input-field col s12 checkbox-container no-icon no-bottom-margin">                                                                                    
+                    <div class="input-field col s12 checkbox-container no-icon no-bottom-margin">
                         <label id="modalChangePassword">
                             <input id="modalChangePasswordInput" type="checkbox"/>
                             <span>Change Password?</span>
@@ -76,7 +76,7 @@
                                 <div class="input-field col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
                                     <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
-                                    <label for="modalUserPwd" data-error="Invalid Password." data-default="Password">Password</label>                                    
+                                    <label for="modalUserPwd" data-error="Invalid Password." data-default="Password">Password</label>
                                 </div>
                             </div>
                             <!-- password confirmation -->
@@ -86,7 +86,7 @@
                                     <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
                                     <label for="modalUserCpwd" data-error="" data-default="Password Confirmation">Password Confirmation</label>
                                 </div>
-                            </div>                
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -133,7 +133,7 @@
                                     <span class="totalPages"></span>
                                     <a href="#" onclick="getRecord('next', this);">Next</a>
                                     <a href="#" onclick="getRecord('last', this);">Last</a>
-                                </div>                                                    
+                                </div>
                                 <div id="userSearchResults" class="results-data">
                                     <!--returned records go here-->
                                 </div>
@@ -159,7 +159,7 @@
                                         <div class="dummy-collapsible-header grey-text text-lighten-1" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role.role_desc }} (<span>{{ role.member_count }}</span>)<span></div>
                                     {% else %}
                                         <div class="collapsible-header" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role.role_desc }} (<span>{{ role.member_count }}</span>)<span></div>
-                                        <div class="collapsible-body">                                        
+                                        <div class="collapsible-body">
                                             <ul class="collapsible">
                                                 <div class="results-control">
                                                     <a href="#" onclick="getRecord('first', this);">First</a>
@@ -169,11 +169,11 @@
                                                     <span class="totalPages"></span>
                                                     <a href="#" onclick="getRecord('next', this);">Next</a>
                                                     <a href="#" onclick="getRecord('last', this);">Last</a>
-                                                </div>                                                    
+                                                </div>
                                                 <div class="results-data">
                                                     <!--returned records go here-->
                                                 </div>
-                                            </ul>                                        
+                                            </ul>
                                         </div>
                                     {% endif %}
                                 </li>
@@ -182,7 +182,7 @@
                     </div>
                 </li>
                 {% endfor %}
-            </ul>        
+            </ul>
         </div>
     </div>
 {% endblock %}
