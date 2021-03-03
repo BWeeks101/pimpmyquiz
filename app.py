@@ -684,7 +684,7 @@ def userSearch():
                 html += user['email'] + '</span></a></h6></li></ul>'
                 html += '<a class="secondary-content light-blue-text '
                 html += 'text-darken-4  modal-trigger" href="#editUserModal" '
-                html += 'onclick="popModal(\'' + user['user_id'] + '\')">'
+                html += 'onclick="modalPop(\'' + user['user_id'] + '\')">'
                 if (user['locked']):
                     html += '<i class="red-text text-darken-4 fas fa-lock '
                     html += 'fa-fw"></i>'
@@ -846,7 +846,7 @@ def getUsers():
             html += user['email'] + '</span></a></h6></li></ul>'
             html += '<a class="secondary-content light-blue-text '
             html += 'text-darken-4  modal-trigger" href="#editUserModal" '
-            html += 'onclick="popModal(\'' + user['user_id'] + '\')">'
+            html += 'onclick="modalPop(\'' + user['user_id'] + '\')">'
             if (user['locked']):
                 html += '<i class="red-text text-darken-4 fas fa-lock fa-fw">'
                 html += '</i>'
