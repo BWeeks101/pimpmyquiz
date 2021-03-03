@@ -654,6 +654,14 @@ function searchCreateListeners() {
     $("#userSearch").on("focusout", function () {
         inputHelperLabel("userSearch");
     });
+
+    $("#userSearch").on("keyup", function (e) {
+        if (e.key === "Enter") {
+            inputHelperLabel("userSearch");
+            getSearchResults($('#userSearch')[0].parentElement.parentElement.
+                nextElementSibling.firstElementChild);
+        }
+    });
 }
 
 searchCreateListeners();
