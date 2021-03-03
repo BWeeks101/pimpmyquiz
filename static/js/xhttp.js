@@ -173,7 +173,8 @@ function xHttpRenderResult(elem, result) {
                 }
                 memberCount = rGroup.member_count;
             });
-            target.innerHTML = `${roleGroup} (<span>${memberCount}</span>)`;
+            target.innerHTML = `${roleGroup}`;
+            target.nextElementSibling.innerHTML = `(${memberCount})`;
             i += 1;
         });
 
@@ -198,7 +199,8 @@ function xHttpRenderResult(elem, result) {
                 totalPages = Math.ceil(memberCount / 10);
                 addRecordPositions({'role': userRole, totalPages});
             });
-            target.innerHTML = `${userRoleDesc} (<span>${memberCount}</span>)`;
+            target.innerHTML = `${userRoleDesc}`;
+            target.nextElementSibling.innerHTML = `(${memberCount})`;
             i += 1;
         });
     }
