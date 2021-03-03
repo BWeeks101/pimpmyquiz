@@ -552,12 +552,30 @@ def userSearch():
         searchStr = request.args.get('searchStr')
         limit = 10
         skip = (page * limit) - limit
-        searchQuery = [{
+
+        global_admin = mongo.db.user_roles.find_one(
+            {"role": "Global Admin"},
+            {"_id": 1})['_id']
+
+        user_account_admin = mongo.db.user_roles.find_one(
+            {"role": "User Account Admin"},
+            {"_id": 1})['_id']
+
+        search_query = [{
             "$search": {
                 "wildcard": {
                     "query": request.args.get('searchStr'),
                     "path": ["user_id", "email"],
                     "allowAnalyzedField": True
+                }
+            }
+        }, {
+            '$match': {
+                'role_id': {
+                    '$nin': [
+                        ObjectId(global_admin),
+                        ObjectId(user_account_admin)
+                    ]
                 }
             }
         }, {
@@ -630,7 +648,13 @@ def userSearch():
                 }]
             }
         }]
-        user_data = list(mongo.db.users.aggregate(searchQuery))
+
+        # If user is Global Admin, remove the Global Admin and
+        # User Account Admin role restrictions from the query
+        if auth_state['reason']['role'] == 'Global Admin':
+            search_query.pop(1)
+
+        user_data = list(mongo.db.users.aggregate(search_query))
         total_users = 0
         if user_data[0]['total_results']:
             total_users = int(user_data[0]['total_results'][0]['total'])
