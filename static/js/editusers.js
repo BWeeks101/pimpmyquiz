@@ -62,7 +62,7 @@ function getUser(userId) {
     return result;
 }
 
-function modalHelperLabel (elem) {
+function inputHelperLabel (elem) {
     elem = "#" + elem;
     let label = `${elem} ~ label`;
     let labelText = $(label).data("default");
@@ -102,17 +102,17 @@ function modalChangePasswordToggle () {
 function modalCreateListeners() {
     $("#modalUserPwd").on("focusout", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
-        modalHelperLabel("modalUserPwd");
+        inputHelperLabel("modalUserPwd");
     });
 
     $("#modalUserPwd").on("keyup", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
-        modalHelperLabel("modalUserPwd");
+        inputHelperLabel("modalUserPwd");
     });
 
     $("#modalUserCpwd").on("keyup", function () {
         pWordValidation("modalUserPwd", "modalUserCpwd");
-        modalHelperLabel("modalUserCpwd");
+        inputHelperLabel("modalUserCpwd");
     });
 
     $("#modalUserLockedInput").on("change", function () {
@@ -124,11 +124,11 @@ function modalCreateListeners() {
     });
 
     $("#modalUserId").on("focusout", function () {
-        modalHelperLabel("modalUserId");
+        inputHelperLabel("modalUserId");
     });
 
     $("#modalUserEmail").on("focusout", function () {
-        modalHelperLabel("modalUserEmail");
+        inputHelperLabel("modalUserEmail");
     });
 }
 
