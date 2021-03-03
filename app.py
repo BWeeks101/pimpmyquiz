@@ -669,7 +669,7 @@ def userSearch():
         else:
             html += '<li class="collection-item avatar search-no-results">'
             html += '<ul><li><h6><i class="fas fa-info fa-fw"></i>'
-            html += '<span class="title">No Results.</span></h6></li>'
+            html += '<span class="title">No Results.</span></h6></li></ul>'
         html += '</ul>'
 
         results = {
