@@ -706,7 +706,7 @@ def userSearch():
             'total_results': total_users,
             'type': 'userSearch',
             'html': html,
-            'user_data': user_data
+            'user_data': user_data[0]['results']
         }
 
         return results
