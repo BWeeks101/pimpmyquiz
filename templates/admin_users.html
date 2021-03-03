@@ -150,15 +150,23 @@
                     {% else %}
                         <div class="collapsible-header" data-role-group="{{ role_group.role_group }}">
                     {% endif %}
-                            <i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role_group.role_group }} (<span>{{ role_group.member_count }}</span>)</span></div>
+                            <i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i>
+                            <span class="collapsible-header-text truncate">{{ role_group.role_group }}</span>&nbsp<span>({{ role_group.member_count }})</span>
+                        </div>
                     <div class="collapsible-body">
                         <ul class="collapsible collapsible-user-roles">
                             {% for role in user_roles if role.role_group == role_group.role_group %}
                                 <li>
                                     {% if role.member_count == 0 %}
-                                        <div class="dummy-collapsible-header grey-text text-lighten-1" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role.role_desc }} (<span>{{ role.member_count }}</span>)<span></div>
+                                        <div class="dummy-collapsible-header grey-text text-lighten-1" data-role="{{ role.role }}">
+                                            <i class="fas {{ role.role_icon["class"] }} fa-fw"></i>
+                                            <span class="collapsible-header-text truncate">{{ role.role_desc }}</span>&nbsp<span>({{ role.member_count }})</span>
+                                        </div>
                                     {% else %}
-                                        <div class="collapsible-header" data-role="{{ role.role }}"><i class="fas {{ role.role_icon["class"] }} fa-fw"></i><span class="collapsible-header-text">{{ role.role_desc }} (<span>{{ role.member_count }}</span>)<span></div>
+                                        <div class="collapsible-header" data-role="{{ role.role }}">
+                                            <i class="fas {{ role.role_icon["class"] }} fa-fw"></i>
+                                            <span class="collapsible-header-text truncate">{{ role.role_desc }}</span>&nbsp<span>({{ role.member_count }})</span>
+                                        </div>
                                         <div class="collapsible-body">
                                             <ul class="collapsible">
                                                 <div class="results-control">
