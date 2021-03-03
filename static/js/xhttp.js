@@ -1,4 +1,4 @@
-/* global getRole, createUserArray */
+/* global getRole, createUserArray, inputHelperLabel */
 
 let recordPositions = [];
 let userSearchPositions = {};
@@ -650,6 +650,13 @@ function getRecord(record, self) {
     }
 }
 
+function searchCreateListeners() {
+    $("#userSearch").on("focusout", function () {
+        inputHelperLabel("userSearch");
+    });
+}
+
+searchCreateListeners();
 listenToUserRoleCollapsibleHeaders();
 listenToUserSearchCollapsibleHeaders();
 listenToPageNumberInputs();
