@@ -10,6 +10,15 @@
     margin: 5px;
 }
 
+.collection-item.avatar h6.truncate {
+    padding-bottom: .25rem;
+    width: calc(100% - 35px);
+}
+
+.collapsible-header i.fa-fw {
+    min-width: 2rem;
+}
+
 .collapsible-header .col strong, .dummy-collapsible-header .col strong {
     margin: 5px;
     line-height: 42px;
