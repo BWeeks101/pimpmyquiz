@@ -534,6 +534,7 @@ def getUserTotals():
 
 
 # User Search
+# Return batch of 10 users for provided search criteria.
 # Access restricted to Global Admin and User Account Admin.
 @app.route("/userSearch")
 def userSearch():
