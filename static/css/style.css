@@ -2,6 +2,25 @@ body {
     min-width: 360px
 }
 
+nav .nav-title {
+    padding: 0 0 0 15px !important;
+}
+
+@media only screen and (max-width: 992px) {
+    nav .nav-wrapper {
+        text-align: center;
+    }
+
+    nav .nav-title {
+        padding: 0 !important;
+    }
+
+    nav .sidenav-trigger.right {
+        position: absolute;
+        right: 0;
+    }
+}
+
 .text-shadow {
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
