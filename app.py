@@ -674,16 +674,16 @@ def userSearch():
         if user_data[0]['results']:
             for user in user_data[0]['results']:
                 html += '<li class="collection-item avatar">'
-                html += '<ul><li><h6><i class="fas '
+                html += '<ul><li><h6 class="truncate"><i class="fas '
                 html += user['role_icon']['class'] + ' fa-fw"></i>'
                 html += '<span class="title">' + user['user_id']
-                html += '</span></h6></li><li><h6>'
+                html += '</span></h6></li><li><h6 class="truncate">'
                 html += '<a href="mailto:' + user['email'] + '">'
                 html += '<i class="fas fa-envelope fa-fw"></i>'
                 html += '<span class="title">'
                 html += user['email'] + '</span></a></h6></li></ul>'
                 html += '<a class="secondary-content light-blue-text '
-                html += 'text-darken-4  modal-trigger" href="#editUserModal" '
+                html += 'text-darken-4 modal-trigger" href="#editUserModal" '
                 html += 'onclick="modalPop(\'' + user['user_id'] + '\')">'
                 if (user['locked']):
                     html += '<i class="red-text text-darken-4 fas fa-lock '
@@ -693,8 +693,9 @@ def userSearch():
                 html += '<i class="fas fa-user-edit"></i></a></li>'
         else:
             html += '<li class="collection-item avatar search-no-results">'
-            html += '<ul><li><h6><i class="fas fa-info fa-fw"></i>'
-            html += '<span class="title">No Results.</span></h6></li></ul>'
+            html += '<ul><li><h6 class="truncate"><i class="fas fa-info '
+            html += 'fa-fw>"</i><span class="title">No Results.</span>'
+            html += '</h6></li></ul>'
         html += '</ul>'
 
         results = {
@@ -837,15 +838,15 @@ def getUsers():
         html = '<ul class="collection">'
         for user in user_data:
             html += '<li class="collection-item avatar">'
-            html += '<ul><li><h6><i class="fas '
+            html += '<ul><li><h6 class="truncate"><i class="fas '
             html += user['role_icon']['class'] + ' fa-fw"></i>'
             html += '<span class="title">' + user['user_id']
-            html += '</span></h6></li><li><h6>'
+            html += '</span></h6></li><li><h6 class="truncate">'
             html += '<a href="mailto:' + user['email'] + '">'
             html += '<i class="fas fa-envelope fa-fw"></i><span class="title">'
             html += user['email'] + '</span></a></h6></li></ul>'
             html += '<a class="secondary-content light-blue-text '
-            html += 'text-darken-4  modal-trigger" href="#editUserModal" '
+            html += 'text-darken-4 modal-trigger" href="#editUserModal" '
             html += 'onclick="modalPop(\'' + user['user_id'] + '\')">'
             if (user['locked']):
                 html += '<i class="red-text text-darken-4 fas fa-lock fa-fw">'
