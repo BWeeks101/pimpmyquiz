@@ -621,8 +621,24 @@ function listenToPageNumberInputs() {
     });
 }
 
+function listenToRecordControls() {
+    let recordControls = $(
+        ".results-control a"
+    );
+    let i = 0;
+    recordControls.each(function() {
+        recordControls[i].addEventListener("click", function(e) {
+            e.preventDefault();
+        });
+        i += 1;
+    });
+}
+
 // eslint-disable-next-line no-unused-vars
 function getRecord(record, self) {
+    if (self.classList.contains("grey-text")) {
+        return;
+    }
     let target = self.parentElement.nextElementSibling;
     let isSearch = self.parentElement.parentElement.
         parentElement.classList.contains('user-search');
@@ -666,6 +682,7 @@ function searchCreateListeners() {
     });
 }
 
+listenToRecordControls();
 searchCreateListeners();
 listenToUserRoleCollapsibleHeaders();
 listenToUserSearchCollapsibleHeaders();
