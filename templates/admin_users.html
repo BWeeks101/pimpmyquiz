@@ -38,7 +38,7 @@
                             {% for role_group in role_groups %}
                             <optgroup label='<i class="fas {{ role_group.role_group_icon["class"] }} fa-fw"></i> {{ role_group.role_group }}'>
                                 {% for role in user_roles if role.role_group == role_group.role_group %}
-                                <optgroup label='<div class="subopt" onclick="modalOptionClick(this);"><i class="fas {{ role.role_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ role.role }}</span></div>'>
+                                <optgroup label='<div class="subopt"><i class="fas {{ role.role_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ role.role }}</span></div>'>
                                     <option value="{{ role.role }}">{{ role.role }}</option>
                                 </optgroup>
                                 {% endfor %}
