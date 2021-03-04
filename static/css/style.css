@@ -35,7 +35,18 @@ nav .nav-title {
 
 .collection-item.avatar h6.truncate {
     padding-bottom: .25rem;
+}
+
+.collection-item.avatar:not(.search-no-results) h6.truncate {
     width: calc(100% - 35px);
+}
+
+.collection-item.avatar.search-no-results {
+    text-align: center;
+}
+
+.collection-item.avatar.search-no-results h6.truncate {
+    width: 100%;
 }
 
 .collapsible-header i.fa-fw {
