@@ -80,38 +80,32 @@ function modalValidate() {
 }
 
 function modalCreateListeners() {
-    $("#modalUserPwd").on("focusout", function () {
+    $("#modalUserPwd").on("focusout", () => {
         pWordValidation("modalUserPwd", "modalUserCpwd");
         inputHelperLabel("modalUserPwd");
     });
 
-    $("#modalUserPwd").on("keyup", function () {
+    $("#modalUserPwd").on("keyup", () => {
         pWordValidation("modalUserPwd", "modalUserCpwd");
         inputHelperLabel("modalUserPwd");
     });
 
-    $("#modalUserCpwd").on("keyup", function () {
+    $("#modalUserCpwd").on("keyup", () => {
         pWordValidation("modalUserPwd", "modalUserCpwd");
         inputHelperLabel("modalUserCpwd");
     });
 
-    $("#modalUserLockedInput").on("change", function () {
-        modalUserLockedToggleIcon();
-    });
+    $("#modalUserLockedInput").on("change", () => modalUserLockedToggleIcon());
 
-    $("#modalChangePasswordInput").on("change", function() {
-        modalChangePasswordToggle();
-    });
+    $("#modalChangePasswordInput").
+        on("change", () => modalChangePasswordToggle());
 
-    $("#modalUserId").on("focusout", function () {
-        inputHelperLabel("modalUserId");
-    });
+    $("#modalUserId").on("focusout", () => inputHelperLabel("modalUserId"));
 
-    $("#modalUserEmail").on("focusout", function () {
-        inputHelperLabel("modalUserEmail");
-    });
+    $("#modalUserEmail").
+        on("focusout", () => inputHelperLabel("modalUserEmail"));
 
-    $('#modalSubmitButton').on("click", function(e) {
+    $('#modalSubmitButton').on("click", (e) => {
         e.preventDefault();
         let validated = modalValidate();
         if (validated === true) {
