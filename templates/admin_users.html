@@ -196,9 +196,9 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/editusers.js') }}"></script>
-<script>
-    // Convert mongoDB data to JS global array for use in this template
-    let roleList = createRoleArray({{ user_roles | tojson }});
-</script>
+    <script src="{{ url_for('static', filename='js/editusers.js') }}"></script>
+    <script>
+        // Convert mongoDB data to JS global array for use in this template
+        let roleList = createRoleArray({{ user_roles | tojson }});
+    </script>
 {% endblock %}
