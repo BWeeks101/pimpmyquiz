@@ -10,7 +10,7 @@
                         <h4 id="modalTitle">Edit User</h4>
                     </div>
                     <div class="col s1 modal-close-button">
-                        <a class="modal-action modal-close light-blue-text text-darken-4" href="#">&times</a>
+                        <a id="modalClose" class="modal-action modal-close light-blue-text text-darken-4" href="#">&times</a>
                     </div>
                 </div>
                 <!-- username -->
@@ -92,7 +92,7 @@
                 </ul>
                 <!-- save changes -->
                 <div class="row modal-action-container">
-                    <button type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return modalValidate();">
+                    <button id="modalSubmitButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return modalValidate();">
                         Save Changes <i class="fas fa-user-check"></i>
                     </button>
                 </div>
