@@ -34,39 +34,6 @@ function modalChangePasswordToggle () {
     changePasswordCollapsible.close();
 }
 
-function modalCreateListeners() {
-    $("#modalUserPwd").on("focusout", function () {
-        pWordValidation("modalUserPwd", "modalUserCpwd");
-        inputHelperLabel("modalUserPwd");
-    });
-
-    $("#modalUserPwd").on("keyup", function () {
-        pWordValidation("modalUserPwd", "modalUserCpwd");
-        inputHelperLabel("modalUserPwd");
-    });
-
-    $("#modalUserCpwd").on("keyup", function () {
-        pWordValidation("modalUserPwd", "modalUserCpwd");
-        inputHelperLabel("modalUserCpwd");
-    });
-
-    $("#modalUserLockedInput").on("change", function () {
-        modalUserLockedToggleIcon();
-    });
-
-    $("#modalChangePasswordInput").on("change", function() {
-        modalChangePasswordToggle();
-    });
-
-    $("#modalUserId").on("focusout", function () {
-        inputHelperLabel("modalUserId");
-    });
-
-    $("#modalUserEmail").on("focusout", function () {
-        inputHelperLabel("modalUserEmail");
-    });
-}
-
 function modalStopListeners() {
     $("#modalUserId").off("focusout");
     $("#modalUserEmail").off("focusout");
@@ -75,61 +42,9 @@ function modalStopListeners() {
     $("#modalUserCpwd").off("keyup");
     $("#modalUserLockedInput").off("change");
     $("#modalChangePasswordInput").off("change");
+    $("#modalSubmitButton").off("click");
 }
 
-function modalGetUserRoleIconClass() {
-    let role = $('#modalUserRole')[0].value;
-    return getRole(role).role_icon;
-}
-
-function modalSetUserRoleIcon() {
-    let iconClass = modalGetUserRoleIconClass();
-    $('#modalUserRoleIcon').addClass(iconClass);
-}
-
-function modalClearUserRoleIcon() {
-    let iconClass = modalGetUserRoleIconClass();
-    $('#modalUserRoleIcon').removeClass(iconClass);
-}
-
-function modalSetInitialUserRoleSelectValue(role) {
-    modalClearUserRoleIcon();
-    let options = document.querySelectorAll(
-        '#modalUserRoleIcon ~ .select-wrapper ul li.optgroup-option');
-    options.forEach(function (option) {
-        if (option.innerText === role) {
-            option.click();
-            return true;
-        }
-    });
-    modalSetUserRoleIcon();
-}
-
-// eslint-disable-next-line no-unused-vars
-function modalPop(userId) {
-    let user = getUser(userId);
-    //$('#modalTitle').html(user.user_id);
-    $('#modalUserLockedInput')[0].checked = user.locked;
-    modalUserLockedToggleIcon();
-    $('#modalOrigUserId').val(user.user_id);
-    $('#modalUserEmail').val(user.email);
-    $('#modalUserEmail ~ label').addClass("active");
-    $('#modalUserId').val(user.user_id);
-    $('#modalUserId ~ label').addClass("active");
-    modalSetInitialUserRoleSelectValue(user.role);
-
-    modalCreateListeners();
-}
-
-// eslint-disable-next-line no-unused-vars
-function modalOptionClick(obj) {
-    modalClearUserRoleIcon();
-    obj.parentElement.parentElement.
-        nextElementSibling.firstElementChild.click();
-    modalSetUserRoleIcon();
-}
-
-// eslint-disable-next-line no-unused-vars
 function modalValidate() {
     let valid = modalPWordValidation("modalChangePasswordInput",
                                      "modalUserPwd",
@@ -167,12 +82,97 @@ function modalValidate() {
     return false;
 }
 
-$('#modalSubmitButton')[0].addEventListener("click", function(e) {
-    e.preventDefault();
-    let validated = modalValidate();
-    if (validated === true) {
-        $('#editUserModal form')[0].submit();
-    } else {
-        $('#modalClose')[0].click();
-    }
-});
+function modalCreateListeners() {
+    $("#modalUserPwd").on("focusout", function () {
+        pWordValidation("modalUserPwd", "modalUserCpwd");
+        inputHelperLabel("modalUserPwd");
+    });
+
+    $("#modalUserPwd").on("keyup", function () {
+        pWordValidation("modalUserPwd", "modalUserCpwd");
+        inputHelperLabel("modalUserPwd");
+    });
+
+    $("#modalUserCpwd").on("keyup", function () {
+        pWordValidation("modalUserPwd", "modalUserCpwd");
+        inputHelperLabel("modalUserCpwd");
+    });
+
+    $("#modalUserLockedInput").on("change", function () {
+        modalUserLockedToggleIcon();
+    });
+
+    $("#modalChangePasswordInput").on("change", function() {
+        modalChangePasswordToggle();
+    });
+
+    $("#modalUserId").on("focusout", function () {
+        inputHelperLabel("modalUserId");
+    });
+
+    $("#modalUserEmail").on("focusout", function () {
+        inputHelperLabel("modalUserEmail");
+    });
+
+    $('#modalSubmitButton')[0].addEventListener("click", function(e) {
+        e.preventDefault();
+        let validated = modalValidate();
+        if (validated === true) {
+            $('#editUserModal form')[0].submit();
+        } else {
+            $('#modalClose')[0].click();
+        }
+    });
+}
+
+function modalGetUserRoleIconClass() {
+    let role = $('#modalUserRole')[0].value;
+    return getRole(role).role_icon;
+}
+
+function modalSetUserRoleIcon() {
+    let iconClass = modalGetUserRoleIconClass();
+    $('#modalUserRoleIcon').addClass(iconClass);
+}
+
+function modalClearUserRoleIcon() {
+    let iconClass = modalGetUserRoleIconClass();
+    $('#modalUserRoleIcon').removeClass(iconClass);
+}
+
+// eslint-disable-next-line no-unused-vars
+function modalOptionClick(obj) {
+    modalClearUserRoleIcon();
+    obj.parentElement.parentElement.
+        nextElementSibling.firstElementChild.click();
+    modalSetUserRoleIcon();
+}
+
+function modalSetInitialUserRoleSelectValue(role) {
+    modalClearUserRoleIcon();
+    let options = document.querySelectorAll(
+        '#modalUserRoleIcon ~ .select-wrapper ul li.optgroup-option');
+    options.forEach(function (option) {
+        if (option.innerText === role) {
+            option.click();
+            return true;
+        }
+    });
+    modalSetUserRoleIcon();
+}
+
+// eslint-disable-next-line no-unused-vars
+function modalPop(userId) {
+    let user = getUser(userId);
+    //$('#modalTitle').html(user.user_id);
+    $('#modalUserLockedInput')[0].checked = user.locked;
+    modalUserLockedToggleIcon();
+    $('#modalOrigUserId').val(user.user_id);
+    $('#modalUserEmail').val(user.email);
+    $('#modalUserEmail ~ label').addClass("active");
+    $('#modalUserId').val(user.user_id);
+    $('#modalUserId ~ label').addClass("active");
+    modalSetInitialUserRoleSelectValue(user.role);
+
+    modalCreateListeners();
+}
