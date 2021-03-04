@@ -194,6 +194,13 @@ def admin_users():
                 "locked": request.form.get("locked")
             }
 
+            # Massage locked value into boolean
+            if update_user['locked'] is None:
+                update_user['locked'] = False
+
+            if update_user['locked'] == 'on':
+                update_user['locked'] = True
+
             role = mongo.db.user_roles.find_one(
                 {"role": request.form.get("role")},
                 {"_id": 1})
