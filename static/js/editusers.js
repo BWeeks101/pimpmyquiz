@@ -54,13 +54,13 @@ function modalValidate() {
         return true;
     }
 
-    let userObject = getUser($('#modalOrigUserId')[0].value);
+    let userObject = getUser($('#modalOrigUserId').val());
 
     let modalObject = {
-        "user_id": $('#modalUserId')[0].value,
-        "email": $('#modalUserEmail')[0].value,
-        "locked": $('#modalUserLockedInput')[0].checked,
-        "role": $('#modalUserRole')[0].value
+        "user_id": $('#modalUserId').val(),
+        "email": $('#modalUserEmail').val(),
+        "locked": $('#modalUserLockedInput').prop('checked'),
+        "role": $('#modalUserRole').val()
     };
 
     let match = true;
