@@ -138,5 +138,41 @@ function modalValidate() {
         modalStopListeners();
         return true;
     }
+
+    let userObject = getUser($('#modalOrigUserId')[0].value);
+
+    let modalObject = {
+        "user_id": $('#modalUserId')[0].value,
+        "email": $('#modalUserEmail')[0].value,
+        "locked": $('#modalUserLockedInput')[0].checked,
+        "role": $('#modalUserRole')[0].value
+    };
+
+    let match = true;
+    if (userObject.user_id !== modalObject.user_id) {
+        match = false;
+    } else if (userObject.email !== modalObject.email) {
+        match = false;
+    } else if (userObject.locked !== modalObject.locked) {
+        match = false;
+    } else if (userObject.role !== modalObject.role) {
+        match = false;
+    }
+
+    if (match === false) {
+        modalStopListeners();
+        return true;
+    }
+
     return false;
 }
+
+$('#modalSubmitButton')[0].addEventListener("click", function(e) {
+    e.preventDefault();
+    let validated = modalValidate();
+    if (validated === true) {
+        $('#editUserModal form')[0].submit();
+    } else {
+        $('#modalClose')[0].click();
+    }
+});
