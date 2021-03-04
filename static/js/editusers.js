@@ -159,14 +159,12 @@ function modalOptionClick(obj) {
 
 function modalSetInitialUserRoleSelectValue(role) {
     modalClearUserRoleIcon();
-    let options = document.querySelectorAll(
-        '#modalUserRoleIcon ~ .select-wrapper ul li.optgroup-option');
-    options.forEach(function (option) {
-        if (option.innerText === role) {
-            option.click();
-            return true;
-        }
-    });
+    let selector = '#modalUserRoleIcon ~ .select-wrapper ';
+    selector += 'ul li.optgroup-option';
+    Object.keys($(selector)).
+        map((key) => $(selector)[key]).
+        find((obj) => obj.innerText === role).
+        click();
     modalSetUserRoleIcon();
 }
 
