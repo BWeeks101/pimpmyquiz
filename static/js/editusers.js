@@ -111,12 +111,24 @@ function modalCreateListeners() {
         inputHelperLabel("modalUserEmail");
     });
 
-    $('#modalSubmitButton')[0].addEventListener("click", function(e) {
+    $('#modalSubmitButton').on("click", function(e) {
         e.preventDefault();
         let validated = modalValidate();
         if (validated === true) {
             $('#editUserModal form')[0].submit();
         } else {
+            if ($('section div.flashes')[0]) {
+                $('section div.flashes h4').html('Nothing to Update');
+            } else {
+                $('section').html(
+                    `<!--flash messages-->
+                    <div class="row flashes">
+                        <h4 class="light-blue lighten-4 center-align">
+                            Nothing to Update
+                        </h4>
+                    </div>`
+                );
+            }
             $('#modalClose')[0].click();
         }
     });
