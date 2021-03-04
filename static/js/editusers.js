@@ -135,7 +135,7 @@ function modalCreateListeners() {
 }
 
 function modalGetUserRoleIconClass() {
-    let role = $('#modalUserRole')[0].value;
+    let role = $('#modalUserRole').val();
     return getRole(role).role_icon;
 }
 
