@@ -171,8 +171,7 @@ function modalSetInitialUserRoleSelectValue(role) {
 // eslint-disable-next-line no-unused-vars
 function modalPop(userId) {
     let user = getUser(userId);
-    //$('#modalTitle').html(user.user_id);
-    $('#modalUserLockedInput')[0].checked = user.locked;
+    $('#modalUserLockedInput').prop('checked', user.locked);
     modalUserLockedToggleIcon();
     $('#modalOrigUserId').val(user.user_id);
     $('#modalUserEmail').val(user.email);
