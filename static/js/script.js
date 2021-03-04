@@ -1,3 +1,4 @@
+/*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global roleList, userList */
 
 /* ============================================ */
@@ -57,14 +58,14 @@ function createRoleArray(pyList) {
 // eslint-disable-next-line no-unused-vars
 function getRole(roleId) {
     let result = false;
-    roleList.forEach(function (role) {
-        if (role.role === roleId) {
-            result = {"role": role.role,
-                "member_count": role.member_count,
-                "role_icon": role.role_icon};
-            return true; //Stop iterating when we find the specified role
-        }
-    });
+    let record = roleList.find((role) => role.role === roleId);
+
+    if (record) {
+        result = {"role": record.role,
+            "member_count": record.member_count,
+            "role_icon": record.role_icon};
+    }
+
     return result;
 }
 
@@ -84,16 +85,16 @@ function createUserArray(pyList) {
 // eslint-disable-next-line no-unused-vars
 function getUser(userId) {
     let result = false;
-    userList.forEach(function (user) {
-        if (user.user_id === userId) {
-            result = {"user_id": user.user_id,
-                "email": user.email,
-                "locked": user.locked,
-                "group": user.group,
-                "role": user.role};
-            return true; //Stop iterating when we find the specified user
-        }
-    });
+    let record = userList.find((user) => user.user_id === userId);
+
+    if (record) {
+        result = {"user_id": record.user_id,
+            "email": record.email,
+            "locked": record.locked,
+            "group": record.group,
+            "role": record.role};
+    }
+
     return result;
 }
 
