@@ -64,13 +64,10 @@ function modalValidate() {
     };
 
     let match = true;
-    if (userObject.user_id !== modalObject.user_id) {
-        match = false;
-    } else if (userObject.email !== modalObject.email) {
-        match = false;
-    } else if (userObject.locked !== modalObject.locked) {
-        match = false;
-    } else if (userObject.role !== modalObject.role) {
+    if ((userObject.user_id !== modalObject.user_id) ||
+        (userObject.email !== modalObject.email) ||
+        (userObject.locked !== modalObject.locked) ||
+        (userObject.role !== modalObject.role)) {
         match = false;
     }
 
