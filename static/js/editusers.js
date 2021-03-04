@@ -37,11 +37,12 @@ function modalChangePasswordToggle () {
 function modalStopListeners() {
     $("#modalUserId").off("focusout");
     $("#modalUserEmail").off("focusout");
+    $(".select-wrapper ul li.optgroup span div.subopt").off("click");
+    $("#modalUserLockedInput").off("change");
+    $("#modalChangePasswordInput").off("change");
     $("#modalUserPwd").off("focusout");
     $("#modalUserPwd").off("keyup");
     $("#modalUserCpwd").off("keyup");
-    $("#modalUserLockedInput").off("change");
-    $("#modalChangePasswordInput").off("change");
     $("#modalSubmitButton").off("click");
 }
 
@@ -79,7 +80,40 @@ function modalValidate() {
     return false;
 }
 
+function modalGetUserRoleIconClass() {
+    let role = $('#modalUserRole').val();
+    return getRole(role).role_icon;
+}
+
+function modalSetUserRoleIcon() {
+    let iconClass = modalGetUserRoleIconClass();
+    $('#modalUserRoleIcon').addClass(iconClass);
+}
+
+function modalClearUserRoleIcon() {
+    let iconClass = modalGetUserRoleIconClass();
+    $('#modalUserRoleIcon').removeClass(iconClass);
+}
+
 function modalCreateListeners() {
+    $("#modalUserId").on("focusout", () => inputHelperLabel("modalUserId"));
+
+    $("#modalUserEmail").
+        on("focusout", () => inputHelperLabel("modalUserEmail"));
+
+    //modal user role select box
+    $(".select-wrapper ul li.optgroup span div.subopt").on("click", (e) => {
+        modalClearUserRoleIcon();
+        e.currentTarget.parentElement.parentElement.
+            nextElementSibling.firstElementChild.click();
+        modalSetUserRoleIcon();
+    });
+
+    $("#modalUserLockedInput").on("change", () => modalUserLockedToggleIcon());
+
+    $("#modalChangePasswordInput").
+    on("change", () => modalChangePasswordToggle());
+
     $("#modalUserPwd").on("focusout", () => {
         pWordValidation("modalUserPwd", "modalUserCpwd");
         inputHelperLabel("modalUserPwd");
@@ -94,16 +128,6 @@ function modalCreateListeners() {
         pWordValidation("modalUserPwd", "modalUserCpwd");
         inputHelperLabel("modalUserCpwd");
     });
-
-    $("#modalUserLockedInput").on("change", () => modalUserLockedToggleIcon());
-
-    $("#modalChangePasswordInput").
-        on("change", () => modalChangePasswordToggle());
-
-    $("#modalUserId").on("focusout", () => inputHelperLabel("modalUserId"));
-
-    $("#modalUserEmail").
-        on("focusout", () => inputHelperLabel("modalUserEmail"));
 
     $('#modalSubmitButton').on("click", (e) => {
         e.preventDefault();
@@ -126,29 +150,6 @@ function modalCreateListeners() {
             $('#modalClose')[0].click();
         }
     });
-}
-
-function modalGetUserRoleIconClass() {
-    let role = $('#modalUserRole').val();
-    return getRole(role).role_icon;
-}
-
-function modalSetUserRoleIcon() {
-    let iconClass = modalGetUserRoleIconClass();
-    $('#modalUserRoleIcon').addClass(iconClass);
-}
-
-function modalClearUserRoleIcon() {
-    let iconClass = modalGetUserRoleIconClass();
-    $('#modalUserRoleIcon').removeClass(iconClass);
-}
-
-// eslint-disable-next-line no-unused-vars
-function modalOptionClick(obj) {
-    modalClearUserRoleIcon();
-    obj.parentElement.parentElement.
-        nextElementSibling.firstElementChild.click();
-    modalSetUserRoleIcon();
 }
 
 function modalSetInitialUserRoleSelectValue(role) {
