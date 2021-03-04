@@ -92,7 +92,7 @@
                 </ul>
                 <!-- save changes -->
                 <div class="row modal-action-container">
-                    <button id="modalSubmitButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onsubmit="return modalValidate();">
+                    <button id="modalSubmitButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow">
                         Save Changes <i class="fas fa-user-check"></i>
                     </button>
                 </div>
@@ -120,19 +120,19 @@
                             </div>
                             <!-- search button -->
                             <div class="row search-action-container">
-                                <button type="submit" class="col s12 btn-large light-blue darken-4 text-shadow" onclick="getSearchResults(this)">
+                                <button id="searchButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow">
                                     Search <i class="fas fa-search"></i>
                                 </button>
                             </div>
                             <ul class="collapsible">
                                 <div class="results-control hidden">
-                                    <a href="#" onclick="getRecord('first', this);">First</a>
-                                    <a href="#" onclick="getRecord('prev', this);">Prev</a>
+                                    <a href="#" class="results-control-first">First</a>
+                                    <a href="#" class="results-control-prev">Prev</a>
                                     <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
                                     <span>of</span>
                                     <span class="totalPages"></span>
-                                    <a href="#" onclick="getRecord('next', this);">Next</a>
-                                    <a href="#" onclick="getRecord('last', this);">Last</a>
+                                    <a href="#" class="results-control-next">Next</a>
+                                    <a href="#" class="results-control-last">Last</a>
                                 </div>
                                 <div id="userSearchResults" class="results-data">
                                     <!--returned records go here-->
@@ -170,13 +170,13 @@
                                         <div class="collapsible-body">
                                             <ul class="collapsible">
                                                 <div class="results-control">
-                                                    <a href="#" onclick="getRecord('first', this);">First</a>
-                                                    <a href="#" onclick="getRecord('prev', this);">Prev</a>
+                                                    <a href="#" class="results-control-first">First</a>
+                                                    <a href="#" class="results-control-prev">Prev</a>
                                                     <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
                                                     <span>of</span>
                                                     <span class="totalPages"></span>
-                                                    <a href="#" onclick="getRecord('next', this);">Next</a>
-                                                    <a href="#" onclick="getRecord('last', this);">Last</a>
+                                                    <a href="#" class="results-control-next">Next</a>
+                                                    <a href="#" class="results-control-last">Last</a>
                                                 </div>
                                                 <div class="results-data">
                                                     <!--returned records go here-->
