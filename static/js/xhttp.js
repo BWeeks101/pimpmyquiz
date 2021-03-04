@@ -306,7 +306,6 @@ function getFirstRecord(elem, key) {
     xHttpRequest(request, elem);
 }
 
-// eslint-disable-next-line no-unused-vars
 function getLastRecord(elem, key) {
     let totalPages = getRecordPosition(key).totalPages;
     let currentPage = totalPages;
@@ -338,7 +337,6 @@ function getLastRecord(elem, key) {
     xHttpRequest(request, elem);
 }
 
-// eslint-disable-next-line no-unused-vars
 function getNextRecord(elem, key) {
     let record = getRecordPosition(key);
     let totalPages = record.totalPages;
@@ -374,7 +372,6 @@ function getNextRecord(elem, key) {
     xHttpRequest(request, elem);
 }
 
-// eslint-disable-next-line no-unused-vars
 function getPrevRecord(elem, key) {
     let currentPage = getRecordPosition(key).currentPage;
     if (currentPage > 1) {
@@ -474,7 +471,6 @@ function getSelectedRecord(elem, key, pageNum) {
     xHttpRequest(request, elem);
 }
 
-// eslint-disable-next-line no-unused-vars
 function getSearchResults(self) {
     let value = self.parentElement.previousElementSibling.
         firstElementChild.querySelector('input').value;
@@ -530,7 +526,6 @@ function listenToUserRoleCollapsibleHeaders() {
     });
 }
 
-// eslint-disable-next-line no-unused-vars
 function listenToUserSearchCollapsibleHeaders() {
     let searchHeaders = $(
         ".collapsible-search .collapsible-header"
