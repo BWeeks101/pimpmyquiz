@@ -662,10 +662,10 @@ def userSearch():
         if auth_state['reason']['role'] == 'Global Admin':
             search_query.pop(1)
 
-        user_data = list(mongo.db.users.aggregate(search_query))
+        user_data = list(mongo.db.users.aggregate(search_query))[0]
         total_users = 0
-        if user_data[0]['total_results']:
-            total_users = int(user_data[0]['total_results'][0]['total'])
+        if user_data['total_results']:
+            total_users = int(user_data['total_results'][0]['total'])
 
         # Calculate total pages based on:
         #   total users / number of returned records
@@ -677,33 +677,62 @@ def userSearch():
         #   (modulus operation, then if result > 0 return 1 (true))
         total_pages = (total_users // limit) + (total_users % limit > 0)
 
-        html = '<ul class="collection">'
-        if user_data[0]['results']:
-            for user in user_data[0]['results']:
-                html += '<li class="collection-item avatar">'
-                html += '<ul><li><h6 class="truncate"><i class="fas '
-                html += user['role_icon']['class'] + ' fa-fw"></i>'
-                html += '<span class="title">' + user['user_id']
-                html += '</span></h6></li><li><h6 class="truncate">'
-                html += '<a href="mailto:' + user['email'] + '">'
-                html += '<i class="fas fa-envelope fa-fw"></i>'
-                html += '<span class="title">'
-                html += user['email'] + '</span></a></h6></li></ul>'
-                html += '<a class="secondary-content light-blue-text '
-                html += 'text-darken-4 modal-trigger" href="#editUserModal" '
-                html += 'onclick="modalPop(\'' + user['user_id'] + '\')">'
+        html = '''
+                <ul class="collection">'''
+        if user_data['results']:
+            for user in user_data['results']:
+                iconClass = 'fas' + user['role_icon']['class'] + 'fa-fw'
+                userId = user['user_id']
+                email = user['email']
+                secClass = 'class="secondary-content light-blue-text '
+                secClass += 'text-darken-4 modal-trigger" '
+                secHref = 'href="#editUserModal" '
+                secOnClick = 'onclick="modalPop(\'' + userId + '\')"'
+                lockIconClass = '"red-text text-darken-4 fas fa-lock fa-fw"'
+                html += '''
+                    <li class="collection-item avatar">
+                        <ul>
+                            <li>
+                                <h6 class="truncate">
+                                    <i class="''' + iconClass + '''"></i>
+                                    <span class="title">
+                                        ''' + userId + '''
+                                    </span>
+                                </h6>
+                            </li>
+                            <li>
+                                <h6 class="truncate">
+                                    <a href="mailto:''' + email + '''">
+                                        <i class="fas fa-envelope fa-fw"></i>
+                                        <span class="title">
+                                            ''' + email + '''
+                                        </span>
+                                    </a>
+                                </h6>
+                            </li>
+                        </ul>
+                        <a ''' + secClass + secHref + secOnClick + '>'
                 if (user['locked']):
-                    html += '<i class="red-text text-darken-4 fas fa-lock '
-                    html += 'fa-fw"></i>'
+                    html += '''
+                            <i class=''' + lockIconClass + '''></i>'''
                 else:
-                    html += '<i class="fas fa-unlock fa-fw"></i>'
-                html += '<i class="fas fa-user-edit"></i></a></li>'
+                    html += '''
+                            <i class="fas fa-unlock fa-fw"></i>'''
+                html += '''
+                            <i class="fas fa-user-edit"></i>
+                        </a>
+                    </li>'''
         else:
-            html += '<li class="collection-item avatar search-no-results">'
-            html += '<ul><li><h6 class="truncate"><i class="fas fa-info '
-            html += 'fa-fw>"</i><span class="title">No Results.</span>'
-            html += '</h6></li></ul>'
-        html += '</ul>'
+            html += '''
+                    <li class="collection-item avatar search-no-results">
+                        <h6 class="truncate">
+                            <i class="fas fa-info fa-fw"></i>
+                            <span class="title">No Results.</span>
+                        </h6>
+                    </li>'''
+        html += '''
+                </ul>
+        '''
 
         results = {
             'request': {
@@ -714,7 +743,7 @@ def userSearch():
             'total_results': total_users,
             'type': 'userSearch',
             'html': html,
-            'user_data': user_data[0]['results']
+            'user_data': user_data['results']
         }
 
         return results
