@@ -104,7 +104,7 @@ function inputHelperLabel (elem) {
     let label = `${elem} ~ label`;
     let labelText = $(label).data("default");
     let labelColor = '';
-    if ($(elem)[0].classList.contains('invalid')) {
+    if ($(elem).hasClass('invalid')) {
         labelText = $(label).data("error");
         labelColor = "#F44336";
     }
