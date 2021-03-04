@@ -621,20 +621,6 @@ function listenToPageNumberInputs() {
     });
 }
 
-function listenToRecordControls() {
-    let recordControls = $(
-        ".results-control a"
-    );
-    let i = 0;
-    recordControls.each(function() {
-        recordControls[i].addEventListener("click", function(e) {
-            e.preventDefault();
-        });
-        i += 1;
-    });
-}
-
-// eslint-disable-next-line no-unused-vars
 function getRecord(record, self) {
     if (self.classList.contains("grey-text")) {
         return;
@@ -668,6 +654,33 @@ function getRecord(record, self) {
     }
 }
 
+function listenToRecordControls() {
+    let recordControls = $(
+        ".results-control a"
+    );
+    let i = 0;
+    recordControls.each(function() {
+        let self = recordControls[i];
+        let record;
+
+        if (self.classList.contains('results-control-first')) {
+            record = 'first';
+        } else if (self.classList.contains('results-control-prev')) {
+            record = 'prev';
+        } else if (self.classList.contains('results-control-next')) {
+            record = 'next';
+        } else if (self.classList.contains('results-control-last')) {
+            record = 'last';
+        }
+
+        self.addEventListener("click", function(e) {
+            e.preventDefault();
+            getRecord(record, self);
+        });
+        i += 1;
+    });
+}
+
 function searchCreateListeners() {
     $("#userSearch").on("focusout", function () {
         inputHelperLabel("userSearch");
@@ -679,6 +692,10 @@ function searchCreateListeners() {
             getSearchResults($('#userSearch')[0].parentElement.parentElement.
                 nextElementSibling.firstElementChild);
         }
+    });
+
+    $("#searchButton").on("click", function() {
+        getSearchResults($("#searchButton")[0]);
     });
 }
 
