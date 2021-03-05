@@ -1,3 +1,4 @@
+/*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global getRole, createUserArray, inputHelperLabel */
 
 let recordPositions = [];
@@ -545,68 +546,58 @@ function listenToUserSearchCollapsibleHeaders() {
 }
 
 function listenToPageNumberInputs() {
-    let pageNumberInputs = $('.results-control input.pageNumber');
-    let i = 0;
-    pageNumberInputs.each(function () {
-        let self = pageNumberInputs[i];
-        let totalRecordsSpan = self.nextElementSibling.nextElementSibling;
-
-        function listenerAction() {
-            let isSearch = self.parentElement.parentElement.
-                parentElement.classList.contains('user-search');
-            let role;
-            let key;
-            if (isSearch) {
-                key = {'search': userSearchPositions.search};
-            } else {
-                role = self.parentElement.parentElement.parentElement.
-                        previousElementSibling.getAttribute('data-role');
-                key = {role};
-            }
-            let pageNumber = Math.ceil(Number(self.value));
-            if (isNaN(pageNumber) || self.value === "") {
-                self.value = getRecordPosition(key).currentPage;
-                return;
-            }
-            let totalRecords = Number(totalRecordsSpan.innerHTML);
-            let target = self.parentElement.nextElementSibling;
-            if (pageNumber > totalRecords) {
-                pageNumber = totalRecords;
-            } else if (pageNumber < 1) {
-                pageNumber = 1;
-            }
-            self.value = pageNumber;
-            getSelectedRecord(target, key, pageNumber);
+    const listenerAction = (self) => {
+        let target = self.parentElement.nextElementSibling;
+        let isSearch = self.parentElement.parentElement.
+            parentElement.classList.contains('user-search');
+        let key;
+        if (isSearch) {
+            key = {'search': userSearchPositions.search};
+        } else {
+            key = {'role': self.parentElement.parentElement.parentElement.
+                previousElementSibling.getAttribute('data-role')};
         }
-
-        function listenerReset() {
-            let isSearch = self.parentElement.parentElement.
-                parentElement.classList.contains('user-search');
-            let role;
-            let key;
-            if (isSearch) {
-                key = {'search': userSearchPositions.search};
-            } else {
-                role = self.parentElement.parentElement.parentElement.
-                    previousElementSibling.getAttribute('data-role');
-                key = {role};
-            }
+        let totalRecords = Number(self.nextElementSibling.
+            nextElementSibling.innerHTML);
+        let pageNumber = Math.ceil(Number(self.value));
+        if (isNaN(pageNumber) || self.value === "") {
             self.value = getRecordPosition(key).currentPage;
+            return;
         }
 
-        pageNumberInputs[i].addEventListener('keyup', function (e) {
-            console.log(e.key);
-            if (e.key === "Enter") {
-                listenerAction();
-            } else if (e.key === "Escape") {
-                listenerReset();
-            }
-        });
-        pageNumberInputs[i].addEventListener('focusout', function () {
-            listenerReset();
-        });
-        i += 1;
+        if (pageNumber > totalRecords) {
+            pageNumber = totalRecords;
+        } else if (pageNumber < 1) {
+            pageNumber = 1;
+        }
+
+        self.value = pageNumber;
+        getSelectedRecord(target, key, pageNumber);
+    };
+
+    const listenerReset = (self) => {
+        let isSearch = self.parentElement.parentElement.
+            parentElement.classList.contains('user-search');
+        let key;
+        if (isSearch) {
+            key = {'search': userSearchPositions.search};
+        } else {
+            key = {'role': self.parentElement.parentElement.parentElement.
+            previousElementSibling.getAttribute('data-role')};
+        }
+        self.value = getRecordPosition(key).currentPage;
+    };
+
+    let pageNumberInputs = $('.results-control input.pageNumber');
+
+    pageNumberInputs.on('keyup', (e) => {
+        if (e.key === "Enter") {
+            listenerAction(e.currentTarget);
+        } else if (e.key === "Escape") {
+            listenerReset(e.currentTarget);
+        }
     });
+    pageNumberInputs.on('focusout', (e) => listenerReset(e.currentTarget));
 }
 
 function getRecord(record, self) {
