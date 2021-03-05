@@ -244,13 +244,13 @@ function xHttpRequest(requestObj, elem) {
     }
     let xhttp = new XMLHttpRequest();
 
-    function parseResult(self, elem) {
+    const parseResult = (self, elem) => {
         let result;
         if (self.readyState === 4 && self.status === 200) {
             result = JSON.parse(self.responseText);
             xHttpRenderResult(elem, result);
         }
-    }
+    };
 
     let request;
     if (typeof requestObj === 'string') {
@@ -260,7 +260,7 @@ function xHttpRequest(requestObj, elem) {
     }
     xhttp.open("GET", request, true);
     if (elem) {
-        xhttp.onreadystatechange = function () {
+        xhttp.onreadystatechange = () => {
             parseResult(xhttp, elem);
         };
     }
