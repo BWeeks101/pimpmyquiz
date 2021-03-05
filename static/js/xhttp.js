@@ -487,37 +487,17 @@ function getSearchResults(self) {
 }
 
 function listenToUserRoleCollapsibleHeaders() {
-    let roleHeaders = $(
-        ".collapsible-user-roles .collapsible-header[data-role]"
-    );
-    let i = 0;
-    roleHeaders.each(function() {
-        let idArr = roleHeaders[i].getAttribute('data-role').
-            toLowerCase().
-            split(" ");
-        let id = "userRoleCollapsible";
-        let idx = 0;
-        idArr.forEach(function() {
-            idArr[idx] = idArr[idx].
-                charAt(0).toUpperCase() + idArr[idx].slice(1);
-            id += idArr[idx];
-            idx += 1;
-        });
-        roleHeaders[i].setAttribute("id", id);
-
-        $(`#${id}`).on("click", function () {
-            let self = $(`#${id}`)[0];
-            let renderSelector = `#${id} ~ .collapsible-body `;
-            renderSelector += `.collapsible .results-data`;
-            let renderTarget = $(renderSelector)[0];
+    $(".collapsible-user-roles .collapsible-header[data-role]").
+        on("click", (e) => {
+            let self = e.currentTarget;
+            let selector = ".collapsible .results-data";
+            let target = self.nextElementSibling.querySelector(selector);
             let key;
             if (!self.parentElement.classList.contains("active")) {
                 key = {'role': self.getAttribute("data-role")};
-                getCurrentRecord(renderTarget, key);
+                getCurrentRecord(target, key);
             }
         });
-        i += 1;
-    });
 }
 
 function listenToUserSearchCollapsibleHeaders() {
