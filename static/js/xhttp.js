@@ -267,8 +267,7 @@ function xHttpRequest(requestObj, elem) {
     xhttp.send();
 }
 
-function getFirstRecord(elem, key) {
-    let currentPage = 1;
+function getRecordPage(elem, key, currentPage) {
     let addRecordObj;
     let request;
     if ('search' in key) {
@@ -286,105 +285,6 @@ function getFirstRecord(elem, key) {
         request = {
             'type':
                 'getUsers',
-            'params': {
-                'role': key.role,
-                'page': currentPage
-            }
-        };
-    }
-    addRecordPositions(addRecordObj);
-    updateRecordControls(elem, key);
-    xHttpRequest(request, elem);
-}
-
-function getLastRecord(elem, key) {
-    let totalPages = getRecordPosition(key).totalPages;
-    let currentPage = totalPages;
-    let addRecordObj;
-    let request;
-    if ('search' in key) {
-        addRecordObj = ({'search': key.search, currentPage});
-        request = {
-            'type':
-                'userSearch',
-            'params': {
-                'searchStr': key.search,
-                'page': currentPage
-            }
-        };
-    } else if ('role' in key) {
-        addRecordObj = {'role': key.role, currentPage};
-        request = {
-            'type':
-            'getUsers',
-            'params': {
-                'role': key.role,
-                'page': currentPage
-            }
-        };
-    }
-    addRecordPositions(addRecordObj);
-    updateRecordControls(elem, key);
-    xHttpRequest(request, elem);
-}
-
-function getNextRecord(elem, key) {
-    let record = getRecordPosition(key);
-    let totalPages = record.totalPages;
-    let currentPage = record.currentPage;
-    if (currentPage < totalPages) {
-        currentPage += 1;
-    }
-    let addRecordObj;
-    let request;
-    if ('search' in key) {
-        addRecordObj = ({'search': key.search, currentPage});
-        request = {
-            'type':
-                'userSearch',
-            'params': {
-                'searchStr': key.search,
-                'page': currentPage
-            }
-        };
-    } else if ('role' in key) {
-        addRecordObj = {'role': key.role, currentPage};
-        request = {
-            'type':
-            'getUsers',
-            'params': {
-                'role': key.role,
-                'page': currentPage
-            }
-        };
-    }
-    addRecordPositions(addRecordObj);
-    updateRecordControls(elem, key);
-    xHttpRequest(request, elem);
-}
-
-function getPrevRecord(elem, key) {
-    let currentPage = getRecordPosition(key).currentPage;
-    if (currentPage > 1) {
-        currentPage -= 1;
-    }
-    let addRecordObj;
-    let request;
-    if ('search' in key) {
-        addRecordObj = ({'search': key.search, currentPage});
-        request = {
-            'type':
-                'userSearch',
-            'params': {
-                'searchStr': key.search,
-                'page': currentPage
-            }
-        };
-    } else if ('role' in key) {
-        addRecordObj = {'role': key.role, currentPage};
-        request = {
-            'type':
-            'getUsers',
             'params': {
                 'role': key.role,
                 'page': currentPage
@@ -569,7 +469,7 @@ function listenToPageNumberInputs() {
     pageNumberInputs.on('focusout', (e) => listenerReset(e.currentTarget));
 }
 
-function getRecord(record, self) {
+function getRecord(option, self) {
     if (self.classList.contains("grey-text")) {
         return;
     }
@@ -585,21 +485,29 @@ function getRecord(record, self) {
             previousElementSibling.getAttribute("data-role");
         key = {role};
     }
+    let record = getRecordPosition(key);
+    let currentPage = record.currentPage;
+    let totalPages = record.totalPages;
 
-    switch (record) {
+    switch (option) {
     case 'first':
-        getFirstRecord(target, key);
+        currentPage = 1;
         break;
     case 'prev':
-        getPrevRecord(target, key);
+        if (currentPage > 1) {
+            currentPage -= 1;
+        }
         break;
     case 'next':
-        getNextRecord(target, key);
+        if (currentPage < totalPages) {
+            currentPage += 1;
+        }
         break;
     case 'last':
-        getLastRecord(target, key);
+        currentPage = totalPages;
         break;
     }
+    getRecordPage(target, key, currentPage);
 }
 
 function listenToRecordControls() {
