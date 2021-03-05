@@ -407,7 +407,7 @@ function getCurrentRecord(elem, key) {
                 'userSearch',
             'params': {
                 'searchStr': key.search,
-                'page': currentPage
+                'page': userSearchPositions.currentPage
             }
         };
     } else if ('role' in key) {
