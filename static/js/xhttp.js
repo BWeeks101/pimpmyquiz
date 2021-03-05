@@ -476,38 +476,35 @@ function getRecord(option, self) {
     let target = self.parentElement.nextElementSibling;
     let isSearch = self.parentElement.parentElement.
         parentElement.classList.contains('user-search');
-    let role;
     let key;
     if (isSearch) {
         key = {'search': userSearchPositions.search};
     } else {
-        role = self.parentElement.parentElement.parentElement.
-            previousElementSibling.getAttribute("data-role");
-        key = {role};
+        key = {'role': self.parentElement.parentElement.parentElement.
+            previousElementSibling.getAttribute("data-role")};
     }
     let record = getRecordPosition(key);
-    let currentPage = record.currentPage;
-    let totalPages = record.totalPages;
+    let page;
 
     switch (option) {
     case 'first':
-        currentPage = 1;
+        page = 1;
         break;
     case 'prev':
-        if (currentPage > 1) {
-            currentPage -= 1;
+        if (record.currentPage > 1) {
+            page = record.currentPage - 1;
         }
         break;
     case 'next':
-        if (currentPage < totalPages) {
-            currentPage += 1;
+        if (record.currentPage < record.totalPages) {
+            page = record.currentPage + 1;
         }
         break;
     case 'last':
-        currentPage = totalPages;
+        page = record.totalPages;
         break;
     }
-    getRecordPage(target, key, currentPage);
+    getRecordPage(target, key, page);
 }
 
 function listenToRecordControls() {
