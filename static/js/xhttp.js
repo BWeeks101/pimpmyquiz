@@ -643,12 +643,9 @@ function getRecord(record, self) {
 }
 
 function listenToRecordControls() {
-    let recordControls = $(
-        ".results-control a"
-    );
-    let i = 0;
-    recordControls.each(function() {
-        let self = recordControls[i];
+    $(".results-control a").on("click", (e) => {
+        e.preventDefault();
+        let self = e.currentTarget;
         let record;
 
         if (self.classList.contains('results-control-first')) {
@@ -661,11 +658,7 @@ function listenToRecordControls() {
             record = 'last';
         }
 
-        self.addEventListener("click", function(e) {
-            e.preventDefault();
-            getRecord(record, self);
-        });
-        i += 1;
+        getRecord(record, self);
     });
 }
 
