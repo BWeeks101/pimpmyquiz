@@ -5,34 +5,29 @@ let userSearchPositions = {};
 let userList;
 
 function addRecordPositions(obj) {
-    let result;
+    let record;
     if ('role' in obj) {
-        result = recordPositions.find((record) => {
-            if (record.role === obj.role) {
-                if (obj.totalPages) {
-                    record.totalPages = obj.totalPages;
-                }
-                if (obj.currentPage) {
-                    record.currentPage = obj.currentPage;
-                }
-                return true;
+        record = recordPositions.find((record) => record.role === obj.role);
+        if (record) {
+            if (obj.totalPages) {
+                record.totalPages = obj.totalPages;
             }
-            return false;
-        });
-        if (!result) {
-            if (!obj.currentPage) {
-                obj.currentPage = 1;
+            if (obj.currentPage) {
+                record.currentPage = obj.currentPage;
             }
-
-            if (!obj.totalPages) {
-                obj.totalPages = 1;
-            }
-            recordPositions.push(obj);
+            return;
         }
+        if (!obj.currentPage) {
+            obj.currentPage = 1;
+        }
+
+        if (!obj.totalPages) {
+            obj.totalPages = 1;
+        }
+        recordPositions.push(obj);
+
     } else if ('search' in obj) {
-        userSearchPositions = {
-            'search': obj.search
-        };
+        userSearchPositions = {'search': obj.search};
 
         if ('totalPages' in obj) {
             userSearchPositions.totalPages = obj.totalPages;
@@ -45,24 +40,23 @@ function addRecordPositions(obj) {
 }
 
 function getRecordPosition(key) {
-    let result = false;
+    let record;
     if ('role' in key) {
-        recordPositions.forEach(function (record) {
-            if (record.role !== key.role) {
-                return;
-            }
-            result = {"role": record.role,
+        record = recordPositions.find((record) => record.role === key.role);
+        if (record) {
+            return {
+                "role": record.role,
                 "totalPages": record.totalPages,
-                "currentPage": record.currentPage};
-        });
+                "currentPage": record.currentPage
+            };
+        }
     } else if ('search' in key) {
-        result = {
+        return {
             "search": userSearchPositions.search,
             "totalPages": userSearchPositions.totalPages,
             "currentPage": userSearchPositions.currentPage
         };
     }
-    return result;
 }
 
 function buildRequestString(requestObj) {
@@ -405,8 +399,8 @@ function getPrevRecord(elem, key) {
 
 function getCurrentRecord(elem, key) {
     let recordPosition = getRecordPosition(key);
-    let totalPages = recordPosition.totalPages;
-    let currentPage = recordPosition.currentPage;
+    let totalPages;
+    let currentPage;
     let request;
     if ('search' in key) {
         request = {
@@ -418,7 +412,10 @@ function getCurrentRecord(elem, key) {
             }
         };
     } else if ('role' in key) {
-        if (!recordPosition) {
+        if (recordPosition) {
+            totalPages = recordPosition.totalPages;
+            currentPage = recordPosition.currentPage;
+        } else {
             totalPages = Math.ceil((getRole(key.role).member_count) / 10);
             currentPage = 1;
         }
