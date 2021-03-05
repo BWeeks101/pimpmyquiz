@@ -466,7 +466,7 @@ function getSelectedRecord(elem, key, pageNum) {
 
 function getSearchResults(self) {
     let value = self.parentElement.previousElementSibling.
-        firstElementChild.querySelector('input').value;
+         firstElementChild.querySelector('input').value;
     if (value === "" || value === undefined || value.len < 2) {
         return;
     }
@@ -670,21 +670,18 @@ function listenToRecordControls() {
 }
 
 function searchCreateListeners() {
-    $("#userSearch").on("focusout", function () {
-        inputHelperLabel("userSearch");
-    });
+    $("#userSearch").on("focusout", () => inputHelperLabel("userSearch"));
 
-    $("#userSearch").on("keyup", function (e) {
+    $("#userSearch").on("keyup", (e) => {
         if (e.key === "Enter") {
             inputHelperLabel("userSearch");
             getSearchResults($('#userSearch')[0].parentElement.parentElement.
-                nextElementSibling.firstElementChild);
+                 nextElementSibling.firstElementChild);
         }
     });
 
-    $("#searchButton").on("click", function() {
-        getSearchResults($("#searchButton")[0]);
-    });
+    $("#searchButton").
+        on("click", () => getSearchResults($("#searchButton")[0]));
 }
 
 listenToRecordControls();
