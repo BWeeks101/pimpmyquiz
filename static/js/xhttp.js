@@ -8,7 +8,6 @@ function addRecordPositions(obj) {
     let result;
     if ('role' in obj) {
         recordPositions.forEach(function (record) {
-            record = record.obj;
             if (record.role === obj.role) {
                 if (obj.totalPages) {
                     record.totalPages = obj.totalPages;
@@ -28,7 +27,7 @@ function addRecordPositions(obj) {
             if (!obj.totalPages) {
                 obj.totalPages = 1;
             }
-            recordPositions.push({obj});
+            recordPositions.push(obj);
         }
     } else if ('search' in obj) {
         userSearchPositions = {
@@ -49,7 +48,6 @@ function getRecordPosition(key) {
     let result = false;
     if ('role' in key) {
         recordPositions.forEach(function (record) {
-            record = record.obj;
             if (record.role !== key.role) {
                 return;
             }
