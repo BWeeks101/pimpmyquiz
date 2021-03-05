@@ -61,11 +61,9 @@ function getRecordPosition(key) {
 
 function buildRequestString(requestObj) {
     let request = requestObj.type;
-    let keys;
     if ('params' in requestObj) {
         request += '?';
-        keys = Object.keys(requestObj.params);
-        keys.forEach(function (key, idx) {
+        Object.keys(requestObj.params).forEach((key, idx) => {
             if (idx === 0) {
                 request += `${key}=${requestObj.params[key]}`;
             } else {
