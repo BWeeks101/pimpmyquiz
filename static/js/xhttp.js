@@ -7,7 +7,7 @@ let userList;
 function addRecordPositions(obj) {
     let result;
     if ('role' in obj) {
-        recordPositions.forEach(function (record) {
+        result = recordPositions.find((record) => {
             if (record.role === obj.role) {
                 if (obj.totalPages) {
                     record.totalPages = obj.totalPages;
@@ -15,9 +15,9 @@ function addRecordPositions(obj) {
                 if (obj.currentPage) {
                     record.currentPage = obj.currentPage;
                 }
-                result = true;
                 return true;
             }
+            return false;
         });
         if (!result) {
             if (!obj.currentPage) {
