@@ -521,27 +521,16 @@ function listenToUserRoleCollapsibleHeaders() {
 }
 
 function listenToUserSearchCollapsibleHeaders() {
-    let searchHeaders = $(
-        ".collapsible-search .collapsible-header"
-    );
-    let i = 0;
-    searchHeaders.each(function() {
-        let id = "userSearchCollapsible";
-        searchHeaders[i].setAttribute("id", id);
-
-        $(`#${id}`).on("click", function () {
-            let self = $(`#${id}`)[0];
-            let renderSelector = `#${id} ~ .collapsible-body `;
-            renderSelector += `.collapsible .results-data`;
-            let renderTarget = $(renderSelector)[0];
-            let key = {'search': getRecordPosition({'search': ''}).search};
-            if (key.search) {
-                if (!self.parentElement.classList.contains("active")) {
-                    getCurrentRecord(renderTarget, key);
-                }
+    $(".collapsible-search .collapsible-header").on("click", (e) => {
+        let self = e.currentTarget;
+        let selector = ".collapsible .results-data";
+        let target = self.nextElementSibling.querySelector(selector);
+        let key = {'search': getRecordPosition({'search': ''}).search};
+        if (key.search) {
+            if (!self.parentElement.classList.contains("active")) {
+                getCurrentRecord(target, key);
             }
-        });
-        i += 1;
+        }
     });
 }
 
