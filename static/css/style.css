@@ -6,6 +6,12 @@ nav .nav-title {
     padding: 0 0 0 15px !important;
 }
 
+/* MaterializeCSS dropdown text style override */
+.dropdown-content li > a {
+    color: #01579b;
+    text-shadow: none;
+}
+
 @media only screen and (max-width: 992px) {
     nav .nav-wrapper {
         text-align: center;
