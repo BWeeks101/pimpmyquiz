@@ -183,24 +183,40 @@ form .user-search .search-radio-row {
 }
 
 /* MaterializeCSS Select Box Style Overrides */
-.subopt i {
+.modal .subopt i {
     margin-left: 1rem;
 }
 
-.subopt span:hover {
+.modal .subopt span:hover {
     border-bottom: 1px solid #01579b;
 }
 
-.optgroup-option {
+.modal .optgroup-option {
     display: none;
 }
 
-.select-dropdown.dropdown-content li {
+.modal .select-dropdown.dropdown-content li {
 	background-color: rgba(0,0,0,0.08);
 }
 
-.select-wrapper input.select-dropdown:focus {
+.modal .select-wrapper input.select-dropdown:focus {
 	border-bottom: 1px solid #9e9e9e;
+}
+
+.modal .select-dropdown.dropdown-content li, .modal .select-dropdown.dropdown-content li:hover {
+	background-color: rgba(0,0,0,0);
+}
+
+.modal .select-dropdown li.optgroup {
+	border-top: 0;
+}
+
+.modal .dropdown-content li {
+	min-height: 40px;
+}
+
+.modal .dropdown-content li > a, .modal .dropdown-content li > span {
+	padding: 7px 16px;
 }
 
 .results-control {
