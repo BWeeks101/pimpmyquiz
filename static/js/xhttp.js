@@ -158,7 +158,7 @@ function xHttpRenderResult(elem, result) {
             let memberCount;
             let rGroup = obj.role_groups.
                 find((group) => group.role_group === roleGroup);
-            if (!rGroup === undefined) {
+            if (rGroup !== undefined) {
                 memberCount = rGroup.member_count;
             }
             target.innerHTML = `${roleGroup}`;
@@ -177,7 +177,7 @@ function xHttpRenderResult(elem, result) {
             let memberCount;
             let totalPages;
             let uRole = obj.user_roles.find((role) => role.role === userRole);
-            if (!uRole === undefined) {
+            if (uRole !== undefined) {
                 userRoleDesc = uRole.role_desc;
                 memberCount = uRole.member_count;
                 totalPages = Math.ceil(memberCount / 10);
