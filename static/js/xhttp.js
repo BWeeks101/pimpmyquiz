@@ -196,20 +196,19 @@ function xHttpRenderResult(elem, result) {
         });
     }
 
-    function refreshRecordControls() {
+    const refreshRecordControls = () => {
         let headerSelector = '.collapsible-user-roles > ';
         headerSelector += 'li > ';
         headerSelector += 'div[data-role]';
         let headers = $(headerSelector);
-        let i = 0;
-        headers.each(function () {
+        headers.each(function (i) {
             let header = headers[i];
             let key = {'role': header.getAttribute('data-role')};
             let elem = header.nextElementSibling.querySelector('.results-data');
             updateRecordControls(elem, key);
             i += 1;
         });
-    }
+    };
 
     let html = result.html;
     if (result.type === "userSearch") {
