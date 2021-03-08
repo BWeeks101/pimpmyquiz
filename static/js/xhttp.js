@@ -201,7 +201,7 @@ function xHttpRenderResult(elem, result) {
         headerSelector += 'li > ';
         headerSelector += 'div[data-role]';
         let headers = $(headerSelector);
-        headers.each(function (i) {
+        headers.each((i) => {
             let header = headers[i];
             let key = {'role': header.getAttribute('data-role')};
             let elem = header.nextElementSibling.querySelector('.results-data');
