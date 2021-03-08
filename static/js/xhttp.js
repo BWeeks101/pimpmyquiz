@@ -146,55 +146,47 @@ function updateRecordControls(elem, key) {
 
 function xHttpRenderResult(elem, result) {
 
-    function refreshCollapsibleHeaders(obj) {
-        let i;
+    const refreshCollapsibleHeaders = (obj) => {
         let rghSel = '.collapsible-role-groups > ';
         rghSel += 'li > ';
         rghSel += 'div[data-role-group]:not(.collapsible-body)';
         let roleGroupHeaders = $(rghSel);
-        i = 0;
-        roleGroupHeaders.each(function () {
+        roleGroupHeaders.each((i) => {
             let header = roleGroupHeaders[i];
             let target = header.querySelector('.collapsible-header-text');
             let roleGroup = header.getAttribute('data-role-group');
             let memberCount;
-            obj.role_groups.forEach(function (rGroup) {
-                if (rGroup.role_group !== roleGroup) {
-                    return;
-                }
+            let rGroup = obj.role_groups.
+                find((group) => group.role_group === roleGroup);
+            if (!rGroup === undefined) {
                 memberCount = rGroup.member_count;
-            });
+            }
             target.innerHTML = `${roleGroup}`;
             target.nextElementSibling.innerHTML = `(${memberCount})`;
-            i += 1;
         });
 
         let urhSel = '.collapsible-user-roles > ';
         urhSel += 'li > ';
         urhSel += 'div[data-role]:not(.collapsible-body)';
         let userRoleHeaders = $(urhSel);
-        i = 0;
-        userRoleHeaders.each(function () {
+        userRoleHeaders.each((i) => {
             let header = userRoleHeaders[i];
             let target = header.querySelector('.collapsible-header-text');
             let userRole = header.getAttribute('data-role');
             let userRoleDesc;
             let memberCount;
             let totalPages;
-            obj.user_roles.forEach(function (uRole) {
-                if (uRole.role !== userRole) {
-                    return;
-                }
+            let uRole = obj.user_roles.find((role) => role.role === userRole);
+            if (!uRole === undefined) {
                 userRoleDesc = uRole.role_desc;
                 memberCount = uRole.member_count;
                 totalPages = Math.ceil(memberCount / 10);
                 addRecordPositions({'role': userRole, totalPages});
-            });
+            }
             target.innerHTML = `${userRoleDesc}`;
             target.nextElementSibling.innerHTML = `(${memberCount})`;
-            i += 1;
         });
-    }
+    };
 
     const refreshRecordControls = () => {
         let headerSelector = '.collapsible-user-roles > ';
@@ -206,7 +198,6 @@ function xHttpRenderResult(elem, result) {
             let key = {'role': header.getAttribute('data-role')};
             let elem = header.nextElementSibling.querySelector('.results-data');
             updateRecordControls(elem, key);
-            i += 1;
         });
     };
 
