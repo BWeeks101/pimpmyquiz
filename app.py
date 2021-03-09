@@ -903,6 +903,14 @@ def getUsers():
     return redirect(url_for("home"))
 
 
+@app.route("/new_quiz")
+def new_quiz():
+    if 'user' not in session:
+        return redirect(url_for("login"))
+
+    return render_template("new_quiz.html")
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
