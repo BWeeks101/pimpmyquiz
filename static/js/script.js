@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global roleList, userList */
+/* global roleList, userList, categoryList */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -93,6 +93,29 @@ function getUser(userId) {
             "locked": record.locked,
             "group": record.group,
             "role": record.role};
+    }
+
+    return result;
+}
+
+// eslint-disable-next-line no-unused-vars
+function createCategoryArray(pyList) {
+    let categoryArr = [];
+    pyList.forEach(function (obj) {
+        categoryArr.push({"category": obj.category,
+            "category_icon": obj.category_icon.class});
+    });
+    return categoryArr;
+}
+
+// eslint-disable-next-line no-unused-vars
+function getCategory(catId) {
+    let result = false;
+    let record = categoryList.find((category) => category.category === catId);
+
+    if (record) {
+        result = {"category": record.category,
+            "category_icon": record.category_icon};
     }
 
     return result;
