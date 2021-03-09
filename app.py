@@ -907,8 +907,15 @@ def getUsers():
 def new_quiz():
     if 'user' not in session:
         return redirect(url_for("login"))
+    query = [{
+        '$project': {
+            '_id': 0,
 
-    return render_template("new_quiz.html")
+        }
+    }]
+    category_data = list(mongo.db.categories.aggregate(query))
+    print(category_data)
+    return render_template("new_quiz.html", quiz_categories=category_data)
 
 
 if __name__ == "__main__":
