@@ -158,8 +158,8 @@ function modalSetInitialUserRoleSelectValue(role) {
     selector += 'ul li.optgroup-option';
     Object.keys($(selector)).
         map((key) => $(selector)[key]).
-        find((obj) => obj.innerText === role).
-        click();
+            find((obj) => obj.innerText === role).
+                click();
     modalSetUserRoleIcon();
 }
 
