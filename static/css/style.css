@@ -2,14 +2,16 @@ body {
     min-width: 360px
 }
 
-nav .nav-title {
-    padding: 0 0 0 15px !important;
-}
 
 /* MaterializeCSS dropdown text style override */
 .dropdown-content li > a {
     color: #01579b;
     text-shadow: none;
+}
+
+/* MaterializeCSS nav style overrides */
+nav .nav-title {
+    padding: 0 0 0 15px !important;
 }
 
 @media only screen and (max-width: 992px) {
@@ -148,6 +150,10 @@ form .user-search .search-radio-row {
     margin-left: 3rem;
 }
 
+.checkbox-container.inline-input {
+    margin-top: 1rem;
+}
+
 .checkbox-container label span {
     padding-left: 25px !important;
     color: #000;
@@ -169,6 +175,15 @@ form .user-search .search-radio-row {
     border-right: 2px solid #01579b;
     border-bottom: 2px solid #01579b;
 }
+
+.checkbox-container label.center-align {
+    text-align: center !important;
+}
+
+.checkbox-container label.full-width {
+    width: 100% !important;
+}
+
 
 .modal-action-container, .search-action-container {
     margin-bottom: 0 !important;
@@ -219,6 +234,7 @@ form .user-search .search-radio-row {
 	padding: 7px 16px;
 }
 
+/* Pagination Controls */
 .results-control {
     width: 100%;
     text-align: center;
@@ -273,4 +289,17 @@ form .user-search .search-radio-row {
 .preloader-container {
     width: 100%;
     text-align: center;
+}
+
+
+/* MaterializeCSS Container Style Override */
+.container {
+    width: 80%;
+    min-width: 340px;
+}
+
+
+/* MaterializeCSS prefix Style Override */
+.input-field .prefix {
+    line-height: 1;
 }
