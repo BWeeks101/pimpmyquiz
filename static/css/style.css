@@ -41,6 +41,10 @@ nav .nav-title {
     margin: 5px;
 }
 
+.btn-full-width {
+    width: 100%;
+}
+
 .collection-item.avatar h6.truncate {
     padding-bottom: .25rem;
 }
@@ -302,4 +306,46 @@ form .user-search .search-radio-row {
 /* MaterializeCSS prefix Style Override */
 .input-field .prefix {
     line-height: 1;
+}
+
+
+#createQuiz .row div.title.col, #createQuiz .row div.answers-container.col {
+    padding: 0;
+}
+
+#createQuiz .collapsible-header div.col {
+    padding: 0;
+}
+
+#createQuiz .card .card-content .card-title {
+    margin-bottom: 1rem;
+}
+
+#createQuiz .round-row {
+    margin-bottom: 0;
+}
+
+#createQuiz .round-title, #createQuiz .question-title, #createQuiz .collapsible-body .title {
+	font-size: 24px;
+	font-weight: 300;
+    line-height: 32px;
+    margin-bottom: 1rem;
+}
+
+#createQuiz .collapsible-body .title {
+    display: block;
+}
+
+#createQuiz .collapsible-header.round-title, #createQuiz .collapsible-header.question-title {
+    margin-bottom: 0;
+}
+
+#createQuiz .collapsible-body {
+    padding: 1rem 2rem;
+}
+
+#createQuiz .collapsible-header .qcontrols, #createQuiz .collapsible-header .rcontrols {
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 400;
 }

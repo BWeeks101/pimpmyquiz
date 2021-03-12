@@ -2,115 +2,140 @@
 {% block content %}
     <h3 class="light-blue-text text-darken-4 center-align">Create a Quiz</h3>
     <div id="createQuiz" class="container">
-        <div class="card">
-            <div class="card-content">
-                <div class="row">
-                    <span class="card-title col l12 hide-on-med-and-down">Choose a Category and Provide a Title for your Quiz</span>
-                    <!-- Quiz Category -->
-                    <span class="card-title col m12 hide-on-large-only">Choose a Category for your Quiz</span>
-                    <div class="input-field col m12 l5 select-container">
-                        <i id="quizCategoryIcon" class="prefix light-blue-text text-darken-4 fas"></i>
-                        <select id="quizCategory" name="quizCategory">
-                            {% for quiz_category in quiz_categories %}
-                            <optgroup label='<div class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></div>'>
-                                <option>{{ quiz_category.category }}</option>
-                            </optgroup>
-                            {% endfor %}
-                        </select>
-                        <label>Quiz Category</label>
-                    </div>
-                    <!-- Quiz Name -->
-                    <span class="card-title col m12 hide-on-large-only">Provide a Title for your Quiz</span>
-                    <div class="input-field col m12 l7">
-                        <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="25" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                        <label for="quizTitle" data-error="Invalid Quiz Title" data-default="Quiz Title">Quiz Title</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <div class="row">
-                    <span class="card-title col l12 hide-on-med-and-down">Choose a Category and Provide a Title for this Round</span>
-                    <!-- Round Category -->
-                    <span class="card-title col m12 hide-on-large-only">Choose a Category for this Round</span>
-                    <div class="input-field col m12 l5 select-container">
-                        <i id="roundCategoryIcon" class="prefix light-blue-text text-darken-4 fas"></i>
-                        <select id="roundCategory" name="roundCategory">
-                            {% for quiz_category in quiz_categories %}
-                            <optgroup label='<div class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></div>'>
-                                <option>{{ quiz_category.category }}</option>
-                            </optgroup>
-                            {% endfor %}
-                        </select>
-                        <label>Round Category</label>
-                    </div>
-                    <!-- Round Name -->
-                    <span class="card-title col m12 hide-on-large-only">Provide a Title for this Round</span>
-                    <div class="input-field col m12 l7 ">
-                        <input id="roundTitle" name="round_title" type="text" minlength="5" maxlength="25" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                        <label for="roundTitle" data-error="Invalid Round Title" data-default="Round Title">Round Title</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <span class="card-title col s12">Create Questions for this Round</span>
-                    <div class="card col s12">
-                        <div class="card-content">
-                            <div class="row">
-                                <span class="card-title question-title col s12" data-question="1">Question 1</span>
-                                <!-- Question One -->
-                                <div class="input-field col s12">
-                                    <span class="prefix light-blue-text text-darken-4 center-align"></span>
-                                    <input id="question_1" name="question_1" type="text" minlength="5" maxlength="25" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                                    <label for="question_1" data-error="Invalid Question" data-default="Question 1">Question 1</label>
-                                </div>
-                                <!-- Multiple Choice? -->
-                                <span class="card-title col s12">Is this a multiple choice Question?</span>
-                                <div class="input-field col s12 checkbox-container">
-                                    <i class="prefix light-blue-text text-darken-4"></i>
-                                    <label id="quizMulti">
-                                        <input id="quizMultiInput" name="quizMulti" type="checkbox"/>
-                                        <span>Multiple Choice?</span>
-                                    </label>
-                                </div>
-                                <!-- Answer -->
-                                <div class="card-title"><span class="col s12">What is the Answer?</span></div>
-                                <div class="answers-container">
-                                    <div class="input-field col s12">
-                                        <span class="prefix" data-question="1" data-multi="0"></span>
-                                        <input id="answer_1" name="answer_1" type="text" minlength="5" maxlength="25" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
-                                        <label for="answer_1" data-error="Invalid Answer" data-default="Answer 1">Answer 1</label>
-                                    </div>
-                                </div>
-                            </div>
+        <form id="createQuizForm">
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                        <span class="card-title col l12 hide-on-med-and-down">Choose a Category and Provide a Title for your Quiz</span>
+                        <!-- Quiz Category -->
+                        <span class="card-title col m12 hide-on-large-only">Choose a Category for your Quiz</span>
+                        <div class="input-field col m12 l5 select-container">
+                            <i id="quizCategoryIcon" class="prefix light-blue-text text-darken-4 fas"></i>
+                            <select id="quizCategory" name="quizCategory">
+                                {% for quiz_category in quiz_categories %}
+                                <optgroup label='<div class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></div>'>
+                                    <option>{{ quiz_category.category }}</option>
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                            <label>Quiz Category</label>
+                        </div>
+                        <!-- Quiz Name -->
+                        <span class="card-title col m12 hide-on-large-only">Provide a Title for your Quiz</span>
+                        <div class="input-field col m12 l7">
+                            <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="25" class="validate" value="" required>
+                            <label for="quizTitle" data-error="Invalid Quiz Title" data-default="Quiz Title">Quiz Title</label>
                         </div>
                     </div>
-                    <div class="col-12">
-                        <button id="addQuestion" type="" class="col s12 btn-large light-blue darken-4 text-shadow" data-qcount="1">
-                            Add Another Question <i class="fas fa-question"></i>
-                        </button>
+                    <div class="row">
+                        <span class="card-title col s12">Create Rounds for this Quiz</span>
+                    </div>
+                    <div class="row">
+                        <ul class="collapsible expandable">
+                            <li class="active">
+                                <div class="collapsible-header round-title" data-round="1">
+                                    Round 1
+                                    <svg class="caret" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7 10l5 5 5-5z"></path>
+                                        <path d="M0 0h24v24H0z" fill="none"></path>
+                                    </svg>
+                                    <div class="rcontrols col s2 right-align">
+                                        <a href="#!" class="rcontrols-add light-blue-text text-darken-4">+</a>
+                                    </div>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row round-row">
+                                        <span class="title col l12 hide-on-med-and-down">Choose a Category and Provide a Title for this Round</span>
+                                        <!-- Round Category -->
+                                        <span class="title col m12 hide-on-large-only">Choose a Category for this Round</span>
+                                        <div class="input-field col m12 l5 select-container">
+                                            <i id="roundCategoryIcon_1" class="prefix light-blue-text text-darken-4 fas"></i>
+                                            <select id="roundCategory_1" class="round-category" name="roundCategory_1">
+                                                {% for quiz_category in quiz_categories %}
+                                                <optgroup label='<div class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></div>'>
+                                                    <option>{{ quiz_category.category }}</option>
+                                                </optgroup>
+                                                {% endfor %}
+                                            </select>
+                                            <label>Round Category</label>
+                                        </div>
+                                        <!-- Round Name -->
+                                        <span class="title col m12 hide-on-large-only">Provide a Title for this Round</span>
+                                        <div class="input-field col m12 l7 ">
+                                            <input id="roundTitle_1" name="round_title_1" type="text" minlength="5" maxlength="25" class="validate" value="Round 1" required>
+                                            <label for="roundTitle_1" data-error="Invalid Round Title" data-default="Round Title">Round Title</label>
+                                        </div>
+                                        <span class="title col s12">Create Questions for this Round</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <ul class="collapsible expandable">
+                                                <li class="active">
+                                                    <div class="collapsible-header question-title" data-question="1">
+                                                        Question 1
+                                                        <svg class="caret" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M7 10l5 5 5-5z"></path>
+                                                            <path d="M0 0h24v24H0z" fill="none"></path>
+                                                        </svg>
+                                                        <div class="qcontrols col s2 right-align">
+                                                            <a href="#!" class="qcontrols-add light-blue-text text-darken-4">+</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="collapsible-body">
+                                                        <div class="row">
+                                                            <!-- Question One -->
+                                                            <div class="input-field col s12">
+                                                                <span class="prefix light-blue-text text-darken-4 center-align"></span>
+                                                                <input id="question_1_1" name="question_1_1" type="text" minlength="5" maxlength="25" class="validate" value="" required>
+                                                                <label for="question_1_1" data-error="Invalid Question" data-default="Question 1">Question 1</label>
+                                                            </div>
+                                                            <!-- Multiple Choice? -->
+                                                            <span class="title col s12">Is this a multiple choice Question?</span>
+                                                            <div class="input-field col s12 checkbox-container">
+                                                                <i class="prefix light-blue-text text-darken-4"></i>
+                                                                <label id="quizMulti_1_1">
+                                                                    <input id="quizMultiInput_1_1" class="quizMulti" name="quizMulti-1" type="checkbox"/>
+                                                                    <span>Multiple Choice?</span>
+                                                                </label>
+                                                            </div>
+                                                            <!-- Answer -->
+                                                            <div class="title col s12"><span class="col s12">What is the Answer?</span></div>
+                                                            <div class="answers-container col s12">
+                                                                <div class="input-field col s12">
+                                                                    <span class="prefix" data-question="1" data-multi="0"></span>
+                                                                    <input id="answer_1_1" name="answer_1_1" type="text" minlength="5" maxlength="25" class="validate" value="" required>
+                                                                    <label for="answer_1_1" data-error="Invalid Answer" data-default="Answer 1">Answer 1</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- create quiz -->
-        <div class="row">
-            <div class="col-12">
-                <button id="submitButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow">
-                    Create Quiz <i class="fas fa-exclamation"></i>
-                </button>
+            <!-- create quiz -->
+            <div class="row">
+                <div class="col-12">
+                    <button id="submitButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow">
+                        Save Quiz <i class="fas fa-exclamation"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-
-
+        </form>
     </div>
 {% endblock%}
 {% block scripts %}
+    <script src="{{ url_for('static', filename='js/newquizlisteners.js') }}"></script>
     <script src="{{ url_for('static', filename='js/newquiz.js') }}"></script>
     <script>
         // Convert mongoDB data to JS global array for use in this template
         let categoryList = createCategoryArray({{ quiz_categories | tojson }});
+        let observerList = [];
     </script>
 {% endblock %}
