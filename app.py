@@ -944,58 +944,69 @@ def new_quiz():
         )
 
         # Create Rounds
-        # Expand to handle multiple rounds
-        round_category_id = mongo.db.categories.find_one(
-            {'category': request.form.get('roundCategory_1')},
-            {'_id': 1}
-        )['_id']
+        round_count = int(request.form.get('roundCount')) + 1
+        for rId in range(1, round_count):
+            rId = str(rId)
+            round_category_id = mongo.db.categories.find_one(
+                {'category': request.form.get('roundCategory_' + rId)},
+                {'_id': 1}
+            )['_id']
 
-        create_round = {
-            'quiz_id': quiz_id,
-            'title': request.form.get('round_title_1'),
-            'author_id': author_id,
-            'date': create_quiz['date'],
-            'category_id': round_category_id,
-            'public': False
-        }
+            create_round = {
+                'quiz_id': quiz_id,
+                'title': request.form.get('round_title_' + rId),
+                'author_id': author_id,
+                'date': create_quiz['date'],
+                'category_id': round_category_id,
+                'public': False
+            }
 
-        mongo.db.rounds.insert_one(create_round)
+            mongo.db.rounds.insert_one(create_round)
 
-        round_id = mongo.db.rounds.find_one(
-            {'author_id': create_round['author_id'],
-                'quiz_id': create_round['quiz_id']},
-            {'_id': 1}
-        )['_id']
+            round_id = mongo.db.rounds.find_one(
+                {'author_id': create_round['author_id'],
+                    'quiz_id': create_round['quiz_id'],
+                    'title': create_round['title']},
+                {'_id': 1}
+            )['_id']
 
-        mongo.db.rounds.update_one(
-            {'_id': round_id},
-            {'$set': {'copy_of': round_id}}
-        )
+            mongo.db.rounds.update_one(
+                {'_id': round_id},
+                {'$set': {'copy_of': round_id}}
+            )
 
-        # Create Questions
-        # Expand to handle multiple questions
-        create_question = {
-            'author_id': author_id,
-            'date': create_quiz['date'],
-            'round_id': round_id,
-            'question_text': request.form.get('question_1_1'),
-            'multiple_choice': False,
-            'answer_text': request.form.get('answer_1_1'),
-            'public': False
-        }
+            # Create Questions
+            # Expand to handle multiple choice questions
+            question_count = int(request.form.get('questionCount_' + rId)) + 1
+            for qId in range(1, question_count):
+                qId = str(qId)
+                create_question = {
+                    'author_id': author_id,
+                    'date': create_quiz['date'],
+                    'round_id': round_id,
+                    'question_text': request.form.get(
+                        'question_' + rId + '_' + qId
+                    ),
+                    'multiple_choice': False,
+                    'answer_text': request.form.get(
+                        'answer_' + rId + '_' + qId
+                    ),
+                    'public': False
+                }
 
-        mongo.db.questions.insert_one(create_question)
+                mongo.db.questions.insert_one(create_question)
 
-        question_id = mongo.db.questions.find_one(
-            {'author_id': create_question['author_id'],
-                'round_id': create_question['round_id']},
-            {'_id': 1}
-        )['_id']
+                question_id = mongo.db.questions.find_one(
+                    {'author_id': create_question['author_id'],
+                        'round_id': create_question['round_id'],
+                        'question_text': create_question['question_text']},
+                    {'_id': 1}
+                )['_id']
 
-        mongo.db.questions.update_one(
-            {'_id': question_id},
-            {'$set': {'copy_of': round_id}}
-        )
+                mongo.db.questions.update_one(
+                    {'_id': question_id},
+                    {'$set': {'copy_of': round_id}}
+                )
 
     query = [{
         '$project': {
