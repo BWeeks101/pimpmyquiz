@@ -576,7 +576,7 @@ function removeRound(elem) {
     rId -= 1;
     let target = $(elem).closest('li');
     let prevR = $(target).prev();
-    let rControlsTarget = $('.collapsible-header', prevR);
+    let rControlsTarget = $('.collapsible-header[data-round]', prevR);
     let rControlsHtml = `
         <div class="rcontrols col s2 right-align">`;
     if (rId > 1) {
