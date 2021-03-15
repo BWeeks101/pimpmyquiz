@@ -70,7 +70,13 @@ function reinitSelectOnDisabled(elem) {
 
 // eslint-disable-next-line no-unused-vars
 function addMulti(elem) {
+    let rId = parseInt($(elem).closest('.collapsible').
+        closest('.collapsible-body').
+        prev().
+        attr('data-round'));
     let answersContainer = $(elem).closest('.answers-container');
+    let multiCount = parseInt($(answersContainer).prev().
+        val()) + 1;
     let prefix = $(elem).closest('.prefix');
     let qId = parseInt(prefix.attr('data-question'));
     let mlt = parseInt(prefix.attr('data-multi')) + 1;
@@ -89,20 +95,20 @@ function addMulti(elem) {
                 `data-multi="${mlt}">
                 ${controlHtml}` +
             `</span>
-            <input id="answer_${qId}-${mlt}" ` +
-                `name="answer_${qId}-${mlt}" ` +
+            <input id="answer_${rId}_${qId}_${mlt}" ` +
+                `name="answer_${rId}_${qId}_${mlt}" ` +
                 `type="text" minlength="1" maxlength="100" ` +
                 `class="validate" value="" required>
-            <label for="answer_${qId}-${mlt}" ` +
+            <label for="answer_${rId}_${qId}_${mlt}" ` +
                 `data-error="Invalid Answer" ` +
-                `data-default="Answer ${qId}-${mlt}">` +
-                `Answer ${qId}-${mlt}</label>
+                `data-default="Answer ${rId}-${qId}-${mlt}">` +
+                `Answer ${rId}-${qId}-${mlt}</label>
         </div>
         <div class="input-field col s2 checkbox-container ` +
             `inline-input center-align">
             <label class="center-align full-width">
-                <input id="correct_${qId}-${mlt}" ` +
-                    `name="correct_${qId}-${mlt}" ` +
+                <input id="correct_${rId}_${qId}_${mlt}" ` +
+                    `name="correct_${rId}_${qId}_${mlt}" ` +
                     `type="checkbox"/>
                 <span></span>
             </label>
@@ -110,6 +116,8 @@ function addMulti(elem) {
 
     stopListeningToMultiControls();
     answersContainer.append(answerHtml);
+    $(answersContainer).prev().
+        val(multiCount);
     listenToMultiControls();
 }
 
@@ -120,7 +128,9 @@ function removeMulti(elem) {
     let inputField = prefix.closest('.input-field');
     let checkboxContainer = inputField.next();
     let answersContainer = inputField.closest('.answers-container');
-    let prevMulti = $(` .prefix[data-multi="${mlt}"]`, answersContainer);
+    let multiCount = parseInt($(answersContainer).prev().
+        val()) - 1;
+    let prevMulti = $(`.prefix[data-multi="${mlt}"]`, answersContainer);
 
     let controlHtmlRemove = `<a href="#!" ` +
         `class="multi-control-remove light-blue-text text-darken-4">-</a>`;
@@ -138,25 +148,31 @@ function removeMulti(elem) {
 
     inputField.remove();
     checkboxContainer.remove();
+    $(answersContainer).prev().
+        val(multiCount);
     listenToMultiControls();
 }
 
 function checkBoxMulti(elem) {
+    let rId = parseInt($(elem).closest('.collapsible').
+        closest('.collapsible-body').
+        prev().
+        attr('data-round'));
     let inputField = $(elem).closest('.checkbox-container');
     let parentBody = inputField.closest('.collapsible-body');
     let questionTitle = parentBody.prev();
     let qId = parseInt(questionTitle.attr('data-question'));
     let targetTitle = inputField.next();
-    let targetField = targetTitle.next();
+    let targetField = targetTitle.next().next();
     let htmlTitle = `<span class="col s12">What is the Answer?</span>`;
     let htmlContent = `
         <div class="input-field col s12">
             <span class="prefix" data-question="${qId}" data-multi="0"></span>
-            <input id="answer_${qId}" name="answer_${qId}" ` +
+            <input id="answer_${rId}_${qId}" name="answer_${qId}" ` +
                 `type="text" minlength="1" maxlength="100" class="validate" ` +
                 `value="" required>
-            <label for="answer_${qId}" data-error="Invalid Answer" ` +
-                `data-default="Answer ${qId}">Answer ${qId}` +
+            <label for="answer_${rId}_${qId}" data-error="Invalid Answer" ` +
+                `data-default="Answer ${rId}_${qId}">Answer ${rId}_${qId}` +
                 `</label>
         </div>`;
     let multiCount = 0;
@@ -181,20 +197,20 @@ function checkBoxMulti(elem) {
             }
             htmlContent += `
                     </span>
-                    <input id="answer_${qId}-${multiCount}" ` +
-                        `name="answer_${qId}-${multiCount}" ` +
+                    <input id="answer_${rId}_${qId}_${multiCount}" ` +
+                        `name="answer_${rId}_${qId}_${multiCount}" ` +
                         `type="text" minlength="1" maxlength="100" ` +
                         `class="validate" value="" required>
-                    <label for="answer_${qId}-${multiCount}" ` +
+                    <label for="answer_${rId}_${qId}_${multiCount}" ` +
                         `data-error="Invalid Answer" ` +
-                        `data-default="Answer ${qId}-${multiCount}">` +
-                        `Answer ${qId}-${multiCount}</label>
+                        `data-default="Answer ${rId}-${qId}-${multiCount}">` +
+                        `Answer ${rId}-${qId}-${multiCount}</label>
                 </div>
                 <div class="input-field col s2 checkbox-container ` +
                     `inline-input center-align">
                     <label class="center-align full-width">
-                        <input id="correct_${qId}-${multiCount}" ` +
-                            `name="correct_${qId}-${multiCount}" ` +
+                        <input id="correct_${rId}_${qId}_${multiCount}" ` +
+                            `name="correct_${rId}_${qId}_${multiCount}" ` +
                             `type="checkbox"/>
                         <span></span>
                     </label>
@@ -210,6 +226,7 @@ function checkBoxMulti(elem) {
 
     targetTitle.html(htmlTitle);
     targetField.html(htmlContent);
+    $(`#multiCount_${rId}_${qId}`).val(multiCount);
     listenToMultiControls();
 }
 
@@ -289,6 +306,9 @@ function addQ(elem) {
                 <div class="title col s12">
                     <span class="col s12">What is the Answer?</span>
                 </div>
+                <input id="multiCount_${rId}_${qId}" ` +
+                    `name="multiCount_${rId}_${qId}" type="text" ` +
+                    `class="hidden" value="1">
                 <div class="answers-container col s12">
                     <div class="input-field col s12">
                         <span class="prefix" data-question="${qId}" ` +
@@ -492,6 +512,10 @@ function addRound(elem) {
                                                 What is the Answer?
                                             </span>
                                         </div>
+                                        <input id="multiCount_${rId}_1" ` +
+                                            `name="multiCount_${rId}_1" ` +
+                                            `type="text" ` +
+                                            `class="hidden" value="1">
                                         <div class="answers-container col s12">
                                             <div class="input-field col s12">
                                                 <span class="prefix" ` +
