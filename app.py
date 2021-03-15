@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
+import datetime
 
 
 app = Flask(__name__)
@@ -903,10 +904,99 @@ def getUsers():
     return redirect(url_for("home"))
 
 
-@app.route("/new_quiz")
+@app.route("/new_quiz", methods=["GET", "POST"])
 def new_quiz():
     if 'user' not in session:
         return redirect(url_for("login"))
+
+    if request.method == "POST":
+        print('POST METHOD')
+
+        # Create Quiz
+        author_id = mongo.db.users.find_one(
+                {'user_id': session['user'].lower()},
+                {'_id': 1}
+        )['_id']
+
+        category_id = mongo.db.categories.find_one(
+            {'category': request.form.get('quizCategory')},
+            {'_id': 1}
+        )['_id']
+
+        create_quiz = {
+            'author_id': author_id,
+            'date': datetime.datetime.now(),
+            'title': request.form.get('quiz_title'),
+            'category_id': category_id,
+            'public': False
+        }
+        mongo.db.quizzes.insert_one(create_quiz)
+
+        quiz_id = mongo.db.quizzes.find_one(
+            {'author_id': create_quiz['author_id'],
+                'title': create_quiz['title']},
+            {'_id': 1}
+        )['_id']
+
+        mongo.db.quizzes.update_one(
+            {'_id': quiz_id},
+            {'$set': {'copy_of': quiz_id}}
+        )
+
+        # Create Rounds
+        # Expand to handle multiple rounds
+        round_category_id = mongo.db.categories.find_one(
+            {'category': request.form.get('roundCategory_1')},
+            {'_id': 1}
+        )['_id']
+
+        create_round = {
+            'quiz_id': quiz_id,
+            'title': request.form.get('round_title_1'),
+            'author_id': author_id,
+            'date': create_quiz['date'],
+            'category_id': round_category_id,
+            'public': False
+        }
+
+        mongo.db.rounds.insert_one(create_round)
+
+        round_id = mongo.db.rounds.find_one(
+            {'author_id': create_round['author_id'],
+                'quiz_id': create_round['quiz_id']},
+            {'_id': 1}
+        )['_id']
+
+        mongo.db.rounds.update_one(
+            {'_id': round_id},
+            {'$set': {'copy_of': round_id}}
+        )
+
+        # Create Questions
+        # Expand to handle multiple questions
+        create_question = {
+            'author_id': author_id,
+            'date': create_quiz['date'],
+            'round_id': round_id,
+            'question_text': request.form.get('question_1_1'),
+            'multiple_choice': False,
+            'answer_text': request.form.get('answer_1_1'),
+            'public': False
+        }
+
+        mongo.db.questions.insert_one(create_question)
+
+        question_id = mongo.db.questions.find_one(
+            {'author_id': create_question['author_id'],
+                'round_id': create_question['round_id']},
+            {'_id': 1}
+        )['_id']
+
+        mongo.db.questions.update_one(
+            {'_id': question_id},
+            {'$set': {'copy_of': round_id}}
+        )
+
     query = [{
         '$project': {
             '_id': 0,
@@ -914,7 +1004,6 @@ def new_quiz():
         }
     }]
     category_data = list(mongo.db.categories.aggregate(query))
-    print(category_data)
     return render_template("new_quiz.html", quiz_categories=category_data)
 
 
