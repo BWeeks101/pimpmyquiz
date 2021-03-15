@@ -234,8 +234,10 @@ function stopListeningToCheckbox() {
 
 // eslint-disable-next-line no-unused-vars
 function addQ(elem) {
-    let rId = parseInt($(elem).closest('.collapsible-header').
+    let rId = parseInt($(elem).closest('.collapsible-body').
+        prev().
         attr('data-round'));
+    let questionCount = parseInt($(`#questionCount_${rId}`).val()) + 1;
     let qId = parseInt($(elem).closest('.collapsible-header').
         attr('data-question')) + 1;
     let target = $(elem).closest('ul.collapsible');
@@ -307,12 +309,17 @@ function addQ(elem) {
     stopListeningToCheckbox();
     $(qControls).remove();
     $(target).append(html);
+    $(`#questionCount_${rId}`).val(questionCount);
     listenToQControls();
     listenToCheckbox();
 }
 
 // eslint-disable-next-line no-unused-vars
 function removeQ(elem) {
+    let rId = parseInt($(elem).closest('.collapsible-body').
+        prev().
+        attr('data-round'));
+    let questionCount = parseInt($(`#questionCount_${rId}`).val()) - 1;
     let qId = parseInt($(elem).closest('.collapsible-header').
         attr('data-question')) - 1;
     let target = $(elem).closest('li');
@@ -332,6 +339,7 @@ function removeQ(elem) {
     stopListeningToQControls();
     stopListeningToCheckbox();
     $(target).remove();
+    $(`#questionCount_${rId}`).val(questionCount);
     $(qControlsTarget).append(qControlsHtml);
     listenToQControls();
     listenToCheckbox();
@@ -341,6 +349,7 @@ function removeQ(elem) {
 function addRound(elem) {
     let rId = parseInt($(elem).closest('.collapsible-header').
         attr('data-round')) + 1;
+    let rCount = parseInt($('#roundCount').val()) + 1;
     let target = $(elem).closest('ul.collapsible');
     let rControls = $(elem).closest('div.rcontrols');
     let quizCategory = $('#quizCategory').val();
@@ -411,6 +420,9 @@ function addRound(elem) {
                     <span class="title col s12">
                         Create Questions for this Round
                     </span>
+                    <input id="questionCount_${rId}" ` +
+                        `name="questionCount_${rId}" type="text" ` +
+                        `class="hidden" value="1">
                 </div>
                 <div class="row">
                     <div class="col s12">
@@ -515,6 +527,7 @@ function addRound(elem) {
     stopListeningToCheckbox();
     $(rControls).remove();
     $(target).append(html);
+    $('#roundCount').val(rCount);
     M.updateTextFields();
     $('.collapsible').collapsible();
     listenToRControls();
@@ -534,6 +547,7 @@ function addRound(elem) {
 function removeRound(elem) {
     let rId = parseInt($(elem).closest('.collapsible-header').
         attr('data-round'));
+    let rCount = parseInt($('#roundCount').val()) - 1;
     let select = $(`#roundCategory_${rId}`)[0];
     rId -= 1;
     let target = $(elem).closest('li');
@@ -557,6 +571,7 @@ function removeRound(elem) {
     stopListeningToQControls();
     stopListeningToCheckbox();
     $(target).remove();
+    $('#roundCount').val(rCount);
     $(rControlsTarget).append(rControlsHtml);
     listenToRControls();
     $('select').formSelect();
