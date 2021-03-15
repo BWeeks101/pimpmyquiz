@@ -980,6 +980,7 @@ def new_quiz():
             question_count = int(request.form.get('questionCount_' + rId)) + 1
             for qId in range(1, question_count):
                 qId = str(qId)
+
                 create_question = {
                     'author_id': author_id,
                     'date': create_quiz['date'],
@@ -987,12 +988,46 @@ def new_quiz():
                     'question_text': request.form.get(
                         'question_' + rId + '_' + qId
                     ),
-                    'multiple_choice': False,
-                    'answer_text': request.form.get(
-                        'answer_' + rId + '_' + qId
-                    ),
                     'public': False
                 }
+
+                multiple_choice = request.form.get(
+                    'quizMulti_' + rId + '_' + qId
+                )
+
+                # Massage multiple_choice value into boolean
+                if multiple_choice is None:
+                    multiple_choice = False
+                    create_question['answer_text'] = request.form.get(
+                            'answer_' + rId + '_' + qId)
+
+                if multiple_choice == 'on':
+                    multiple_choice = True
+
+                create_question['multiple_choice'] = multiple_choice
+                if multiple_choice is True:
+                    multi_array = []
+                    multi_count = int(request.form.get(
+                        'multiCount_' + rId + '_' + qId
+                    )) + 1
+                    for multi in range(1, multi_count):
+                        answer_text = request.form.get(
+                            'answer_' + rId + '_' + qId + '_' + str(multi))
+                        correct = request.form.get(
+                            'correct_' + rId + '_' + qId + '_' + str(multi))
+
+                        if correct is None:
+                            correct = False
+
+                        if correct == 'on':
+                            correct = True
+
+                        multi_array.append({
+                            'answer_text': answer_text,
+                            'correct': correct
+                        })
+
+                    create_question['multiple_choice_options'] = multi_array
 
                 mongo.db.questions.insert_one(create_question)
 
