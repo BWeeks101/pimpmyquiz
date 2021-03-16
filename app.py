@@ -910,7 +910,6 @@ def new_quiz():
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        print('POST METHOD')
 
         # Create Quiz
         author_id = mongo.db.users.find_one(
@@ -988,6 +987,9 @@ def new_quiz():
                     'question_text': request.form.get(
                         'question_' + rId + '_' + qId
                     ),
+                    'question_img_url': request.form.get(
+                        'q_img_' + rId + '_' + qId
+                    ),
                     'public': False
                 }
 
@@ -1000,6 +1002,8 @@ def new_quiz():
                     multiple_choice = False
                     create_question['answer_text'] = request.form.get(
                             'answer_' + rId + '_' + qId)
+                    create_question['answer_img_url'] = request.form.get(
+                            'a_img_' + rId + '_' + qId)
 
                 if multiple_choice == 'on':
                     multiple_choice = True
@@ -1015,6 +1019,8 @@ def new_quiz():
                             'answer_' + rId + '_' + qId + '_' + str(multi))
                         correct = request.form.get(
                             'correct_' + rId + '_' + qId + '_' + str(multi))
+                        answer_url = request.form.get(
+                            'a_img_' + rId + '_' + qId + '_' + str(multi))
 
                         if correct is None:
                             correct = False
@@ -1024,7 +1030,8 @@ def new_quiz():
 
                         multi_array.append({
                             'answer_text': answer_text,
-                            'correct': correct
+                            'correct': correct,
+                            'answer_img_url': answer_url
                         })
 
                     create_question['multiple_choice_options'] = multi_array
