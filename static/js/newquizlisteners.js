@@ -1,6 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ */
+removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -84,4 +84,51 @@ function listenToMultiControls() {
         on("click", (e) => removeMulti(e.currentTarget));
     $('a.multi-control-add').
         on("click", (e) => addMulti(e.currentTarget));
+}
+
+// eslint-disable-next-line no-unused-vars
+function stopListeningToImgInputs() {
+    $('input.img-url').off("focusout");
+    $('input.img-url').off("keyup");
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToImgInputs() {
+    stopListeningToImgInputs();
+    const checkImgUrl = (elem) => {
+        if ($(elem).val().length === 0) {
+            $(elem).removeClass("invalid");
+        }
+        inputHelperLabel($(elem).attr('id'));
+    };
+
+    $('input.img-url').
+        on("focusout", (e) => {
+            checkImgUrl(e.currentTarget);
+            imgPreview(e.currentTarget);
+        });
+
+    $('input.img-url').
+        on("keyup", (e) => {
+            if (e.key === 'Enter' ||
+                    e.key === 'Delete' ||
+                    e.key === 'Backspace') {
+                checkImgUrl(e.currentTarget);
+                imgPreview(e.currentTarget);
+            }
+        });
+}
+
+function stopListeningToImgPreview() {
+    $('div.image-preview img').off("error");
+    $('div.image-preview img').off("load");
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToImgPreview() {
+    stopListeningToImgPreview();
+    $('div.image-preview img').
+        on("error", (e) => imgPreviewError(e.currentTarget));
+    $('div.image-preview img').
+        on("load", (e) => imgPreviewLoad(e.currentTarget));
 }
