@@ -2,7 +2,7 @@
 /* global getCategory, observerList, stopListeningToSelect, listenToSelect,
 stopListeningToMultiControls, listenToMultiControls, stopListeningToQControls,
 listenToQControls, categoryList, stopListeningToRControls, M,
-listenToRControls*/
+listenToRControls, listenToImgInputs, listenToImgPreview */
 
 function getCategoryIconClass(category) {
     return getCategory(category).category_icon;
@@ -112,13 +112,26 @@ function addMulti(elem) {
                     `type="checkbox"/>
                 <span></span>
             </label>
-        </div>`;
+        </div>
+        <!-- Optional Image URL -->
+        <div class="input-field col s12">
+            <span class="prefix light-blue-text text-darken-4 ` +
+                `center-align"></span>
+            <input id="a_img_${rId}_${qId}_${mlt}" ` +
+                `name="a_img_${rId}_${qId}_${mlt}" ` +
+                `type="url" class="img-url validate" value="">
+            <label for="a_img_${rId}_${qId}_${mlt}" data-error="Invalid URL" ` +
+                `data-default="Optional Image URL">` +
+                `Optional Image URL</label>
+        </div>
+        <div class="image-preview col s12 center-align"></div>`;
 
     stopListeningToMultiControls();
     answersContainer.append(answerHtml);
     $(answersContainer).prev().
         val(multiCount);
     listenToMultiControls();
+    listenToImgInputs();
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -127,6 +140,8 @@ function removeMulti(elem) {
     let mlt = parseInt(prefix.attr('data-multi')) - 1;
     let inputField = prefix.closest('.input-field');
     let checkboxContainer = inputField.next();
+    let imgInputContainer = checkboxContainer.next();
+    let imgPreviewContainer = imgInputContainer.next();
     let answersContainer = inputField.closest('.answers-container');
     let multiCount = parseInt($(answersContainer).prev().
         val()) - 1;
@@ -148,6 +163,9 @@ function removeMulti(elem) {
 
     inputField.remove();
     checkboxContainer.remove();
+    imgInputContainer.remove();
+    imgPreviewContainer.remove();
+    listenToImgInputs();
     $(answersContainer).prev().
         val(multiCount);
     listenToMultiControls();
@@ -174,7 +192,17 @@ function checkBoxMulti(elem) {
             <label for="answer_${rId}_${qId}" data-error="Invalid Answer" ` +
                 `data-default="Answer ${rId}_${qId}">Answer ${rId}_${qId}` +
                 `</label>
-        </div>`;
+        </div>
+        <!-- Optional Image URL -->
+        <div class="input-field col s12">
+            <span class="prefix light-blue-text text-darken-4 center-align">` +
+                `</span>
+            <input id="a_img_${rId}_${qId}" name="a_img_${rId}_${qId}" ` +
+                `type="url" class="img-url validate" value="">
+            <label for="a_img_${rId}_${qId}" data-error="Invalid URL" ` +
+                `data-default="Optional Image URL">Optional Image URL</label>
+        </div>
+        <div class="image-preview col s12 center-align"></div>`;
     let multiCount = 0;
     if ($(elem).prop('checked')) {
         multiCount = 1;
@@ -214,7 +242,21 @@ function checkBoxMulti(elem) {
                             `type="checkbox"/>
                         <span></span>
                     </label>
-                </div>`;
+                </div>
+                <!-- Optional Image URL -->
+                <div class="input-field col s12">
+                    <span class="prefix light-blue-text text-darken-4 ` +
+                        `center-align"></span>
+                    <input id="a_img_${rId}_${qId}_${multiCount}" ` +
+                        `name="a_img_${rId}_${qId}_${multiCount}" ` +
+                        `type="url" class="img-url validate" value="">
+                    <label for="a_img_${rId}_${qId}_${multiCount}" ` +
+                        `data-error="Invalid URL" ` +
+                        `data-default="Optional Image URL">` +
+                        `Optional Image URL</label>
+                </div>
+                <div class="image-preview col s12 center-align"></div>`;
+
             if (multiCount < 3) {
                 multiCount += 1;
                 buildHtml();
@@ -228,6 +270,7 @@ function checkBoxMulti(elem) {
     targetField.html(htmlContent);
     $(`#multiCount_${rId}_${qId}`).val(multiCount);
     listenToMultiControls();
+    listenToImgInputs();
 }
 
 function checkBoxChanged(elem) {
@@ -290,6 +333,20 @@ function addQ(elem) {
                         `data-error="Invalid Question" ` +
                         `data-default="Question ${qId}">Question ${qId}</label>
                 </div>
+                <!-- Optional Image URL -->
+                <div class="input-field col s12">
+                    <span class="prefix light-blue-text text-darken-4 ` +
+                        `center-align"></span>
+                    <input id="q_img_${rId}_${qId}" ` +
+                        `name="q_img_${rId}_${qId}" ` +
+                        `type="url" class="img-url validate" value="">
+                    <label for="q_img_${rId}_${qId}" ` +
+                        `data-error="Invalid URL" ` +
+                        `data-default="Optional Image URL">` +
+                        `Optional Image URL</label>
+                </div>
+                <div class="image-preview col s12 center-align">
+                </div>
                 <!-- Multiple Choice? -->
                 <span class="title col s12">` +
                     `Is this a multiple choice Question?</span>
@@ -321,6 +378,19 @@ function addQ(elem) {
                             `data-error="Invalid Answer" ` +
                             `data-default="Answer ${qId}">Answer ${qId}</label>
                     </div>
+                    <!-- Optional Image URL -->
+                    <div class="input-field col s12">
+                        <span class="prefix light-blue-text text-darken-4 ` +
+                            `center-align"></span>
+                        <input id="a_img_${rId}_${qId}" ` +
+                            `name="a_img_${rId}_${qId}" type="url" ` +
+                            `class="img-url validate" value="">
+                        <label for="a_img_${rId}_${qId}" ` +
+                            `data-error="Invalid URL" ` +
+                            `data-default="Optional Image URL"> ` +
+                            `Optional Image URL</label>
+                    </div>
+                    <div class="image-preview col s12 center-align"></div>
                 </div>
             </div>
         </div>
@@ -332,6 +402,7 @@ function addQ(elem) {
     $(`#questionCount_${rId}`).val(questionCount);
     listenToQControls();
     listenToCheckbox();
+    listenToImgInputs();
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -488,6 +559,26 @@ function addRound(elem) {
                                                     Question 1
                                             </label>
                                         </div>
+                                        <!-- Optional Image URL -->
+                                        <div class="input-field col s12">
+                                            <span class="prefix ` +
+                                                `light-blue-text ` +
+                                                `text-darken-4 center-align">` +
+                                                `</span>
+                                            <input id="q_img_${rId}_1" ` +
+                                                `name="q_img_${rId}_1" ` +
+                                                `type="url" ` +
+                                                `class="img-url validate" ` +
+                                                `value="">
+                                            <label for="q_img_${rId}_1" ` +
+                                                `data-error="Invalid URL" ` +
+                                                `data-default=` +
+                                                    `"Optional Image URL">
+                                                Optional Image URL
+                                            </label>
+                                        </div>
+                                        <div class="image-preview col s12 ` +
+                                            `center-align"></div>
                                         <!-- Multiple Choice? -->
                                         <span class="title col s12">
                                             Is this a multiple choice Question?
@@ -536,6 +627,28 @@ function addRound(elem) {
                                                         Answer 1
                                                 </label>
                                             </div>
+                                            <!-- Optional Image URL -->
+                                            <div class="input-field col s12">
+                                                <span class="prefix ` +
+                                                    `light-blue-text ` +
+                                                    `text-darken-4 ` +
+                                                    `center-align"></span>
+                                                <input id="a_img_${rId}_1" ` +
+                                                    `name="a_img_${rId}_1" ` +
+                                                    `type="url" ` +
+                                                    `class="img-url ` +
+                                                        `validate" ` +
+                                                    `value="">
+                                                <label for="a_img_${rId}_1" ` +
+                                                    `data-error=` +
+                                                        `"Invalid URL" ` +
+                                                    `data-default=` +
+                                                        `"Optional Image URL"` +
+                                                    `>Optional Image URL</label>
+                                            </div>
+                                            <div class="image-preview col ` +
+                                                `s12 center-align">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -565,6 +678,7 @@ function addRound(elem) {
     if (quizCategory !== 'general knowledge') {
         $(`#roundCategory_${rId}`).attr('disabled', true);
     }
+    listenToImgInputs();
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -604,6 +718,72 @@ function removeRound(elem) {
     listenToCheckbox();
 }
 
+// eslint-disable-next-line no-unused-vars
+function imgPreviewLoad(elem) {
+    let self = $(elem);
+    let img = {
+        'height': self.height(),
+        'width': self.width()
+    };
+    let max = 600;
+    let val;
+    if (img.width > img.height) {
+        val = (max / 100) * ((img.height / img.width) * 100);
+        self.height(val);
+
+    } else {
+        val = (max / 100) * ((img.width / img.height) * 100);
+        self.width(val);
+    }
+    $(elem).next().
+        remove();
+    $(elem).removeClass('hidden');
+}
+
+// eslint-disable-next-line no-unused-vars
+function imgPreviewError(elem) {
+    $(elem).next().
+        remove();
+    $(elem).removeClass('hidden');
+    $(elem).attr('alt', "Unable to preview Image.  Please check the URL.");
+    $(elem).attr('style', "padding: 10px; border: solid 1px black");
+}
+
+function imgPreviewPreloader(elem) {
+    let html = `
+        <div class="preloader-container">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    $(elem).append(html);
+}
+
+// eslint-disable-next-line no-unused-vars
+function imgPreview(elem) {
+    let imgUrl = $(elem).val();
+    let target = $(elem).closest('.input-field').
+    next();
+    if (imgUrl.length === 0) {
+        target.html('');
+        return;
+    }
+    $(target).html(`<img class="hidden" src="${imgUrl}" ` +
+        `alt="Image Preview"></img>`);
+    imgPreviewPreloader(target);
+    listenToImgPreview();
+}
+
 $(function() {
     listenToCheckbox();
     listenToSelect();
@@ -612,4 +792,5 @@ $(function() {
     reinitSelectOnDisabled($('.round-category'));
     listenToRControls();
     listenToQControls();
+    listenToImgInputs();
 });
