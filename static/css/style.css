@@ -349,3 +349,8 @@ form .user-search .search-radio-row {
     line-height: 1;
     font-weight: 400;
 }
+
+#createQuiz div.col.image-preview {
+    margin-bottom: 1rem;
+    padding-left: 3.75rem;
+}
