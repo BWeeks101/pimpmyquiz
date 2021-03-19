@@ -22,10 +22,48 @@ mongo = PyMongo(app)
 @app.route("/")
 @app.route("/home")
 def home():
-    if 'user' not in session:
-        return redirect(url_for("login"))
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        # Get method
+        user_quiz_query = [{
+                    '$match': {
+                        'author_id': auth_state['id']
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'categories',
+                        'localField': 'category_id',
+                        'foreignField': '_id',
+                        'as': 'category_details'
+                    }
+                }, {
+                    '$project': {
+                        '_id': 0,
+                        'copy_of': 0,
+                        'author_id': 0,
+                        'category_id': 0,
+                        'date': 0,
+                        'public': 0,
+                        'category_details._id': 0
+                    }
+                }, {
+                    '$sort': {
+                        'title': 1
+                    }
+                }]
 
-    return render_template("home.html")
+        quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
+        return render_template("home.html", quizzes=quiz_data)
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -170,6 +208,9 @@ def auth_user(auth_criteria):
 
         return {'auth': auth, 'id': uid, 'reason': auth_vals}
 
+
+# User Administration console
+# Access restricted to Global Admin and User Account Admin.
 @app.route("/admin_users", methods=["GET", "POST"])
 def admin_users():
     auth_criteria = {
@@ -918,8 +959,9 @@ def new_quiz():
                 {'_id': 1}
         )['_id']
 
+        quiz_category = request.form.get('quizCategory')
         category_id = mongo.db.categories.find_one(
-            {'category': request.form.get('quizCategory')},
+            {'category': quiz_category},
             {'_id': 1}
         )['_id']
 
@@ -947,13 +989,17 @@ def new_quiz():
         round_count = int(request.form.get('roundCount')) + 1
         for rId in range(1, round_count):
             rId = str(rId)
-            round_category_id = mongo.db.categories.find_one(
-                {'category': request.form.get('roundCategory_' + rId)},
-                {'_id': 1}
-            )['_id']
+            if (quiz_category == 'general knowledge'):
+                round_category_id = mongo.db.categories.find_one(
+                    {'category': request.form.get('roundCategory_' + rId)},
+                    {'_id': 1}
+                )['_id']
+            else:
+                round_category_id = category_id
 
             create_round = {
                 'quiz_id': quiz_id,
+                'round_num': int(rId),
                 'title': request.form.get('round_title_' + rId),
                 'author_id': author_id,
                 'date': create_quiz['date'],
@@ -985,6 +1031,7 @@ def new_quiz():
                     'author_id': author_id,
                     'date': create_quiz['date'],
                     'round_id': round_id,
+                    'question_num': int(qId),
                     'question_text': request.form.get(
                         'question_' + rId + '_' + qId
                     ),
@@ -1030,6 +1077,7 @@ def new_quiz():
                             correct = True
 
                         multi_array.append({
+                            'option_num': int(multi),
                             'answer_text': answer_text,
                             'correct': correct,
                             'answer_img_url': answer_url
