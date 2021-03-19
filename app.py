@@ -133,7 +133,8 @@ def auth_user(auth_criteria):
     else:
         is_admin = mongo.db.users.find_one(
             {'user_id': session['user'].lower()},
-            {'_id': 0, 'role_id': 1})
+            {'_id': 1, 'role_id': 1})
+        uid = is_admin['_id']
         role = mongo.db.user_roles.find_one(
             {'_id': ObjectId(is_admin['role_id'])})
         is_admin = mongo.db.role_groups.find_one(
@@ -144,6 +145,7 @@ def auth_user(auth_criteria):
             is_admin = False
         role = role['role']
         auth_vals = {'auth': True, 'is_admin': is_admin, 'role': role}
+        auth = False
         score = 0
         score_target = len(auth_criteria.keys())
         # print('Auth Requires Score of: ' + str(score_target))
@@ -164,10 +166,9 @@ def auth_user(auth_criteria):
                         break
         # print('score: ' + str(score))
         if (score == score_target):
-            return {'auth': True, 'reason': auth_vals}
-        else:
-            return {'auth': False, 'reason': auth_vals}
+            auth = True
 
+        return {'auth': auth, 'id': uid, 'reason': auth_vals}
 
 @app.route("/admin_users", methods=["GET", "POST"])
 def admin_users():
