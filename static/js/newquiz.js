@@ -592,7 +592,8 @@ function addRound(elem) {
                                                     `"quizMultiInput_` +
                                                         `${rId}_1" ` +
                                                     `class="quizMulti" ` +
-                                                    `name="quizMulti-1" ` +
+                                                    `name="quizMulti_` +
+                                                        `${rId}_1" ` +
                                                     `type="checkbox"/>
                                                 <span>Multiple Choice?</span>
                                             </label>
