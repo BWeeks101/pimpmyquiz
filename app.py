@@ -58,7 +58,17 @@ def home():
                 }]
 
         quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
-        return render_template("home.html", quizzes=quiz_data)
+        print(quiz_data[0])
+        quizzes = []
+        for quiz in quiz_data:
+            quizzes.append({
+                'title': quiz['title'],
+                'category': quiz['category_details'][0]['category'],
+                'category_icon': quiz['category_details'][0]['category_icon']
+
+            })
+        print(quizzes)
+        return render_template("home.html", quizzes=quizzes)
 
     print(auth_state['auth'])
     print(auth_state['reason'])
