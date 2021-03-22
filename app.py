@@ -30,45 +30,7 @@ def home():
         print(auth_state['auth'])
         print(auth_state['reason'])
         # Get method
-        user_quiz_query = [{
-                    '$match': {
-                        'author_id': auth_state['id']
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'categories',
-                        'localField': 'category_id',
-                        'foreignField': '_id',
-                        'as': 'category_details'
-                    }
-                }, {
-                    '$project': {
-                        '_id': 0,
-                        'copy_of': 0,
-                        'author_id': 0,
-                        'category_id': 0,
-                        'date': 0,
-                        'public': 0,
-                        'category_details._id': 0
-                    }
-                }, {
-                    '$sort': {
-                        'title': 1
-                    }
-                }]
-
-        quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
-        print(quiz_data[0])
-        quizzes = []
-        for quiz in quiz_data:
-            quizzes.append({
-                'title': quiz['title'],
-                'category': quiz['category_details'][0]['category'],
-                'category_icon': quiz['category_details'][0]['category_icon']
-
-            })
-        print(quizzes)
-        return render_template("home.html", quizzes=quizzes)
+        return render_template("home.html")
 
     print(auth_state['auth'])
     print(auth_state['reason'])
@@ -655,6 +617,130 @@ def buildUserHtml(user_data):
     return html
 
 
+# Returns formatted HTML output for quiz data sets
+def buildQuizHtml(quiz_data):
+    html = '''
+    <ul class="collection">'''
+    for quiz in quiz_data:
+        html += '''
+            <li class="collection-item avatar light-blue-text text-darken-4">
+                <h4>
+                    <i class="fas ''' + quiz['category_icon']['class']
+        html += ''' fa-fw"></i>
+                    <span>''' + quiz['title'] + '''</span>
+                </h4>
+            </li>
+        '''
+    html += '</ul>'
+
+    return html
+
+
+# Quiz Search
+# Return batch of 10 quizzes for current user
+@app.route("/quizSearch")
+def quizSearch():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        page = request.args.get('page')
+        if (page == 'undefined'):
+            page = 1
+        else:
+            page = int(page)
+        searchStr = request.args.get('searchStr')
+        if (searchStr == 'undefined'):
+            searchStr = '*'
+        limit = 10
+        skip = (page * limit) - limit
+
+        user_quiz_query = [{
+                    '$match': {
+                        'author_id': auth_state['id']
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'categories',
+                        'localField': 'category_id',
+                        'foreignField': '_id',
+                        'as': 'category_details'
+                    }
+                }, {
+                    '$facet': {
+                        'results': [{
+                            '$project': {
+                                '_id': 0,
+                                'copy_of': 0,
+                                'author_id': 0,
+                                'category_id': 0,
+                                'date': 0,
+                                'public': 0,
+                                'category_details._id': 0
+                            }
+                        }, {
+                            '$sort': {
+                                 'title': 1
+                            }
+                        }, {
+                            '$skip': skip
+                        }, {
+                            '$limit': limit
+                        }],
+                        'total_results': [{
+                            '$group': {
+                                '_id': 'null',
+                                'total': {
+                                    '$sum': 1
+                                }
+                            }
+                        }]
+                    }
+                }]
+
+        quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
+        total_quizzes = 0
+        if quiz_data[0]['total_results']:
+            total_quizzes = int(quiz_data[0]['total_results'][0]['total'])
+
+        # Calculate total pages based on:
+        #   total users / number of returned records
+        # total_users // limit
+        #   divide number of users by the page limit, returning an integer
+        #   (floor division)
+        # total_users % limit > 0
+        #   if remainder of total_users / limit is greater than 0, add 1
+        #   (modulus operation, then if result > 0 return 1 (true))
+        total_pages = (total_quizzes // limit) + (total_quizzes % limit > 0)
+        print(total_pages)
+        quizzes = []
+        for quiz in quiz_data[0]['results']:
+            quizzes.append({
+                'title': quiz['title'],
+                'category': quiz['category_details'][0]['category'],
+                'category_icon': quiz['category_details'][0]['category_icon']
+
+            })
+        html = buildQuizHtml(quizzes)
+
+        results = {
+            'request': {
+                'quizSearch': searchStr,
+                'currentPage': page,
+                'totalPages': total_pages
+            },
+            'total_results': total_quizzes,
+            'type': 'quizSearch',
+            'html': html,
+            'quiz_data': quizzes
+        }
+
+        return results
+
+
 # User Search
 # Return batch of 10 users for provided search criteria.
 # Access restricted to Global Admin and User Account Admin.
@@ -796,7 +882,7 @@ def userSearch():
 
         results = {
             'request': {
-                'search': searchStr,
+                'userSearch': searchStr,
                 'currentPage': page,
                 'totalPages': total_pages
             },
