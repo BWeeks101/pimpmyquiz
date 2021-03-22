@@ -1,0 +1,1 @@
+$('#quizCollection .results-control .results-control-first')[0].click();
