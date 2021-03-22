@@ -3,6 +3,7 @@
 
 let recordPositions = [];
 let userSearchPositions = {};
+let quizSearchPositions = {};
 let userList;
 
 function addRecordPositions(obj) {
@@ -27,8 +28,8 @@ function addRecordPositions(obj) {
         }
         recordPositions.push(obj);
 
-    } else if ('search' in obj) {
-        userSearchPositions = {'search': obj.search};
+    } else if ('userSearch' in obj) {
+        userSearchPositions = {'userSearch': obj.userSearch};
 
         if ('totalPages' in obj) {
             userSearchPositions.totalPages = obj.totalPages;
@@ -36,6 +37,16 @@ function addRecordPositions(obj) {
 
         if ('currentPage' in obj) {
             userSearchPositions.currentPage = obj.currentPage;
+        }
+    } else if ('quizSearch' in obj) {
+        quizSearchPositions = {'quizSearch': obj.quizSearch};
+
+        if ('totalPages' in obj) {
+            quizSearchPositions.totalPages = obj.totalPages;
+        }
+
+        if ('currentPage' in obj) {
+            quizSearchPositions.currentPage = obj.currentPage;
         }
     }
 }
@@ -51,11 +62,17 @@ function getRecordPosition(key) {
                 "currentPage": record.currentPage
             };
         }
-    } else if ('search' in key) {
+    } else if ('userSearch' in key) {
         return {
-            "search": userSearchPositions.search,
+            "userSearch": userSearchPositions.userSearch,
             "totalPages": userSearchPositions.totalPages,
             "currentPage": userSearchPositions.currentPage
+        };
+    } else if ('quizSearch' in key) {
+        return {
+            "quizSearch": quizSearchPositions.quizSearch,
+            "totalPages": quizSearchPositions.totalPages,
+            "currentPage": quizSearchPositions.currentPage
         };
     }
 }
@@ -86,8 +103,13 @@ function updateRecordControls(elem, key) {
     let record;
     if ('role' in key) {
         record = getRecordPosition({'role': key.role});
-    } else if ('search' in key) {
-        record = getRecordPosition({'search': key.search});
+    } else if ('userSearch' in key) {
+        record = getRecordPosition({'userSearch': key.userSearch});
+        if (!record) {
+            return;
+        }
+    } else if ('quizSearch' in key) {
+        record = getRecordPosition({'quizSearch': key.quizSearch});
         if (!record) {
             return;
         }
@@ -202,16 +224,21 @@ function xHttpRenderResult(elem, result) {
     };
 
     let html = result.html;
-    if (result.type === "userSearch") {
+    if (result.type === "quizSearch") {
         addRecordPositions(result.request);
-        updateRecordControls(elem, {'search': result.request.search});
+        updateRecordControls(elem, {'quizSearch': result.request.quizSearch});
+    } else if (result.type === "userSearch") {
+        addRecordPositions(result.request);
+        updateRecordControls(elem, {'userSearch': result.request.userSearch});
+        // eslint-disable-next-line no-unused-vars
+        userList = createUserArray(result.user_data);
     } else if (result.type === "getUsers") {
         addRecordPositions(result.request);
         refreshCollapsibleHeaders(result.totals);
         refreshRecordControls();
+        // eslint-disable-next-line no-unused-vars
+        userList = createUserArray(result.user_data);
     }
-    // eslint-disable-next-line no-unused-vars
-    userList = createUserArray(result.user_data);
     elem.innerHTML = html;
 }
 
@@ -228,6 +255,12 @@ function xHttpRenderPreloader(elem) {
     elem.innerHTML = html;
 }
 
+/* Send new xHttp Request */
+/* Expects: */
+/*      requestObj: preformatted string, or object with the following */
+/*                  properties: */
+/*                              type:   request type keyword */
+/*                              params: key/value pairs for each property */
 function xHttpRequest(requestObj, elem) {
     if (elem) {
         xHttpRenderPreloader(elem);
@@ -260,13 +293,23 @@ function xHttpRequest(requestObj, elem) {
 function getRecordPage(elem, key, currentPage) {
     let addRecordObj;
     let request;
-    if ('search' in key) {
-        addRecordObj = ({'search': key.search, currentPage});
+    if ('quizSearch' in key) {
+        addRecordObj = ({'quizSearch': key.quizSearch, currentPage});
+        request = {
+            'type':
+                'quizSearch',
+            'params': {
+                'searchStr': key.quizSearch,
+                'page': currentPage
+            }
+        };
+    } else if ('userSearch' in key) {
+        addRecordObj = ({'userSearch': key.userSearch, currentPage});
         request = {
             'type':
                 'userSearch',
             'params': {
-                'searchStr': key.search,
+                'searchStr': key.userSearch,
                 'page': currentPage
             }
         };
@@ -292,12 +335,21 @@ function getCurrentRecord(elem, key) {
     let totalPages;
     let currentPage;
     let request;
-    if ('search' in key) {
+    if ('quizSearch' in key) {
+        request = {
+            'type':
+                'quizSearch',
+            'params': {
+                'searchStr': key.quizSearch,
+                'page': quizSearchPositions.currentPage
+            }
+        };
+    } else if ('userSearch' in key) {
         request = {
             'type':
                 'userSearch',
             'params': {
-                'searchStr': key.search,
+                'searchStr': key.userSearch,
                 'page': userSearchPositions.currentPage
             }
         };
@@ -328,12 +380,21 @@ function getSelectedRecord(elem, key, pageNum) {
     let totalPages = recordPosition.totalPages;
     let currentPage = Math.ceil(Number(pageNum));
     let request;
-    if ('search' in key) {
+    if ('quizSearch' in key) {
+        request = {
+            'type':
+                'quizSearch',
+            'params': {
+                'searchStr': key.quizSearch,
+                'page': quizSearchPositions.currentPage
+            }
+        };
+    } else if ('userSearch' in key) {
         request = {
             'type':
                 'userSearch',
             'params': {
-                'searchStr': key.search,
+                'searchStr': key.userSearch,
                 'page': currentPage
             }
         };
@@ -356,7 +417,7 @@ function getSelectedRecord(elem, key, pageNum) {
     xHttpRequest(request, elem);
 }
 
-function getSearchResults(self) {
+function getUserSearchResults(self) {
     let value = self.parentElement.previousElementSibling.
          firstElementChild.querySelector('input').value;
     if (value === "" || value === undefined || value.len < 2) {
@@ -371,7 +432,7 @@ function getSearchResults(self) {
         }
     };
     addRecordPositions({
-        'search': request.params.searchStr,
+        'userSearch': request.params.searchStr,
         'currentPage': 1
     });
     xHttpRequest(request, $('#userSearchResults')[0]);
@@ -380,11 +441,13 @@ function getSearchResults(self) {
 function listenToPageNumberInputs() {
     const listenerAction = (self) => {
         let target = self.parentElement.nextElementSibling;
-        let isSearch = self.parentElement.parentElement.
-            parentElement.classList.contains('user-search');
+        let isUserSearch = self.parentElement.parentElement.
+                parentElement.classList.contains('user-search');
         let key;
-        if (isSearch) {
-            key = {'search': userSearchPositions.search};
+        if (self.parentElement.parentElement.id === 'quizCollection') {
+            key = {'quizSearch': quizSearchPositions.quizSearch};
+        } else if (isUserSearch) {
+            key = {'userSearch': userSearchPositions.userSearch};
         } else {
             key = {'role': self.parentElement.parentElement.parentElement.
                 previousElementSibling.getAttribute('data-role')};
@@ -408,11 +471,13 @@ function listenToPageNumberInputs() {
     };
 
     const listenerReset = (self) => {
-        let isSearch = self.parentElement.parentElement.
-            parentElement.classList.contains('user-search');
+        let isUserSearch = self.parentElement.parentElement.
+                parentElement.classList.contains('user-search');
         let key;
-        if (isSearch) {
-            key = {'search': userSearchPositions.search};
+        if (self.parentElement.parentElement.id === 'quizCollection') {
+            key = {'quizSearch': quizSearchPositions.quizSearch};
+        } else if (isUserSearch) {
+            key = {'userSearch': userSearchPositions.userSearch};
         } else {
             key = {'role': self.parentElement.parentElement.parentElement.
             previousElementSibling.getAttribute('data-role')};
@@ -437,11 +502,13 @@ function getRecord(option, self) {
         return;
     }
     let target = self.parentElement.nextElementSibling;
-    let isSearch = self.parentElement.parentElement.
-        parentElement.classList.contains('user-search');
+    let isUserSearch = self.parentElement.parentElement.
+            parentElement.classList.contains('user-search');
     let key;
-    if (isSearch) {
-        key = {'search': userSearchPositions.search};
+    if (self.parentElement.parentElement.id === 'quizCollection') {
+        key = {'quizSearch': quizSearchPositions.quizSearch};
+    } else if (isUserSearch) {
+        key = {'userSearch': userSearchPositions.userSearch};
     } else {
         key = {'role': self.parentElement.parentElement.parentElement.
             previousElementSibling.getAttribute("data-role")};
@@ -496,13 +563,13 @@ function searchCreateListeners() {
     $("#userSearch").on("keyup", (e) => {
         if (e.key === "Enter") {
             inputHelperLabel("userSearch");
-            getSearchResults($('#userSearch')[0].parentElement.parentElement.
-                 nextElementSibling.firstElementChild);
+            getUserSearchResults($('#userSearch')[0].parentElement.
+                parentElement.nextElementSibling.firstElementChild);
         }
     });
 
     $("#searchButton").
-        on("click", () => getSearchResults($("#searchButton")[0]));
+        on("click", () => getUserSearchResults($("#searchButton")[0]));
 }
 
 listenToRecordControls();
