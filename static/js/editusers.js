@@ -197,8 +197,9 @@ function listenToUserSearchCollapsibleHeaders() {
         let self = e.currentTarget;
         let selector = ".collapsible .results-data";
         let target = self.nextElementSibling.querySelector(selector);
-        let key = {'search': getRecordPosition({'search': ''}).search};
-        if (key.search) {
+        let key = {'userSearch': getRecordPosition({'userSearch': ''}).
+                        userSearch};
+        if (key.userSearch) {
             if (!self.parentElement.classList.contains("active")) {
                 getCurrentRecord(target, key);
             }
