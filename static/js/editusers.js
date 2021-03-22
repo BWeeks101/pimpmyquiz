@@ -1,5 +1,5 @@
 /* global modalChangePasswordCollapsible, M, pWordValidation,
-inputHelperLabel, getRole, getUser */
+inputHelperLabel, getRole, getUser, getCurrentRecord, getRecordPosition */
 
 function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
     checkBox = "#" + checkBox;
@@ -177,3 +177,34 @@ function modalPop(userId) {
 
     modalCreateListeners();
 }
+
+function listenToUserRoleCollapsibleHeaders() {
+    $(".collapsible-user-roles .collapsible-header[data-role]").
+        on("click", (e) => {
+            let self = e.currentTarget;
+            let selector = ".collapsible .results-data";
+            let target = self.nextElementSibling.querySelector(selector);
+            let key;
+            if (!self.parentElement.classList.contains("active")) {
+                key = {'role': self.getAttribute("data-role")};
+                getCurrentRecord(target, key);
+            }
+        });
+}
+
+function listenToUserSearchCollapsibleHeaders() {
+    $(".collapsible-search .collapsible-header").on("click", (e) => {
+        let self = e.currentTarget;
+        let selector = ".collapsible .results-data";
+        let target = self.nextElementSibling.querySelector(selector);
+        let key = {'search': getRecordPosition({'search': ''}).search};
+        if (key.search) {
+            if (!self.parentElement.classList.contains("active")) {
+                getCurrentRecord(target, key);
+            }
+        }
+    });
+}
+
+listenToUserRoleCollapsibleHeaders();
+listenToUserSearchCollapsibleHeaders();

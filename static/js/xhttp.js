@@ -286,6 +286,7 @@ function getRecordPage(elem, key, currentPage) {
     xHttpRequest(request, elem);
 }
 
+// eslint-disable-next-line no-unused-vars
 function getCurrentRecord(elem, key) {
     let recordPosition = getRecordPosition(key);
     let totalPages;
@@ -374,34 +375,6 @@ function getSearchResults(self) {
         'currentPage': 1
     });
     xHttpRequest(request, $('#userSearchResults')[0]);
-}
-
-function listenToUserRoleCollapsibleHeaders() {
-    $(".collapsible-user-roles .collapsible-header[data-role]").
-        on("click", (e) => {
-            let self = e.currentTarget;
-            let selector = ".collapsible .results-data";
-            let target = self.nextElementSibling.querySelector(selector);
-            let key;
-            if (!self.parentElement.classList.contains("active")) {
-                key = {'role': self.getAttribute("data-role")};
-                getCurrentRecord(target, key);
-            }
-        });
-}
-
-function listenToUserSearchCollapsibleHeaders() {
-    $(".collapsible-search .collapsible-header").on("click", (e) => {
-        let self = e.currentTarget;
-        let selector = ".collapsible .results-data";
-        let target = self.nextElementSibling.querySelector(selector);
-        let key = {'search': getRecordPosition({'search': ''}).search};
-        if (key.search) {
-            if (!self.parentElement.classList.contains("active")) {
-                getCurrentRecord(target, key);
-            }
-        }
-    });
 }
 
 function listenToPageNumberInputs() {
@@ -534,6 +507,5 @@ function searchCreateListeners() {
 
 listenToRecordControls();
 searchCreateListeners();
-listenToUserRoleCollapsibleHeaders();
-listenToUserSearchCollapsibleHeaders();
+
 listenToPageNumberInputs();
