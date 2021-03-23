@@ -1,7 +1,8 @@
-/* global addRecordPositions, inputHelperLabel, xHttpRequest */
+/* global addRecordPositions, inputHelperLabel, xHttpRequest, setSelectValue */
 
 function getQuizSearchResults() {
     let value = $('#quizSearch').val();
+    let category = $('#quizCategory').val();
     if (value === "" || value === undefined || value.length < 2) {
         return;
     }
@@ -10,7 +11,8 @@ function getQuizSearchResults() {
             'quizSearch',
         'params': {
             'searchStr': value,
-            'page': 1
+            'page': 1,
+            category
         }
     };
     addRecordPositions({
@@ -34,5 +36,34 @@ function quizSearchCreateListeners() {
         on("click", () => getQuizSearchResults());
 }
 
-$('#quizCollection .results-control .results-control-first')[0].click();
-quizSearchCreateListeners();
+// eslint-disable-next-line no-unused-vars
+function listenToSelect() {
+    let selector = ".select-container .select-wrapper ";
+    selector += "ul li.optgroup span div.subopt";
+    $(selector).on("click", (e) => {
+        let self = e.currentTarget;
+        let selectContainer = self.closest('.select-container');
+        let select = $('.select-wrapper select', selectContainer);
+        let value = self.innerText.trim();
+        setSelectValue(select, value);
+    });
+}
+
+function getInitialQuizList() {
+    let request = {
+        'type':
+            'quizSearch',
+        'params': {
+            'searchStr': '*',
+            'page': 1,
+            'category': 'All'
+        }
+    };
+    xHttpRequest(request, $('#quizSearchResults')[0]);
+}
+
+$(function() {
+    getInitialQuizList();
+    quizSearchCreateListeners();
+    listenToSelect();
+});
