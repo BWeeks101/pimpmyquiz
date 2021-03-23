@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
     <h3 class="light-blue-text text-darken-4 center-align">My Quizzes</h3>
+    <div class="quiz-search container">
+        <!-- quiz search-->
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="fas fa-question prefix light-blue-text text-darken-4"></i>
+                <input id="quizSearch" name="quizSearch" type="text" minlength="2" value="" class="validate">
+                <label class="truncate" for="quizSearch" data-error="Please Enter at least 2 Characters." data-default="Quiz Search">Quiz Search</label>
+            </div>
+        </div>
+        <!-- search button -->
+        <div class="row search-action-container">
+            <button id="searchButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow">
+                Search <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
     <div id="quizCollection" class="container">
         <div class="results-control hidden">
             <a href="#" class="results-control-first">First</a>
