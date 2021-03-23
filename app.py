@@ -622,8 +622,9 @@ def buildQuizHtml(quiz_data):
     html = '''
     <ul class="collection">'''
     for quiz in quiz_data:
-        secClass = 'class="secondary-content light-blue-text text-darken-4" '
-        secHref = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
+        secUrlClass = 'class="light-blue-text text-darken-4" '
+        secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
+        secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6>
@@ -631,9 +632,14 @@ def buildQuizHtml(quiz_data):
         html += ''' fa-fw"></i>
                     <span>''' + quiz['title'] + '''</span>
                 </h6>
-                <a ''' + secClass + secHref + '''>
-                    Edit
-                </a>
+                <div class="secondary-content light-blue-text text-darken-4">
+                    <a ''' + secUrlClass + secHrefView + '''>
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a ''' + secUrlClass + secHrefEdit + '''>
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </div>
             </li>
         '''
     html += '</ul>'
