@@ -622,6 +622,8 @@ def buildQuizHtml(quiz_data):
     html = '''
     <ul class="collection">'''
     for quiz in quiz_data:
+        secClass = 'class="secondary-content light-blue-text text-darken-4" '
+        secHref = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6>
@@ -629,6 +631,9 @@ def buildQuizHtml(quiz_data):
         html += ''' fa-fw"></i>
                     <span>''' + quiz['title'] + '''</span>
                 </h6>
+                <a ''' + secClass + secHref + '''>
+                    Edit
+                </a>
             </li>
         '''
     html += '</ul>'
@@ -673,13 +678,12 @@ def quizSearch():
                     '$facet': {
                         'results': [{
                             '$project': {
-                                '_id': 0,
-                                'copy_of': 0,
-                                'author_id': 0,
-                                'category_id': 0,
-                                'date': 0,
-                                'public': 0,
-                                'category_details._id': 0
+                                '_id': {
+                                    '$toString': "$_id"
+                                },
+                                'title': 1,
+                                'category_details.category': 1,
+                                'category_details.category_icon': 1
                             }
                         }, {
                             '$sort': {
@@ -719,6 +723,7 @@ def quizSearch():
         quizzes = []
         for quiz in quiz_data[0]['results']:
             quizzes.append({
+                'id': quiz['_id'],
                 'title': quiz['title'],
                 'category': quiz['category_details'][0]['category'],
                 'category_icon': quiz['category_details'][0]['category_icon']
