@@ -1,5 +1,6 @@
 /* global modalChangePasswordCollapsible, M, pWordValidation,
-inputHelperLabel, getRole, getUser, getCurrentRecord, getRecordPosition */
+inputHelperLabel, getRole, getUser, addRecordPositions, xHttpRequest,
+getCurrentRecord, getRecordPosition */
 
 function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
     checkBox = "#" + checkBox;
@@ -178,6 +179,27 @@ function modalPop(userId) {
     modalCreateListeners();
 }
 
+function getUserSearchResults(self) {
+    let value = self.parentElement.previousElementSibling.
+         firstElementChild.querySelector('input').value;
+    if (value === "" || value === undefined || value.len < 2) {
+        return;
+    }
+    let request = {
+        'type':
+            'userSearch',
+        'params': {
+            'searchStr': value,
+            'page': 1
+        }
+    };
+    addRecordPositions({
+        'userSearch': request.params.searchStr,
+        'currentPage': 1
+    });
+    xHttpRequest(request, $('#userSearchResults')[0]);
+}
+
 function listenToUserRoleCollapsibleHeaders() {
     $(".collapsible-user-roles .collapsible-header[data-role]").
         on("click", (e) => {
@@ -207,5 +229,21 @@ function listenToUserSearchCollapsibleHeaders() {
     });
 }
 
+function userSearchCreateListeners() {
+    $("#userSearch").on("focusout", () => inputHelperLabel("userSearch"));
+
+    $("#userSearch").on("keyup", (e) => {
+        if (e.key === "Enter") {
+            inputHelperLabel("userSearch");
+            getUserSearchResults($('#userSearch')[0].parentElement.
+                parentElement.nextElementSibling.firstElementChild);
+        }
+    });
+
+    $("#searchButton").
+        on("click", () => getUserSearchResults($("#searchButton")[0]));
+}
+
 listenToUserRoleCollapsibleHeaders();
 listenToUserSearchCollapsibleHeaders();
+userSearchCreateListeners();

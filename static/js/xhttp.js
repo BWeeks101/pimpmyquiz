@@ -417,27 +417,6 @@ function getSelectedRecord(elem, key, pageNum) {
     xHttpRequest(request, elem);
 }
 
-function getUserSearchResults(self) {
-    let value = self.parentElement.previousElementSibling.
-         firstElementChild.querySelector('input').value;
-    if (value === "" || value === undefined || value.len < 2) {
-        return;
-    }
-    let request = {
-        'type':
-            'userSearch',
-        'params': {
-            'searchStr': value,
-            'page': 1
-        }
-    };
-    addRecordPositions({
-        'userSearch': request.params.searchStr,
-        'currentPage': 1
-    });
-    xHttpRequest(request, $('#userSearchResults')[0]);
-}
-
 function listenToPageNumberInputs() {
     const listenerAction = (self) => {
         let target = self.parentElement.nextElementSibling;
@@ -557,22 +536,5 @@ function listenToRecordControls() {
     });
 }
 
-function searchCreateListeners() {
-    $("#userSearch").on("focusout", () => inputHelperLabel("userSearch"));
-
-    $("#userSearch").on("keyup", (e) => {
-        if (e.key === "Enter") {
-            inputHelperLabel("userSearch");
-            getUserSearchResults($('#userSearch')[0].parentElement.
-                parentElement.nextElementSibling.firstElementChild);
-        }
-    });
-
-    $("#searchButton").
-        on("click", () => getUserSearchResults($("#searchButton")[0]));
-}
-
 listenToRecordControls();
-searchCreateListeners();
-
 listenToPageNumberInputs();
