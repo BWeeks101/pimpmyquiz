@@ -561,7 +561,7 @@ def buildUserHtml(user_data):
             <ul class="collection">'''
     if user_data:
         for user in user_data:
-            iconClass = 'fas' + user['role_icon']['class'] + 'fa-fw'
+            iconClass = 'fas ' + user['role_icon']['class'] + ' fa-fw'
             userId = user['user_id']
             email = user['email']
             secClass = 'class="secondary-content light-blue-text '
@@ -624,11 +624,11 @@ def buildQuizHtml(quiz_data):
     for quiz in quiz_data:
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
-                <h4>
+                <h6>
                     <i class="fas ''' + quiz['category_icon']['class']
         html += ''' fa-fw"></i>
                     <span>''' + quiz['title'] + '''</span>
-                </h4>
+                </h6>
             </li>
         '''
     html += '</ul>'
