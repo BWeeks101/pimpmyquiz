@@ -419,7 +419,8 @@ function getSelectedRecord(elem, key, pageNum) {
 
 function listenToPageNumberInputs() {
     const listenerAction = (self) => {
-        let target = self.parentElement.nextElementSibling;
+        let target = $(self).parent().
+            next('.results-data')[0];
         let isUserSearch = self.parentElement.parentElement.
                 parentElement.classList.contains('user-search');
         let key;
