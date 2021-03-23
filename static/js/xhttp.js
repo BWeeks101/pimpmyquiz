@@ -93,7 +93,7 @@ function buildRequestString(requestObj) {
 }
 
 function updateRecordControls(elem, key) {
-    let rowControls = elem.previousElementSibling;
+    let rowControls = $(elem).prevAll('.results-control')[0];
     let first = rowControls.firstElementChild;
     let prev = first.nextElementSibling;
     let pageNumberInput = rowControls.querySelector('input.pageNumber');
@@ -420,7 +420,7 @@ function getSelectedRecord(elem, key, pageNum) {
 function listenToPageNumberInputs() {
     const listenerAction = (self) => {
         let target = $(self).parent().
-            next('.results-data')[0];
+            nextAll('.results-data')[0];
         let isUserSearch = self.parentElement.parentElement.
                 parentElement.classList.contains('user-search');
         let key;
@@ -482,7 +482,7 @@ function getRecord(option, self) {
         return;
     }
     let target = $(self).parent().
-        next('.results-data')[0];
+        nextAll('.results-data')[0];
     let isUserSearch = self.parentElement.parentElement.
             parentElement.classList.contains('user-search');
     let key;
