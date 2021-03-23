@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global getRole, createUserArray, inputHelperLabel */
+/* global getRole, createUserArray */
 
 let recordPositions = [];
 let userSearchPositions = {};
