@@ -1,37 +1,8 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global getCategory, observerList, stopListeningToSelect, listenToSelect,
+/* global observerList, stopListeningToSelect, listenToSelect,
 stopListeningToMultiControls, listenToMultiControls, stopListeningToQControls,
 listenToQControls, categoryList, stopListeningToRControls, M,
-listenToRControls, listenToImgInputs, listenToImgPreview */
-
-function getCategoryIconClass(category) {
-    return getCategory(category).category_icon;
-}
-
-function setSelectIcon(elem, value) {
-    let iconClass = getCategoryIconClass(value);
-    elem.addClass(iconClass);
-}
-
-function clearSelectIcon(elem, value) {
-    let iconClass = getCategoryIconClass(value);
-    elem.removeClass(iconClass);
-}
-
-function setSelectValue(elem, value) {
-    elem.each((i, el) => {
-        let selectContainer = el.closest('.select-container');
-        let selectIcon = $('i.prefix', selectContainer);
-        clearSelectIcon(selectIcon, $(el).val());
-        let selector = `.select-wrapper `;
-        selector += 'ul li.optgroup-option';
-        Object.keys($(selector, selectContainer)).
-            map((key) => $(selector, selectContainer)[key]).
-                find((obj) => obj.innerText === value).
-                    click();
-        setSelectIcon(selectIcon, value);
-    });
-}
+listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue */
 
 function getObserver(elem) {
     let observer = observerList.find((obj) => obj.elem === elem);

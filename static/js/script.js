@@ -135,6 +135,36 @@ function inputHelperLabel (elem) {
         css("color", labelColor);
 }
 
+function getCategoryIconClass(category) {
+    return getCategory(category).category_icon;
+}
+
+function setSelectIcon(elem, value) {
+    let iconClass = getCategoryIconClass(value);
+    elem.addClass(iconClass);
+}
+
+function clearSelectIcon(elem, value) {
+    let iconClass = getCategoryIconClass(value);
+    elem.removeClass(iconClass);
+}
+
+// eslint-disable-next-line no-unused-vars
+function setSelectValue(elem, value) {
+    elem.each((i, el) => {
+        let selectContainer = el.closest('.select-container');
+        let selectIcon = $('i.prefix', selectContainer);
+        clearSelectIcon(selectIcon, $(el).val());
+        let selector = `.select-wrapper `;
+        selector += 'ul li.optgroup-option';
+        Object.keys($(selector, selectContainer)).
+            map((key) => $(selector, selectContainer)[key]).
+                find((obj) => obj.innerText === value).
+                    click();
+        setSelectIcon(selectIcon, value);
+    });
+}
+
 //document ready
 $(function() {
     $('.sidenav').sidenav({edge: "right"});
