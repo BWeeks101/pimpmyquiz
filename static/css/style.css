@@ -206,35 +206,35 @@ form .user-search .search-radio-row {
     margin-left: 1rem;
 }
 
-.modal .subopt span:hover, #createQuiz .subopt span:hover {
+.modal .subopt span:hover, #createQuiz .subopt span:hover, .quiz-search .subopt span:hover {
     border-bottom: 1px solid #01579b;
 }
 
-.modal .optgroup-option, #createQuiz .optgroup-option {
+.modal .optgroup-option, #createQuiz .optgroup-option, .quiz-search .optgroup-option {
     display: none;
 }
 
-.modal .select-dropdown.dropdown-content li, #createQuiz .select-dropdown.dropdown-content li {
+.modal .select-dropdown.dropdown-content li, #createQuiz .select-dropdown.dropdown-content li, .quiz-search .select-dropdown.dropdown-content li {
 	background-color: rgba(0,0,0,0.08);
 }
 
-.modal .select-wrapper input.select-dropdown:focus, #createQuiz .select-wrapper input.select-dropdown:focus {
+.modal .select-wrapper input.select-dropdown:focus, #createQuiz .select-wrapper input.select-dropdown:focus, .quiz-search .select-wrapper input.select-dropdown:focus {
 	border-bottom: 1px solid #9e9e9e;
 }
 
-.modal .select-dropdown.dropdown-content li, .modal .select-dropdown.dropdown-content li:hover, #createQuiz .select-dropdown.dropdown-content li, #createQuiz .select-dropdown.dropdown-content li:hover {
+.modal .select-dropdown.dropdown-content li, .modal .select-dropdown.dropdown-content li:hover, #createQuiz .select-dropdown.dropdown-content li, #createQuiz .select-dropdown.dropdown-content li:hover, .quiz-search .select-dropdown.dropdown-content li, .quiz-search .select-dropdown.dropdown-content li:hover {
 	background-color: rgba(0,0,0,0);
 }
 
-.modal .select-dropdown li.optgroup, #createQuiz .select-dropdown li.optgroup {
+.modal .select-dropdown li.optgroup, #createQuiz .select-dropdown li.optgroup, .quiz-search .select-dropdown li.optgroup {
 	border-top: 0;
 }
 
-.modal .dropdown-content li, #createQuiz .dropdown-content li {
+.modal .dropdown-content li, #createQuiz .dropdown-content li, .quiz-search .dropdown-content li {
 	min-height: 40px;
 }
 
-.modal .dropdown-content li > a, .modal .dropdown-content li > span, #createQuiz .dropdown-content li > a, #createQuiz .dropdown-content li > span {
+.modal .dropdown-content li > a, .modal .dropdown-content li > span, #createQuiz .dropdown-content li > a, #createQuiz .dropdown-content li > span, .quiz-search .dropdown-content li > a, .quiz-search .dropdown-content li > span {
 	padding: 7px 16px;
 }
 
