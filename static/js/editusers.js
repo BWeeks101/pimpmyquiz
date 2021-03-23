@@ -182,7 +182,7 @@ function modalPop(userId) {
 function getUserSearchResults(self) {
     let value = self.parentElement.previousElementSibling.
          firstElementChild.querySelector('input').value;
-    if (value === "" || value === undefined || value.len < 2) {
+    if (value === "" || value === undefined || value.length < 2) {
         return;
     }
     let request = {
