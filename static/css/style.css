@@ -354,3 +354,15 @@ form .user-search .search-radio-row {
     margin-bottom: 1rem;
     padding-left: 3.75rem;
 }
+
+.quiz-search .row .input-field {
+    margin-bottom: 0;
+}
+
+#quizCollection {
+    margin-top: 0.5rem !important;
+}
+
+#quizSearchResults .collection-item.avatar {
+    min-height: initial;
+}
