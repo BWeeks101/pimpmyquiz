@@ -30,7 +30,8 @@ def home():
         print(auth_state['auth'])
         print(auth_state['reason'])
         # Get method
-        return render_template("home.html")
+        categories = getCategories()
+        return render_template("home.html", categories=categories)
 
     print(auth_state['auth'])
     print(auth_state['reason'])
@@ -617,6 +618,17 @@ def buildUserHtml(user_data):
     return html
 
 
+# Returns list of quiz categories
+def getCategories():
+    categories_query = [{
+        "$project": {
+            "_id": 0
+        }
+    }]
+
+    return list(mongo.db.categories.aggregate(categories_query))
+
+
 # Returns formatted HTML output for quiz data sets
 def buildQuizHtml(quiz_data):
     html = '''
@@ -648,7 +660,7 @@ def buildQuizHtml(quiz_data):
 
 
 # Quiz Search
-# Return batch of 10 quizzes for current user
+# Return batch of 10 quizzes for provided search criteria for current user
 @app.route("/quizSearch")
 def quizSearch():
     auth_criteria = {
@@ -666,7 +678,7 @@ def quizSearch():
         searchStr = request.args.get('searchStr')
         if (searchStr == 'undefined'):
             searchStr = '*'
-        print(searchStr)
+        category = request.args.get('category')
         limit = 10
         skip = (page * limit) - limit
 
@@ -688,6 +700,10 @@ def quizSearch():
                         'localField': 'category_id',
                         'foreignField': '_id',
                         'as': 'category_details'
+                    }
+                }, {
+                    '$match': {
+                        'category_details.category': category
                     }
                 }, {
                     '$facet': {
@@ -720,6 +736,8 @@ def quizSearch():
                     }
                 }]
 
+        if (category == 'undefined' or category == 'All'):
+            user_quiz_query.pop(3)
         quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
         total_quizzes = 0
         if quiz_data[0]['total_results']:
