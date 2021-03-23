@@ -666,10 +666,19 @@ def quizSearch():
         searchStr = request.args.get('searchStr')
         if (searchStr == 'undefined'):
             searchStr = '*'
+        print(searchStr)
         limit = 10
         skip = (page * limit) - limit
 
         user_quiz_query = [{
+                    "$search": {
+                        "wildcard": {
+                            "query": searchStr,
+                            "path": ["title"],
+                            "allowAnalyzedField": True
+                        }
+                    }
+                }, {
                     '$match': {
                         'author_id': auth_state['id']
                     }
@@ -717,12 +726,12 @@ def quizSearch():
             total_quizzes = int(quiz_data[0]['total_results'][0]['total'])
 
         # Calculate total pages based on:
-        #   total users / number of returned records
-        # total_users // limit
-        #   divide number of users by the page limit, returning an integer
+        #   total quizzes / number of returned records
+        # total_quizzes // limit
+        #   divide number of quizzes by the page limit, returning an integer
         #   (floor division)
-        # total_users % limit > 0
-        #   if remainder of total_users / limit is greater than 0, add 1
+        # total_quizzes % limit > 0
+        #   if remainder of total_quizzes / limit is greater than 0, add 1
         #   (modulus operation, then if result > 0 return 1 (true))
         total_pages = (total_quizzes // limit) + (total_quizzes % limit > 0)
         print(total_pages)
