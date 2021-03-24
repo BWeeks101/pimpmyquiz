@@ -1,7 +1,7 @@
 import os
 from flask import (
     Flask, flash, render_template,
-    redirect, request, session, url_for)
+    redirect, request, session, url_for, Markup)
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -811,6 +811,93 @@ def deleteQuiz():
                 mongo.db.questions.delete_many({"round_id": round['_id']})
 
         return redirect(url_for("home"))
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
+
+
+# Build View Quiz Html
+# Returns HTML Output for View Quiz
+def buildViewQuizHtml(quiz_data):
+    html = '<h3 class="light-blue-text text-darken-4 center-align">'
+    html += quiz_data['title'] + '</h3>'
+
+    return Markup(html)
+
+
+# View Quiz
+# View quiz as a web page
+@app.route("/view_quiz")
+def viewQuiz():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        quiz_id = ObjectId(request.args.get('id'))
+        user_id = auth_state['id']
+        quiz = mongo.db.quizzes.find_one({
+            '_id': quiz_id
+        }, {
+            '_id': 0,
+            'title': 1,
+            'category_id': 1,
+            'author_id': 1
+        })
+        if (quiz['author_id'] == user_id):
+            category = mongo.db.categories.find_one({
+                '_id': quiz['category_id']
+            }, {
+                '_id': 0
+            })
+            quiz['category'] = category['category']
+            quiz['category_icon'] = category['category_icon']
+            quiz.pop('category_id')
+            quiz['author'] = mongo.db.users.find_one({
+                '_id': quiz['author_id']
+            }, {
+                '_id': 0,
+                'user_id': 1
+            })['user_id']
+            quiz.pop('author_id')
+            quiz['rounds'] = list(mongo.db.rounds.find({
+                'quiz_id': quiz_id
+            }, {
+                'round_num': 1,
+                'title': 1,
+                'category_id': 1
+            }).sort('round_num'))
+            for round in quiz['rounds']:
+                category = mongo.db.categories.find_one({
+                    '_id': round['category_id']
+                }, {
+                    '_id': 0
+                })
+                round.pop('category_id')
+                round['category'] = category['category']
+                round['category_icon'] = category['category_icon']
+                round['questions'] = list(mongo.db.questions.find({
+                    'round_id': round['_id']
+                }, {
+                    '_id': 0,
+                    'question_num': 1,
+                    'question_text': 1,
+                    'question_img_url': 1,
+                    'answer_text': 1,
+                    'answer_img_url': 1,
+                    'multiple_choice': 1,
+                    'multiple_choice_options': 1
+                }).sort('question_num'))
+                round.pop('_id')
+
+            print(quiz)
+            quiz['html'] = buildViewQuizHtml(quiz)
+            return render_template("view_quiz.html", viewQuiz=quiz)
+            # return redirect(url_for("home"))
 
     print(auth_state['auth'])
     print(auth_state['reason'])
