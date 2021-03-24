@@ -105,7 +105,9 @@ function listenToImgInputs() {
     $('input.img-url').
         on("focusout", (e) => {
             checkImgUrl(e.currentTarget);
-            imgPreview(e.currentTarget);
+            imgPreview($(e.currentTarget).val(), $(e.currentTarget).
+                closest('.input-field').
+                next());
         });
 
     $('input.img-url').
@@ -114,7 +116,9 @@ function listenToImgInputs() {
                     e.key === 'Delete' ||
                     e.key === 'Backspace') {
                 checkImgUrl(e.currentTarget);
-                imgPreview(e.currentTarget);
+                imgPreview($(e.currentTarget).val(), $(e.currentTarget).
+                    closest('.input-field').
+                    next());
             }
         });
 }
