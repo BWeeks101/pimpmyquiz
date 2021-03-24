@@ -635,8 +635,9 @@ def buildQuizHtml(quiz_data):
     <ul class="collection">'''
     for quiz in quiz_data:
         secUrlClass = 'class="light-blue-text text-darken-4" '
-        secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
         secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
+        secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
+        secHrefDelete = 'href="/delete_quiz?&id=' + quiz['id'] + '"'
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6>
@@ -646,10 +647,13 @@ def buildQuizHtml(quiz_data):
                 </h6>
                 <div class="secondary-content light-blue-text text-darken-4">
                     <a ''' + secUrlClass + secHrefView + '''>
-                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-eye fa-fw"></i>
                     </a>
                     <a ''' + secUrlClass + secHrefEdit + '''>
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit fa-fw"></i>
+                    </a>
+                    <a ''' + secUrlClass + secHrefDelete + '''>
+                        <i class="fas fa-trash fa-fw"></i>
                     </a>
                 </div>
             </li>
@@ -777,6 +781,40 @@ def quizSearch():
         }
 
         return results
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
+
+
+# Delete Quiz
+# Delete quiz and associated rounds and questions
+@app.route("/delete_quiz")
+def deleteQuiz():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        quiz_id = ObjectId(request.args.get('id'))
+        user_id = mongo.db.users.find_one({'user_id': session['user']})['_id']
+        quiz = mongo.db.quizzes.find_one({"_id": quiz_id})
+        if (quiz['author_id'] == user_id):
+            mongo.db.quizzes.find_one_and_delete({"_id": quiz_id})
+            rounds = list(mongo.db.rounds.find({"quiz_id": quiz_id}))
+            mongo.db.rounds.delete_many({"quiz_id": quiz_id})
+            for round in rounds:
+                mongo.db.questions.delete_many({"round_id": round['_id']})
+
+        return redirect(url_for("home"))
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
 
 
 # User Search
