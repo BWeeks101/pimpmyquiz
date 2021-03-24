@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="viewQuiz" class="container">
+        <h3 class="light-blue-text text-darken-4 center-align">{{ viewQuiz.title }}</h3>
+        <div class="divider"></div>
+        <h4 class="light-blue-text text-darken-4 center-align"><i class="fas {{ viewQuiz.category_icon.class }} fa-fw"></i>{{ viewQuiz.category }}</h4>
+        <div class="divider"></div>
+        {% for round in viewQuiz.rounds %}
+            <h4 class="light-blue-text text-darken-4 center-align">
+                {% if viewQuiz.category == 'general knowledge' %}
+                    <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                {% endif %}
+                {{ round.title }}
+            </h4>
+            {% for question in round.questions %}
+                <h5 class="light-blue-text text-darken-4 center-align">
+                    {{ question.question_text }}
+                </h5>
+                {% if question.multiple_choice == False %}
+                    <h6 class="light-blue-text text-darken-4 center-align">
+                        {{ question.answer_text }}
+                    </h6>
+                {% else %}
+                    {% for option in question.multiple_choice_options %}
+                        <h6 class="light-blue-text text-darken-4 center-align">
+                            {{ option.answer_text }}
+                        </h6>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            <div class="divider"></div>
+        {% endfor %}
+    </div>
+
+{% endblock%}
