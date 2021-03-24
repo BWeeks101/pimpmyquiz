@@ -742,10 +742,7 @@ function imgPreviewPreloader(elem) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function imgPreview(elem) {
-    let imgUrl = $(elem).val();
-    let target = $(elem).closest('.input-field').
-    next();
+function imgPreview(imgUrl, target) {
     if (imgUrl.length === 0) {
         target.html('');
         return;
