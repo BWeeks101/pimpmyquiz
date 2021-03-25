@@ -2,7 +2,6 @@ body {
     min-width: 360px
 }
 
-
 /* MaterializeCSS dropdown text style override */
 .dropdown-content li > a {
     color: #01579b;
@@ -26,6 +25,38 @@ nav .nav-title {
     nav .sidenav-trigger.right {
         position: absolute;
         right: 0;
+    }
+
+    .collapsible-search .collapsible-body {
+        padding: 1rem;
+    }
+
+    .collapsible-search .collapsible-body .collapsible {
+        margin-bottom: 0;
+        border: none;
+        box-shadow: initial;
+    }
+
+    .collapsible-header[data-role-group]~.collapsible-body {
+        padding: 1rem;
+    }
+
+    .collapsible-header[data-role-group]~.collapsible-body>.collapsible-user-roles {
+        margin: 0;
+    }
+
+    .collapsible-header[data-role]~.collapsible-body {
+        padding: 0;
+    }
+
+    .collapsible-header[data-role]~.collapsible-body>.collapsible {
+        border: none;
+        box-shadow: initial;
+    }
+
+    .modal {
+        width: 95%;
+        max-height: 90%;
     }
 }
 
