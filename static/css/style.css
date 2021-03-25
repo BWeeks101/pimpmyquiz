@@ -14,6 +14,8 @@ nav .nav-title {
 }
 
 @media only screen and (max-width: 992px) {
+
+    /* Nav */
     nav .nav-wrapper {
         text-align: center;
     }
@@ -27,6 +29,7 @@ nav .nav-title {
         right: 0;
     }
 
+    /* admin_users.html */
     .collapsible-search .collapsible-body {
         padding: 1rem;
     }
@@ -54,6 +57,97 @@ nav .nav-title {
         box-shadow: initial;
     }
 
+    /* new_quiz.html */
+    #createQuiz .card {
+        margin-bottom: 0;
+        transition: none;
+        border-radius: initial !important;
+        box-shadow: initial;
+    }
+
+    #createQuiz .card-content {
+        padding: 0 !important;
+        border-radius: initial !important;
+    }
+
+    #createQuiz .card .card-content .card-title {
+        font-size: 20px !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    #createQuiz .card .card-content .row {
+        margin-bottom: 1rem;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-body {
+        padding: 1rem;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .col .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .row .s12 {
+        padding: 0;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .title {
+        font-size: 20px;
+        margin-bottom: 0.5rem;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .input-field.col:not(.multi-input):not(.inline-input) label {
+        left: 0;
+    }
+
+    #createQuiz .answers-container .inline-input span {
+        height: 20px;
+    }
+
+    #createQuiz .answers-container .inline-input [type="checkbox"] + span:not(.lever)::before {
+        left: 3.5px;
+    }
+
+    #createQuiz .answers-container .inline-input [type="checkbox"]:checked + span:not(.lever)::before {
+        transform: translateX(-3.5px) rotate(40deg);
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .round-row~.row {
+        margin-bottom: 0;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .row .collapsible {
+        margin-bottom: 0;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body {
+        padding-bottom: 0;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) i {
+        width: 0;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) label {
+        margin-left: 0;
+        width: 100%
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) input {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .checkbox-container:not(.inline-input) label {
+        width: 100% !important;
+    }
+
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row {
+        margin-bottom: 0;
+    }
+
+    /* modal */
     .modal {
         width: 95%;
         max-height: 90%;
