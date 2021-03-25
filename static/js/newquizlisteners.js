@@ -98,6 +98,19 @@ function listenToImgInputs() {
     const checkImgUrl = (elem) => {
         if ($(elem).val().length === 0) {
             $(elem).removeClass("invalid");
+            $(elem).parent().
+                prev().
+                children('input').
+                prop('required', true);
+        } else {
+            $(elem).parent().
+                prev().
+                children('input').
+                prop('required', false);
+            $(elem).parent().
+                prev().
+                children('input').
+                removeClass('invalid');
         }
         inputHelperLabel($(elem).attr('id'));
     };
