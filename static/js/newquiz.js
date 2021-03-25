@@ -61,7 +61,7 @@ function addMulti(elem) {
             `class="multi-control-add ` +
                 `light-blue-text text-darken-4">+</a>`;
     let answerHtml = `
-        <div class="input-field col s10">
+        <div class="input-field multi-input col s10">
             <span class="prefix center-align" data-question="${qId}"` +
                 `data-multi="${mlt}">
                 ${controlHtml}` +
@@ -85,7 +85,7 @@ function addMulti(elem) {
             </label>
         </div>
         <!-- Optional Image URL -->
-        <div class="input-field col s12">
+        <div class="input-field multi-input col s12">
             <span class="prefix light-blue-text text-darken-4 ` +
                 `center-align"></span>
             <input id="a_img_${rId}_${qId}_${mlt}" ` +
@@ -182,7 +182,7 @@ function checkBoxMulti(elem) {
         htmlContent = "";
         const buildHtml = () => {
             htmlContent += `
-                <div class="input-field col s10">
+                <div class="input-field multi-input col s10">
                     <span class="prefix center-align" data-question="${qId}"` +
                         `data-multi="${multiCount}">`;
             if (multiCount === 3) {
@@ -215,7 +215,7 @@ function checkBoxMulti(elem) {
                     </label>
                 </div>
                 <!-- Optional Image URL -->
-                <div class="input-field col s12">
+                <div class="input-field multi-input col s12">
                     <span class="prefix light-blue-text text-darken-4 ` +
                         `center-align"></span>
                     <input id="a_img_${rId}_${qId}_${multiCount}" ` +
@@ -440,10 +440,10 @@ function addRound(elem) {
                         Choose a Category and Provide a Title for this Round
                     </span>
                     <!-- Round Category -->
-                    <span class="title col m12 hide-on-large-only">
+                    <span class="title col s12 hide-on-large-only">
                         Choose a Category for this Round
                     </span>
-                    <div class="input-field col m12 l5 select-container">
+                    <div class="input-field col s12 l5 select-container">
                         <i id="roundCategoryIcon_${rId}" ` +
                             `class="prefix light-blue-text text-darken-4 ` +
                             `fas"></i>
@@ -467,10 +467,10 @@ function addRound(elem) {
                         <label>Round Category</label>
                     </div>
                     <!-- Round Name -->
-                    <span class="title col m12 hide-on-large-only">
+                    <span class="title col s12 hide-on-large-only">
                         Provide a Title for this Round
                     </span>
-                    <div class="input-field col m12 l7 ">
+                    <div class="input-field col s12 l7 ">
                         <input id="roundTitle_${rId}" ` +
                             `name="round_title_${rId}" type="text" ` +
                             `minlength="5" maxlength="25" class="validate" ` +
