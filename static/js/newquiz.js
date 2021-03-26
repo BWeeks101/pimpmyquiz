@@ -436,14 +436,14 @@ function addRound(elem) {
             </div>
             <div class="collapsible-body">
                 <div class="row round-row">
-                    <span class="title col l12 hide-on-med-and-down">
+                    <span class="title col xl12 hide-on-large-and-down">
                         Choose a Category and Provide a Title for this Round
                     </span>
                     <!-- Round Category -->
-                    <span class="title col s12 hide-on-large-only">
+                    <span class="title col s12 hide-on-extra-large-only">
                         Choose a Category for this Round
                     </span>
-                    <div class="input-field col s12 l5 select-container">
+                    <div class="input-field col s12 xl5 select-container">
                         <i id="roundCategoryIcon_${rId}" ` +
                             `class="prefix light-blue-text text-darken-4 ` +
                             `fas"></i>
@@ -467,10 +467,10 @@ function addRound(elem) {
                         <label>Round Category</label>
                     </div>
                     <!-- Round Name -->
-                    <span class="title col s12 hide-on-large-only">
+                    <span class="title col s12 hide-on-extra-large-only">
                         Provide a Title for this Round
                     </span>
-                    <div class="input-field col s12 l7 ">
+                    <div class="input-field col s12 xl7 ">
                         <input id="roundTitle_${rId}" ` +
                             `name="round_title_${rId}" type="text" ` +
                             `minlength="5" maxlength="25" class="validate" ` +
