@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global observerList, stopListeningToSelect, listenToSelect,
+/* global observerList, stopListeningToSelect, listenToSelect, returnHtml,
 stopListeningToMultiControls, listenToMultiControls, stopListeningToQControls,
 listenToQControls, stopListeningToRControls, M, listenToRControls,
 listenToImgInputs, listenToImgPreview, setSelectValue */
