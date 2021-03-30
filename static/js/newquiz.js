@@ -6,6 +6,26 @@ listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue */
 
 function returnHtml(params) {
 
+    const buildMultiControlHtml = (mId, init) => {
+        if (isNaN(mId)) {
+            return 'Error: Missing/invalid mId';
+        }
+        let removeControlHtml = `
+        <a href="#!" class="multi-control-remove light-blue-text ` +
+            `text-darken-4">-</a>`;
+        let addControlHtml = `
+        <a href="#!" class="multi-control-add light-blue-text ` +
+            `text-darken-4">+</a>`;
+        let controlHtml = '';
+        if (mId === 2 && !init) {
+            controlHtml = addControlHtml;
+        } else if (mId > 2) {
+            controlHtml = removeControlHtml + addControlHtml.trim();
+        }
+
+        return controlHtml;
+    };
+
     const buildMultiHtml = (rId, qId, mId, init) => {
         let err = '';
         if (isNaN(rId)) {
@@ -26,18 +46,19 @@ function returnHtml(params) {
         if (err.length > 0) {
             return err;
         }
-        let removeControlHtml = `
-        <a href="#!" class="multi-control-remove light-blue-text ` +
-            `text-darken-4">-</a>`;
-        let addControlHtml = `
-        <a href="#!" class="multi-control-add light-blue-text ` +
-            `text-darken-4">+</a>`;
-        let controlHtml = '';
-        if (mId === 2 && !init) {
-            controlHtml = addControlHtml;
-        } else if (mId > 2) {
-            controlHtml = removeControlHtml + addControlHtml.trim();
-        }
+        // let removeControlHtml = `
+        // <a href="#!" class="multi-control-remove light-blue-text ` +
+        //     `text-darken-4">-</a>`;
+        // let addControlHtml = `
+        // <a href="#!" class="multi-control-add light-blue-text ` +
+        //     `text-darken-4">+</a>`;
+        // let controlHtml = '';
+        // if (mId === 2 && !init) {
+        //     controlHtml = addControlHtml;
+        // } else if (mId > 2) {
+        //     controlHtml = removeControlHtml + addControlHtml.trim();
+        // }
+        let controlHtml = buildMultiControlHtml(mId, init);
 
         let answerHtml = `
         <div class="input-field multi-input col s10">
@@ -148,7 +169,33 @@ function returnHtml(params) {
         return {htmlTitle, htmlContent, 'multiCount': mId};
     };
 
-    const buildQHtml = (rId, qId, init) => {
+    const buildQControlHtml = (qId) => {
+        if (isNaN(qId)) {
+            return 'Error: Missing/invalid mId';
+        }
+        let qControlHtml = `
+                <div class="qcontrols col s2 right-align">
+                    <a href="#!" ` +
+                        `class="qcontrols-remove light-blue-text ` +
+                            `text-darken-4">` +
+                        `-</a>
+                    <a href="#!" ` +
+                        `class="qcontrols-add light-blue-text ` +
+                            `text-darken-4">+</a>
+                </div>`;
+        if (qId === 1) {
+            qControlHtml = `
+                <div class="qcontrols col s2 right-align">
+                    <a href="#!" ` +
+                        `class="qcontrols-add light-blue-text ` +
+                            `text-darken-4">+</a>
+                </div>`;
+        }
+
+        return qControlHtml;
+    };
+
+    const buildQHtml = (rId, qId) => {
         let err = '';
         if (isNaN(rId)) {
             err = 'Error: Missing/invalid rId';
@@ -162,24 +209,26 @@ function returnHtml(params) {
         if (err.length > 0) {
             return err;
         }
-        let qControlHtml = `
-                <div class="qcontrols col s2 right-align">
-                    <a href="#!" ` +
-                        `class="qcontrols-remove light-blue-text ` +
-                            `text-darken-4">` +
-                        `-</a>
-                    <a href="#!" ` +
-                        `class="qcontrols-add light-blue-text ` +
-                            `text-darken-4">+</a>
-                </div>`;
-        if (init) {
-            qControlHtml = `
-                <div class="qcontrols col s2 right-align">
-                    <a href="#!" ` +
-                        `class="qcontrols-add light-blue-text ` +
-                            `text-darken-4">+</a>
-                </div>`;
-        }
+        // let qControlHtml = `
+        //         <div class="qcontrols col s2 right-align">
+        //             <a href="#!" ` +
+        //                 `class="qcontrols-remove light-blue-text ` +
+        //                     `text-darken-4">` +
+        //                 `-</a>
+        //             <a href="#!" ` +
+        //                 `class="qcontrols-add light-blue-text ` +
+        //                     `text-darken-4">+</a>
+        //         </div>`;
+        // if (init) {
+        //     qControlHtml = `
+        //         <div class="qcontrols col s2 right-align">
+        //             <a href="#!" ` +
+        //                 `class="qcontrols-add light-blue-text ` +
+        //                     `text-darken-4">+</a>
+        //         </div>`;
+        // }
+        let qControlHtml = buildQControlHtml(qId);
+
         let qHtml = `
         <li>
             <div class="collapsible-header question-title" ` +
@@ -274,8 +323,36 @@ function returnHtml(params) {
             </div>
         </li>`;
 
-        console.log(qHtml);
         return qHtml;
+    };
+
+    const buildRControlHtml = (rId) => {
+        if (isNaN(rId)) {
+            return 'Error: Missing/invalid rId';
+        }
+        let rControlHtml = `
+        <div class="rcontrols col s2 right-align">
+            <a href="#!" ` +
+                `class="rcontrols-remove light-blue-text ` +
+                    `text-darken-4">` +
+                `-</a>
+            <a href="#!" ` +
+                `class="rcontrols-add light-blue-text ` +
+                `text-darken-4">` +
+                `+</a>
+        </div>`;
+
+        if (rId === 1) {
+            rControlHtml = `
+            <div class="rcontrols col s2 right-align">
+                <a href="#!" ` +
+                    `class="rcontrols-add light-blue-text ` +
+                    `text-darken-4">` +
+                    `+</a>
+            </div>`;
+        }
+
+        return rControlHtml;
     };
 
     const buildRHtml = (rId) => {
@@ -290,17 +367,21 @@ function returnHtml(params) {
                             `width="32" xmlns="http://www.w3.org/2000/svg">
                         <path d="M7 10l5 5 5-5z"></path>
                         <path d="M0 0h24v24H0z" fill="none"></path>
-                    </svg>
-                    <div class="rcontrols col s2 right-align">
-                        <a href="#!" ` +
-                            `class="rcontrols-remove light-blue-text ` +
-                                `text-darken-4">` +
-                            `-</a>
-                        <a href="#!" ` +
-                            `class="rcontrols-add light-blue-text ` +
-                            `text-darken-4">` +
-                            `+</a>
-                    </div>
+                    </svg>`;
+                    // `
+                    // <div class="rcontrols col s2 right-align">
+                    //     <a href="#!" ` +
+                    //         `class="rcontrols-remove light-blue-text ` +
+                    //             `text-darken-4">` +
+                    //         `-</a>
+                    //     <a href="#!" ` +
+                    //         `class="rcontrols-add light-blue-text ` +
+                    //         `text-darken-4">` +
+                    //         `+</a>
+                    // </div>` +
+        let rControlHtml = buildRControlHtml(rId);
+        rHtml += rControlHtml +
+                    `
                 </div>
                 <div class="collapsible-body">
                     <div class="row round-row">
@@ -362,7 +443,7 @@ function returnHtml(params) {
                             <ul class="collapsible expandable">
                                 <li class="active">`;
 
-        let qHtml = buildQHtml(rId, 1, true);
+        let qHtml = buildQHtml(rId, 1);
         qHtml = qHtml.slice(qHtml.indexOf("    <div"));
         let formatQHtml = qHtml.split("\n");
         qHtml = `
@@ -409,18 +490,48 @@ function returnHtml(params) {
         return preloaderHtml;
     };
 
+    const imgPreviewHtml = (imgUrl) => {
+        let imgPreviewHtml = `<img class="hidden" src="${imgUrl}" ` +
+                `alt="Image Preview"></img>`;
+
+        return imgPreviewHtml;
+    };
+
     const validateParams = () => {
+        if (!Object.prototype.hasOwnProperty.call(params, 'request')) {
+            return 'Missing request parameter';
+        }
         let html;
-        if (Object.prototype.hasOwnProperty.call(params, 'checked')) {
+        switch (params.request) {
+        case 'toggleMulti':
             html = toggleMultiHtml(params.rId, params.qId, params.checked);
-        } else if (params.mId) {
+            break;
+        case 'multiControl':
+            html = buildMultiControlHtml(params.mId);
+            break;
+        case 'addMulti':
             html = buildMultiHtml(params.rId, params.qId, params.mId);
-        } else if (params.qId) {
+            break;
+        case 'qControl':
+            html = buildQControlHtml(params.qId);
+            break;
+        case 'addQ':
             html = buildQHtml(params.rId, params.qId);
-        } else if (params.rId) {
+            break;
+        case 'rControl':
+            html = buildRControlHtml(params.rId);
+            break;
+        case 'addR':
             html = buildRHtml(params.rId);
-        } else if (params.preloader) {
+            break;
+        case 'preloader':
             html = preloader();
+            break;
+        case 'imgPreview':
+            html = imgPreviewHtml(params.imgUrl);
+            break;
+        default:
+            break;
         }
 
         return html;
@@ -480,7 +591,8 @@ function addMulti(elem) {
     let mId = parseInt(prefix.attr('data-multi')) + 1;
 
     prefix.html("");
-    let answerHtml = returnHtml({rId, qId, mId});
+    let request = 'addMulti';
+    let answerHtml = returnHtml({request, rId, qId, mId});
 
     stopListeningToMultiControls();
     answersContainer.append(answerHtml);
@@ -493,7 +605,7 @@ function addMulti(elem) {
 // eslint-disable-next-line no-unused-vars
 function removeMulti(elem) {
     let prefix = $(elem).closest('.prefix');
-    let mlt = parseInt(prefix.attr('data-multi')) - 1;
+    let mId = parseInt(prefix.attr('data-multi')) - 1;
     let inputField = prefix.closest('.input-field');
     let checkboxContainer = inputField.next();
     let imgInputContainer = checkboxContainer.next();
@@ -501,18 +613,9 @@ function removeMulti(elem) {
     let answersContainer = inputField.closest('.answers-container');
     let multiCount = parseInt($(answersContainer).prev().
         val()) - 1;
-    let prevMulti = $(`.prefix[data-multi="${mlt}"]`, answersContainer);
-
-    let controlHtmlRemove = `<a href="#!" ` +
-        `class="multi-control-remove light-blue-text text-darken-4">-</a>`;
-    let controlHtmlAdd = `<a href="#!" ` +
-        `class="multi-control-add light-blue-text text-darken-4">+</a>`;
-    let controlHtml;
-    if (mlt === 2) {
-        controlHtml = controlHtmlAdd;
-    } else if (mlt > 2) {
-        controlHtml = controlHtmlRemove + controlHtmlAdd;
-    }
+    let prevMulti = $(`.prefix[data-multi="${mId}"]`, answersContainer);
+    let request = 'multiControl';
+    let controlHtml = returnHtml({request, mId});
 
     stopListeningToMultiControls();
     prevMulti.html(controlHtml);
@@ -538,8 +641,9 @@ function checkBoxMulti(elem) {
     let qId = parseInt(questionTitle.attr('data-question'));
     let targetTitle = inputField.next();
     let targetField = targetTitle.next().next();
+    let request = 'toggleMulti';
     let checked = $(elem).prop('checked');
-    let html = returnHtml({rId, qId, checked});
+    let html = returnHtml({request, rId, qId, checked});
 
     targetTitle.html(html.htmlTitle);
     targetField.html(html.htmlContent);
@@ -577,7 +681,8 @@ function addQ(elem) {
         attr('data-question')) + 1;
     let target = $(elem).closest('ul.collapsible');
     let qControls = $(elem).closest('div.qcontrols');
-    let html = returnHtml({rId, qId});
+    let request = 'addQ';
+    let html = returnHtml({request, rId, qId});
 
     stopListeningToQControls();
     stopListeningToCheckbox();
@@ -600,17 +705,9 @@ function removeQ(elem) {
     let target = $(elem).closest('li');
     let prevQ = $(target).prev();
     let qControlsTarget = $('.collapsible-header', prevQ);
-    let qControlsHtml = `
-        <div class="qcontrols col s2 right-align">`;
-    if (qId > 1) {
-        qControlsHtml += `
-            <a href="#!" ` +
-                `class="qcontrols-remove light-blue-text text-darken-4">-</a>`;
-    }
-    qControlsHtml += `
-            <a href="#!" ` +
-                `class="qcontrols-add light-blue-text text-darken-4">+</a>
-        </div>`;
+    let request = 'qControl';
+    let qControlsHtml = returnHtml({request, qId});
+
     stopListeningToQControls();
     stopListeningToCheckbox();
     $(target).remove();
@@ -628,7 +725,8 @@ function addRound(elem) {
     let target = $(elem).closest('ul.collapsible');
     let rControls = $(elem).closest('div.rcontrols');
     let quizCategory = $('#quizCategory').val();
-    let html = returnHtml({rId});
+    let request = 'addR';
+    let html = returnHtml({request, rId});
 
     stopListeningToRControls();
     stopListeningToQControls();
@@ -662,17 +760,8 @@ function removeRound(elem) {
     let target = $(elem).closest('li');
     let prevR = $(target).prev();
     let rControlsTarget = $('.collapsible-header[data-round]', prevR);
-    let rControlsHtml = `
-        <div class="rcontrols col s2 right-align">`;
-    if (rId > 1) {
-        rControlsHtml += `
-            <a href="#!" ` +
-                `class="rcontrols-remove light-blue-text text-darken-4">-</a>`;
-    }
-    rControlsHtml += `
-            <a href="#!" ` +
-                `class="rcontrols-add light-blue-text text-darken-4">+</a>
-        </div>`;
+    let request = 'rControl';
+    let rControlsHtml = returnHtml({request, rId});
 
     stopListeningToRControls();
     stopListeningToSelect();
@@ -721,7 +810,8 @@ function imgPreviewError(elem) {
 }
 
 function imgPreviewPreloader(elem) {
-    let html = returnHtml({'preloader': true});
+    let request = 'preloader';
+    let html = returnHtml({request});
     $(elem).append(html);
 }
 
@@ -731,8 +821,8 @@ function imgPreview(imgUrl, target) {
         target.html('');
         return;
     }
-    $(target).html(`<img class="hidden" src="${imgUrl}" ` +
-        `alt="Image Preview"></img>`);
+    let request = 'imgPreview';
+    $(target).html(returnHtml({request, imgUrl}));
     imgPreviewPreloader(target);
     listenToImgPreview();
 }
