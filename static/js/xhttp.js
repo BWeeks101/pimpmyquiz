@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global getRole, createUserArray */
+/* global getRole, createUserArray, returnHtml */
 
 let recordPositions = [];
 let userSearchPositions = {};
@@ -243,15 +243,8 @@ function xHttpRenderResult(elem, result) {
 }
 
 function xHttpRenderPreloader(elem) {
-    let html = '<div class="preloader-container">';
-    html += '<div class="preloader-wrapper big active">';
-    html += '<div class="spinner-layer">';
-    html += '<div class="circle-clipper left">';
-    html += '<div class="circle"></div>';
-    html += '</div><div class="gap-patch">';
-    html += '<div class="circle"></div>';
-    html += '</div><div class="circle-clipper right">';
-    html += '<div class="circle"></div></div></div></div></div>';
+    let request = 'preloader';
+    let html = returnHtml({request});
     elem.innerHTML = html;
 }
 
