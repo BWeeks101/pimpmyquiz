@@ -249,7 +249,10 @@ function imgPreviewLoad(elem) {
     };
     let max = 600;
     let val;
-    if (img.width > img.height) {
+    if (img.width === img.height) {
+        val = max;
+        self.height(val);
+    } else if (img.width > img.height) {
         val = (max / 100) * ((img.height / img.width) * 100);
         self.height(val);
 
