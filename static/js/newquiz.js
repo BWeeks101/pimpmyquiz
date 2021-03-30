@@ -388,6 +388,27 @@ function returnHtml(params) {
         return rHtml;
     };
 
+    const preloader = () => {
+        let preloaderHtml = `
+        <div class="preloader-container">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        return preloaderHtml;
+    };
+
     const validateParams = () => {
         let html;
         if (Object.prototype.hasOwnProperty.call(params, 'checked')) {
@@ -398,6 +419,8 @@ function returnHtml(params) {
             html = buildQHtml(params.rId, params.qId);
         } else if (params.rId) {
             html = buildRHtml(params.rId);
+        } else if (params.preloader) {
+            html = preloader();
         }
 
         return html;
@@ -698,22 +721,7 @@ function imgPreviewError(elem) {
 }
 
 function imgPreviewPreloader(elem) {
-    let html = `
-        <div class="preloader-container">
-            <div class="preloader-wrapper big active">
-                <div class="spinner-layer">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+    let html = returnHtml({'preloader': true});
     $(elem).append(html);
 }
 
