@@ -8,7 +8,7 @@ function getQuizSearchResults() {
     }
     let request = {
         'type':
-            'quizSearch',
+            'myQuizSearch',
         'params': {
             'searchStr': value,
             'page': 1,
@@ -62,7 +62,7 @@ function deleteQuiz(quizId) {
 function getInitialQuizList() {
     let request = {
         'type':
-            'quizSearch',
+            'myQuizSearch',
         'params': {
             'searchStr': '*',
             'page': 1,
