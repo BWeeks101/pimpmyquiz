@@ -13,6 +13,10 @@ nav .nav-title {
     padding: 0 0 0 15px !important;
 }
 
+img {
+    max-width: 600px;
+    max-height: 600px;
+}
 
 @media only screen and (max-width: 1200px) {
     .hide-on-large-and-down {
@@ -34,6 +38,12 @@ nav .nav-title {
     nav .sidenav-trigger.right {
         position: absolute;
         right: 0;
+    }
+
+    /* Images */
+    img {
+        max-width: 340px;
+        max-height: 340px;
     }
 
     /* admin_users.html */
