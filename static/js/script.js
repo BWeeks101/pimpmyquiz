@@ -97,7 +97,7 @@ function returnHtml(params) {
             `</span>
             <input id="answer_${rId}_${qId}_${mId}" ` +
                 `name="answer_${rId}_${qId}_${mId}" ` +
-                `type="text" minlength="1" maxlength="100" ` +
+                `type="text" minlength="1" maxlength="255" ` +
                 `class="validate" value="" required>
             <label for="answer_${rId}_${qId}_${mId}" ` +
                 `data-error="Invalid Answer" ` +
@@ -261,7 +261,7 @@ function returnHtml(params) {
                             `center-align"></span>
                         <input id="question_${rId}_${qId}" ` +
                             `name="question_${rId}_${qId}" ` +
-                            `type="text" minlength="5" maxlength="25" ` +
+                            `type="text" minlength="5" maxlength="255" ` +
                             `class="validate" value="" required>
                         <label for="question_${rId}_${qId}" ` +
                             `data-error="Invalid Question" ` +
@@ -308,7 +308,7 @@ function returnHtml(params) {
                                 `data-multi="0"></span>
                             <input id="answer_${rId}_${qId}" ` +
                                 `name="answer_${rId}_${qId}" ` +
-                                `type="text" minlength="5" maxlength="25" ` +
+                                `type="text" minlength="5" maxlength="255" ` +
                                 `class="validate" value="" required>
                             <label for="answer_${rId}_${qId}" ` +
                                     `data-error="Invalid Answer" ` +
