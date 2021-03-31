@@ -953,56 +953,55 @@ def viewQuiz():
             'category_id': 1,
             'author_id': 1
         })
-        if (quiz['author_id'] == user_id):
+        category = mongo.db.categories.find_one({
+            '_id': quiz['category_id']
+        }, {
+            '_id': 0
+        })
+        quiz['category'] = category['category']
+        quiz['category_icon'] = category['category_icon']
+        quiz.pop('category_id')
+        quiz['author'] = mongo.db.users.find_one({
+            '_id': quiz['author_id']
+        }, {
+            '_id': 0,
+            'user_id': 1
+        })['user_id']
+        quiz.pop('author_id')
+        quiz['rounds'] = list(mongo.db.rounds.find({
+            'quiz_id': quiz_id
+        }, {
+            'round_num': 1,
+            'title': 1,
+            'category_id': 1
+        }).sort('round_num'))
+        for round in quiz['rounds']:
             category = mongo.db.categories.find_one({
-                '_id': quiz['category_id']
+                '_id': round['category_id']
             }, {
                 '_id': 0
             })
-            quiz['category'] = category['category']
-            quiz['category_icon'] = category['category_icon']
-            quiz.pop('category_id')
-            quiz['author'] = mongo.db.users.find_one({
-                '_id': quiz['author_id']
+            round.pop('category_id')
+            round['category'] = category['category']
+            round['category_icon'] = category['category_icon']
+            round['questions'] = list(mongo.db.questions.find({
+                'round_id': round['_id']
             }, {
                 '_id': 0,
-                'user_id': 1
-            })['user_id']
-            quiz.pop('author_id')
-            quiz['rounds'] = list(mongo.db.rounds.find({
-                'quiz_id': quiz_id
-            }, {
-                'round_num': 1,
-                'title': 1,
-                'category_id': 1
-            }).sort('round_num'))
-            for round in quiz['rounds']:
-                category = mongo.db.categories.find_one({
-                    '_id': round['category_id']
-                }, {
-                    '_id': 0
-                })
-                round.pop('category_id')
-                round['category'] = category['category']
-                round['category_icon'] = category['category_icon']
-                round['questions'] = list(mongo.db.questions.find({
-                    'round_id': round['_id']
-                }, {
-                    '_id': 0,
-                    'question_num': 1,
-                    'question_text': 1,
-                    'question_img_url': 1,
-                    'answer_text': 1,
-                    'answer_img_url': 1,
-                    'multiple_choice': 1,
-                    'multiple_choice_options': 1
-                }).sort('question_num'))
-                round.pop('_id')
+                'question_num': 1,
+                'question_text': 1,
+                'question_img_url': 1,
+                'answer_text': 1,
+                'answer_img_url': 1,
+                'multiple_choice': 1,
+                'multiple_choice_options': 1
+            }).sort('question_num'))
+            round.pop('_id')
 
-            print(quiz)
-            quiz['html'] = buildViewQuizHtml(quiz)
-            return render_template("view_quiz.html", viewQuiz=quiz)
-            # return redirect(url_for("my_quizzes"))
+        print(quiz)
+        quiz['html'] = buildViewQuizHtml(quiz)
+        return render_template("view_quiz.html", viewQuiz=quiz)
+        # return redirect(url_for("my_quizzes"))
 
     print(auth_state['auth'])
     print(auth_state['reason'])
