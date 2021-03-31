@@ -5,7 +5,7 @@ function imgLoad(elem) {
         'height': self.height(),
         'width': self.width()
     };
-    let max = 600;
+    let max = self.css('max-width');
     let val;
     if (img.width === img.height) {
         val = max;
