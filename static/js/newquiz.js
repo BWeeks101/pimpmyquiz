@@ -247,7 +247,11 @@ function imgPreviewLoad(elem) {
         'height': self.height(),
         'width': self.width()
     };
-    let max = 600;
+    let max = $(self).closest('.collapsible-body').
+        width();
+    if (max > parseInt(self.css('max-width'))) {
+        max = parseInt(self.css('max-width'));
+    }
     let val;
     if (img.width === img.height) {
         val = max;
