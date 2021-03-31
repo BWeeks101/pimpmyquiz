@@ -16,24 +16,31 @@
                 <h5 class="light-blue-text text-darken-4 center-align">
                     {{ question.question_text }}
                 </h5>
-                <div class="center-align">
-                    <img class="quiz-image hidden" src="{{ question.question_img_url }}">
-                </div>
+
+                {% if question.question_img_url != '' %}
+                    <div class="center-align">
+                        <img class="quiz-image hidden" src="{{ question.question_img_url }}">
+                    </div>
+                {% endif %}
                 {% if question.multiple_choice == False %}
                     <h6 class="light-blue-text text-darken-4 center-align">
                         {{ question.answer_text }}
                     </h6>
-                    <div class="center-align">
-                        <img class="quiz-image hidden" src="{{ question.answer_img_url }}">
-                    </div>
+                    {% if question.answer_img_url != '' %}
+                        <div class="center-align">
+                            <img class="quiz-image hidden" src="{{ question.answer_img_url }}">
+                        </div>
+                    {% endif %}
                 {% else %}
                     {% for option in question.multiple_choice_options %}
                         <h6 class="light-blue-text text-darken-4 center-align">
                             {{ option.answer_text }}
                         </h6>
-                        <div class="center-align">
-                            <img class="quiz-image hidden" src="{{ option.answer_img_url }}">
-                        </div>
+                        {% if option.answer_img_url != '' %}
+                            <div class="center-align">
+                                <img class="quiz-image hidden" src="{{ option.answer_img_url }}">
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
             {% endfor %}
