@@ -20,8 +20,8 @@ mongo = PyMongo(app)
 
 
 @app.route("/")
-@app.route("/home")
-def home():
+@app.route("/my_quizzes")
+def my_quizzes():
     auth_criteria = {
         'auth': True
     }
@@ -31,7 +31,7 @@ def home():
         print(auth_state['reason'])
         # Get method
         categories = getCategories()
-        return render_template("home.html", categories=categories)
+        return render_template("my_quizzes.html", categories=categories)
 
     print(auth_state['auth'])
     print(auth_state['reason'])
@@ -67,7 +67,7 @@ def register():
         # put the new user into 'session' cookie
         session["user"] = request.form.get("user_id").lower()
         flash("Registration Successful")
-        return redirect(url_for("home", username=session["user"]))
+        return redirect(url_for("my_quizzes", username=session["user"]))
 
     return render_template("register.html")
 
@@ -97,7 +97,7 @@ def login():
                 flash("Welcome, {}".format(
                     request.form.get("user_id")))
                 return redirect(url_for(
-                    "home", username=session["user"]))
+                    "my_quizzes", username=session["user"]))
             else:
                 # invalid password match
                 flash("Incorrect Username and/or Password")
@@ -391,7 +391,7 @@ def admin_users():
     print(auth_state['auth'])
     print(auth_state['reason'])
     flash("Permission Denied")
-    return redirect(url_for("home"))
+    return redirect(url_for("my_quizzes"))
 
 
 # Return user, role membership and role group membership counts
@@ -664,10 +664,119 @@ def buildQuizHtml(quiz_data):
     return html
 
 
-# Quiz Search
+# Returns quiz query parameters
+def buildQuizQuery(params):
+    query = [{
+        "$search": {
+            "wildcard": {
+                "query": params['searchStr'],
+                "path": ["title"],
+                "allowAnalyzedField": True
+            }
+        }
+    }, {
+        '$match': {
+            'author_id': params['userId']
+        }
+    }, {
+        '$lookup': {
+            'from': 'categories',
+            'localField': 'category_id',
+            'foreignField': '_id',
+            'as': 'category_details'
+        }
+    }, {
+        '$match': {
+            'category_details.category': params['category']
+        }
+    }, {
+        '$facet': {
+            'results': [{
+                '$project': {
+                    '_id': {
+                        '$toString': "$_id"
+                    },
+                    'title': 1,
+                    'category_details.category': 1,
+                    'category_details.category_icon': 1
+                }
+            }, {
+                '$sort': {
+                        'title': 1
+                }
+            }, {
+                '$skip': params['skip']
+            }, {
+                '$limit': params['limit']
+            }],
+            'total_results': [{
+                '$group': {
+                    '_id': 'null',
+                    'total': {
+                        '$sum': 1
+                    }
+                }
+            }]
+        }
+    }]
+    category_index = 3
+    if (params['searchType'] == 'quizSearch'):
+        query.pop(1)
+        category_index = 2
+    if (params['category'] == 'undefined' or params['category'] == 'All'):
+        query.pop(category_index)
+
+    return query
+
+
+# Formats quiz query results for return to client
+def processQuizQueryResults(params):
+    quiz_data = params['quiz_data']
+    limit = params['limit']
+    total_quizzes = 0
+    if quiz_data[0]['total_results']:
+        total_quizzes = int(quiz_data[0]['total_results'][0]['total'])
+
+    # Calculate total pages based on:
+    #   total quizzes / number of returned records
+    # total_quizzes // limit
+    #   divide number of quizzes by the page limit, returning an integer
+    #   (floor division)
+    # total_quizzes % limit > 0
+    #   if remainder of total_quizzes / limit is greater than 0, add 1
+    #   (modulus operation, then if result > 0 return 1 (true))
+    total_pages = (total_quizzes // limit) + (total_quizzes % limit > 0)
+    print(total_pages)
+    quizzes = []
+    for quiz in quiz_data[0]['results']:
+        quizzes.append({
+            'id': quiz['_id'],
+            'title': quiz['title'],
+            'category': quiz['category_details'][0]['category'],
+            'category_icon': quiz['category_details'][0]['category_icon']
+
+        })
+    html = buildQuizHtml(quizzes)
+
+    results = {
+        'request': {
+            'quizSearch': params['searchStr'],
+            'currentPage': params['page'],
+            'totalPages': total_pages
+        },
+        'total_results': total_quizzes,
+        'type': params['searchType'],
+        'html': html,
+        'quiz_data': quizzes
+    }
+
+    return results
+
+
+# My Quiz Search
 # Return batch of 10 quizzes for provided search criteria for current user
-@app.route("/quizSearch")
-def quizSearch():
+@app.route("/myQuizSearch")
+def myQuizSearch():
     auth_criteria = {
         'auth': True
     }
@@ -687,99 +796,25 @@ def quizSearch():
         limit = 10
         skip = (page * limit) - limit
 
-        user_quiz_query = [{
-                    "$search": {
-                        "wildcard": {
-                            "query": searchStr,
-                            "path": ["title"],
-                            "allowAnalyzedField": True
-                        }
-                    }
-                }, {
-                    '$match': {
-                        'author_id': auth_state['id']
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'categories',
-                        'localField': 'category_id',
-                        'foreignField': '_id',
-                        'as': 'category_details'
-                    }
-                }, {
-                    '$match': {
-                        'category_details.category': category
-                    }
-                }, {
-                    '$facet': {
-                        'results': [{
-                            '$project': {
-                                '_id': {
-                                    '$toString': "$_id"
-                                },
-                                'title': 1,
-                                'category_details.category': 1,
-                                'category_details.category_icon': 1
-                            }
-                        }, {
-                            '$sort': {
-                                 'title': 1
-                            }
-                        }, {
-                            '$skip': skip
-                        }, {
-                            '$limit': limit
-                        }],
-                        'total_results': [{
-                            '$group': {
-                                '_id': 'null',
-                                'total': {
-                                    '$sum': 1
-                                }
-                            }
-                        }]
-                    }
-                }]
+        user_quiz_query = buildQuizQuery({
+            'searchType': 'myQuizSearch',
+            'userId': auth_state['id'],
+            'page': page,
+            'searchStr': searchStr,
+            'category': category,
+            'limit': limit,
+            'skip': skip
+        })
 
-        if (category == 'undefined' or category == 'All'):
-            user_quiz_query.pop(3)
         quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
-        total_quizzes = 0
-        if quiz_data[0]['total_results']:
-            total_quizzes = int(quiz_data[0]['total_results'][0]['total'])
 
-        # Calculate total pages based on:
-        #   total quizzes / number of returned records
-        # total_quizzes // limit
-        #   divide number of quizzes by the page limit, returning an integer
-        #   (floor division)
-        # total_quizzes % limit > 0
-        #   if remainder of total_quizzes / limit is greater than 0, add 1
-        #   (modulus operation, then if result > 0 return 1 (true))
-        total_pages = (total_quizzes // limit) + (total_quizzes % limit > 0)
-        print(total_pages)
-        quizzes = []
-        for quiz in quiz_data[0]['results']:
-            quizzes.append({
-                'id': quiz['_id'],
-                'title': quiz['title'],
-                'category': quiz['category_details'][0]['category'],
-                'category_icon': quiz['category_details'][0]['category_icon']
-
-            })
-        html = buildQuizHtml(quizzes)
-
-        results = {
-            'request': {
-                'quizSearch': searchStr,
-                'currentPage': page,
-                'totalPages': total_pages
-            },
-            'total_results': total_quizzes,
-            'type': 'quizSearch',
-            'html': html,
-            'quiz_data': quizzes
-        }
+        results = processQuizQueryResults({
+            'searchType': 'myQuizSearch',
+            'quiz_data': quiz_data,
+            'limit': limit,
+            'searchStr': searchStr,
+            'page': page
+        })
 
         return results
 
@@ -810,7 +845,7 @@ def deleteQuiz():
             for round in rounds:
                 mongo.db.questions.delete_many({"round_id": round['_id']})
 
-        return redirect(url_for("home"))
+        return redirect(url_for("my_quizzes"))
 
     print(auth_state['auth'])
     print(auth_state['reason'])
@@ -897,7 +932,7 @@ def viewQuiz():
             print(quiz)
             quiz['html'] = buildViewQuizHtml(quiz)
             return render_template("view_quiz.html", viewQuiz=quiz)
-            # return redirect(url_for("home"))
+            # return redirect(url_for("my_quizzes"))
 
     print(auth_state['auth'])
     print(auth_state['reason'])
@@ -1061,7 +1096,7 @@ def userSearch():
     print(auth_state['auth'])
     print(auth_state['reason'])
     flash("Permission Denied")
-    return redirect(url_for("home"))
+    return redirect(url_for("my_quizzes"))
 
 
 # Get Users
@@ -1203,7 +1238,7 @@ def getUsers():
     print(auth_state['auth'])
     print(auth_state['reason'])
     flash("Permission Denied")
-    return redirect(url_for("home"))
+    return redirect(url_for("my_quizzes"))
 
 
 @app.route("/new_quiz", methods=["GET", "POST"])
