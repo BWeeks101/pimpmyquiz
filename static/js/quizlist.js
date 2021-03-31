@@ -1,6 +1,6 @@
 /* global addRecordPositions, inputHelperLabel, xHttpRequest, setSelectValue */
 
-function getQuizSearchResults() {
+function getQuizSearchResults(isGlobal) {
     let value = $('#quizSearch').val();
     let category = $('#quizCategory').val();
     if (value === "" || value === undefined || value.length < 2) {
@@ -15,6 +15,9 @@ function getQuizSearchResults() {
             category
         }
     };
+    if (isGlobal) {
+        request.type = 'globalQuizSearch';
+    }
     addRecordPositions({
         'quizSearch': request.params.searchStr,
         'currentPage': 1
@@ -26,14 +29,30 @@ function quizSearchCreateListeners() {
     $("#quizSearch").on("focusout", () => inputHelperLabel("quizSearch"));
 
     $("#quizSearch").on("keyup", (e) => {
+        let isGlobal;
         if (e.key === "Enter") {
             inputHelperLabel("quizSearch");
-            getQuizSearchResults();
+            isGlobal = $(e.currentTarget).parent().
+                parent().
+                nextAll('.search-action-container').
+                children('button[data-type="global"]').
+                attr('data-type');
+            if (isGlobal) {
+                getQuizSearchResults(true);
+            } else {
+                getQuizSearchResults();
+            }
         }
     });
 
-    $("#searchButton").
-        on("click", () => getQuizSearchResults());
+    $("#searchButton").on("click", (e) => {
+        let isGlobal = $(e.currentTarget).attr('data-type');
+        if (isGlobal) {
+            getQuizSearchResults(true);
+        } else {
+            getQuizSearchResults();
+        }
+    });
 }
 
 function listenToSelect() {
@@ -69,6 +88,11 @@ function getInitialQuizList() {
             'category': 'All'
         }
     };
+    let isGlobal = $('.search-action-container button[data-type="global"]').
+        attr('data-type');
+    if (isGlobal) {
+        request.type = 'globalQuizSearch';
+    }
     xHttpRequest(request, $('#quizSearchResults')[0]);
 }
 
