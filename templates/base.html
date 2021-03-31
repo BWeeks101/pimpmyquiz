@@ -22,8 +22,8 @@
             <ul class="right hide-on-med-and-down">
                 <li><a href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
                 {% if session.user %}
-                    <li><a href="#">Profile</a></li>
                     <li><a href="{{ url_for('new_quiz') }}">New Quiz</a></li>
+                    <li><a href="#">Quiz Search</a></li>
                     {% if session.user_role == "global admin" %}
                         <ul id="nav-admin-dropdown" class="dropdown-content">
                             <li><a href="{{ url_for('admin_users') }}">Users</a></li>
@@ -49,8 +49,8 @@
             <li><h4 class="center-align light-blue-text text-darken-4">Pimp My Quiz!</h4></li>
             <li><a href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
             {% if session.user %}
-                <li><a href="#">Profile</a></li>
                 <li><a href="{{ url_for('new_quiz') }}">New Quiz</a></li>
+                <li><a href="#">Quiz Search</a></li>
                 {% if session.user_role|lower == "global admin"|lower %}
                     <ul id="sidenav-admin-dropdown" class="dropdown-content">
                         <li><a href="{{ url_for('admin_users') }}">Users</a></li>
