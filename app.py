@@ -649,7 +649,7 @@ def getCategories():
 
 
 # Returns formatted HTML output for quiz data sets
-def buildQuizHtml(quiz_data):
+def buildQuizHtml(quiz_data, user_role):
     html = '''
     <ul class="collection">'''
     for quiz in quiz_data:
@@ -665,16 +665,26 @@ def buildQuizHtml(quiz_data):
         html += ''' fa-fw"></i>
                     <span>''' + quiz['title'] + '''</span>
                 </h6>
+                <span>Author: ''' + quiz['author'] + '''</span>
                 <div class="secondary-content light-blue-text text-darken-4">
                     <a ''' + secUrlClass + secHrefView + '''>
                         <i class="fas fa-eye fa-fw"></i>
                     </a>
                     <a ''' + secUrlClass + secHrefEdit + '''>
                         <i class="fas fa-edit fa-fw"></i>
-                    </a>
+                    </a>'''
+        if ((quiz['author'] == session['user']) or
+                (user_role == 'Global Admin' or user_role == 'Content Admin')):
+            html += '''
                     <a ''' + secUrlDeleteClass + secOnClick + '''href="#!">
                         <i class="fas fa-trash fa-fw"></i>
-                    </a>
+                    </a>'''
+        else:
+            html += '''
+                    <a class="grey-text" href="#!">
+                        <i class="fas fa-trash fa-fw"></i>
+                    </a>'''
+        html += '''
                 </div>
             </li>
         '''
@@ -709,6 +719,13 @@ def buildQuizQuery(params):
             'category_details.category': params['category']
         }
     }, {
+        '$lookup': {
+            'from': 'users',
+            'localField': 'author_id',
+            'foreignField': '_id',
+            'as': 'author_details'
+        }
+    }, {
         '$facet': {
             'results': [{
                 '$project': {
@@ -716,6 +733,7 @@ def buildQuizQuery(params):
                         '$toString': "$_id"
                     },
                     'title': 1,
+                    'author_details.user_id': 1,
                     'category_details.category': 1,
                     'category_details.category_icon': 1
                 }
@@ -765,17 +783,16 @@ def processQuizQueryResults(params):
     #   if remainder of total_quizzes / limit is greater than 0, add 1
     #   (modulus operation, then if result > 0 return 1 (true))
     total_pages = (total_quizzes // limit) + (total_quizzes % limit > 0)
-    print(total_pages)
     quizzes = []
     for quiz in quiz_data[0]['results']:
         quizzes.append({
             'id': quiz['_id'],
             'title': quiz['title'],
+            'author': quiz['author_details'][0]['user_id'],
             'category': quiz['category_details'][0]['category'],
             'category_icon': quiz['category_details'][0]['category_icon']
-
         })
-    html = buildQuizHtml(quizzes)
+    html = buildQuizHtml(quizzes, params['user_role'])
 
     results = {
         'request': {
@@ -829,6 +846,7 @@ def myQuizSearch():
 
         results = processQuizQueryResults({
             'searchType': 'myQuizSearch',
+            'user_role': auth_state['reason']['role'],
             'quiz_data': quiz_data,
             'limit': limit,
             'searchStr': searchStr,
@@ -880,6 +898,7 @@ def globalQuizSearch():
 
         results = processQuizQueryResults({
             'searchType': 'globalQuizSearch',
+            'user_role': auth_state['reason']['role'],
             'quiz_data': quiz_data,
             'limit': limit,
             'searchStr': searchStr,
@@ -908,14 +927,19 @@ def deleteQuiz():
         quiz_id = ObjectId(request.args.get('id'))
         user_id = mongo.db.users.find_one({'user_id': session['user']})['_id']
         quiz = mongo.db.quizzes.find_one({"_id": quiz_id})
-        if (quiz['author_id'] == user_id):
+        if ((quiz['author_id'] == user_id) or
+                (auth_state['reason']['role'] == 'Global Admin' or
+                    auth_state['reason']['role'] == 'Content Admin')):
             mongo.db.quizzes.find_one_and_delete({"_id": quiz_id})
             rounds = list(mongo.db.rounds.find({"quiz_id": quiz_id}))
             mongo.db.rounds.delete_many({"quiz_id": quiz_id})
             for round in rounds:
                 mongo.db.questions.delete_many({"round_id": round['_id']})
 
-        return redirect(url_for("my_quizzes"))
+            return redirect(request.referrer)
+
+        flash("Permission Denied")
+        return redirect(request.referrer)
 
     print(auth_state['auth'])
     print(auth_state['reason'])
