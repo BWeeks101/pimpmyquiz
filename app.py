@@ -39,6 +39,25 @@ def my_quizzes():
     return redirect(url_for("login"))
 
 
+@app.route("/quiz_search")
+def quiz_search():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        # Get method
+        categories = getCategories()
+        return render_template("quiz_search.html", categories=categories)
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -720,7 +739,7 @@ def buildQuizQuery(params):
         }
     }]
     category_index = 3
-    if (params['searchType'] == 'quizSearch'):
+    if (params['searchType'] == 'globalQuizSearch'):
         query.pop(1)
         category_index = 2
     if (params['category'] == 'undefined' or params['category'] == 'All'):
@@ -810,6 +829,57 @@ def myQuizSearch():
 
         results = processQuizQueryResults({
             'searchType': 'myQuizSearch',
+            'quiz_data': quiz_data,
+            'limit': limit,
+            'searchStr': searchStr,
+            'page': page
+        })
+
+        return results
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
+
+
+# Global Quiz Search
+# Return batch of 10 quizzes for provided search criteria
+@app.route("/globalQuizSearch")
+def globalQuizSearch():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        page = request.args.get('page')
+        if (page == 'undefined'):
+            page = 1
+        else:
+            page = int(page)
+        searchStr = request.args.get('searchStr')
+        if (searchStr == 'undefined'):
+            searchStr = '*'
+        category = request.args.get('category')
+        limit = 10
+        skip = (page * limit) - limit
+
+        user_quiz_query = buildQuizQuery({
+            'searchType': 'globalQuizSearch',
+            'userId': auth_state['id'],
+            'page': page,
+            'searchStr': searchStr,
+            'category': category,
+            'limit': limit,
+            'skip': skip
+        })
+
+        quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
+
+        results = processQuizQueryResults({
+            'searchType': 'globalQuizSearch',
             'quiz_data': quiz_data,
             'limit': limit,
             'searchStr': searchStr,
