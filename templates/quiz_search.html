@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3 class="light-blue-text text-darken-4 center-align">Quiz Search</h3>
+    <div class="quiz-search container">
+        <!-- quiz search-->
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="fas fa-question prefix light-blue-text text-darken-4"></i>
+                <input id="quizSearch" name="quizSearch" type="text" minlength="2" value="" class="validate">
+                <label class="truncate" for="quizSearch" data-error="Please Enter at least 2 Characters." data-default="Search Quizzes">Search Quizzes</label>
+            </div>
+        </div>
+        <div class="row">
+            <!-- quiz category selection -->
+            <div class="input-field col s12 select-container">
+                <i id="quizCategoryIcon" class="prefix light-blue-text text-darken-4 fas"></i>
+                <select id="quizCategory" name="quizCategory">
+                    <optgroup label='<div class="subopt"><i class="fas fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">All</span></div>'>
+                        <option>All</option>
+                    </optgroup>
+                    {% for category in categories %}
+                    <optgroup label='<div class="subopt"><i class="fas {{ category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ category.category }}</span></div>'>
+                        <option>{{ category.category }}</option>
+                    </optgroup>
+                    {% endfor %}
+                </select>
+                <label>Category Filter</label>
+            </div>
+        </div>
+        <!-- search button -->
+        <div class="row search-action-container">
+            <button id="searchButton" type="submit" data-type="global" class="col s12 btn-large light-blue darken-4 text-shadow">
+                Search <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div id="quizCollection" class="container">
+        <div class="results-control hidden">
+            <a href="#" class="results-control-first">First</a>
+            <a href="#" class="results-control-prev">Prev</a>
+            <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
+            <span>of</span>
+            <span class="totalPages"></span>
+            <a href="#" class="results-control-next">Next</a>
+            <a href="#" class="results-control-last">Last</a>
+        </div>
+        <div id="quizSearchResults" class="results-data">
+            <!--returned records go here-->
+        </div>
+    </div>
+{% endblock%}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/quizlist.js') }}"></script>
+    <script>
+        // Convert mongoDB data to JS global array for use in this template
+        let categoryList = createCategoryArray({{ categories | tojson }});
+    </script>
+{% endblock %}
