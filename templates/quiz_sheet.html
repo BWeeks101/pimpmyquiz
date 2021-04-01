@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+        integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+    <title>Pimp My Quiz!</title>
+</head>
+<body>
+    <main id="viewQuiz" class="container">
+        <h3 class="light-blue-text text-darken-4 center-align">{{ viewQuiz.title }}</h3>
+        <div class="divider"></div>
+        <h4 class="light-blue-text text-darken-4 center-align"><i class="fas {{ viewQuiz.category_icon.class }} fa-fw"></i>{{ viewQuiz.category }}</h4>
+        <div class="divider"></div>
+        <div class="quiz-container">
+            {% for round in viewQuiz.rounds %}
+                <h5 class="light-blue-text text-darken-4 center-align">
+                    Round {{ round.round_num }}
+                    <p>
+                        {% if viewQuiz.category == 'general knowledge' %}
+                            <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                        {% endif %}
+                        {{ round.title }}
+                    </p>
+                </h5>
+                {% for question in round.questions %}
+                    <h6 class="light-blue-text text-darken-4 left-align">
+                        Q{{ question.question_num}}) {{ question.question_text }}
+                    </h6>
+
+                    {% if question.question_img_url != '' %}
+                        <div class="center-align">
+                            <img class="quiz-image hidden" src="{{ question.question_img_url }}">
+                        </div>
+                    {% endif %}
+                    {% if question.multiple_choice == True %}
+                        {% for option in question.multiple_choice_options %}
+                            <h6 class="light-blue-text text-darken-4">
+                                &emsp;{{ option.option_num}}) {{ option.answer_text }}
+                            </h6>
+                            {% if option.answer_img_url != '' %}
+                                <div class="center-align">
+                                    <img class="quiz-image hidden" src="{{ option.answer_img_url }}">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <div class="divider"></div>
+                {% endfor %}
+                <div class="divider"></div>
+            {% endfor %}
+        </div>
+    </main>
+
+<script src="{{ url_for('static', filename='js/viewquiz.js') }}"></script>
