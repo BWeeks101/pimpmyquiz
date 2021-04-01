@@ -669,7 +669,7 @@ def buildQuizHtml(quiz_data, user_role):
                 <span>Author: ''' + quiz['author'] + '''</span>
                 <div class="secondary-content light-blue-text text-darken-4">
                     <a ''' + secUrlClass + secHrefQuiz + '''>
-                        <i class="fas fa-comment fa-fw"></i>
+                        <i class="far fa-file-alt fa-fw"></i>
                     </a>
                     <a ''' + secUrlClass + secHrefView + '''>
                         <i class="fas fa-eye fa-fw"></i>
@@ -951,15 +951,6 @@ def deleteQuiz():
     return redirect(url_for("login"))
 
 
-# Build View Quiz Html
-# Returns HTML Output for View Quiz
-def buildViewQuizHtml(quiz_data):
-    html = '<h3 class="light-blue-text text-darken-4 center-align">'
-    html += quiz_data['title'] + '</h3>'
-
-    return Markup(html)
-
-
 # Build View Quiz Data Set
 def buildViewQuizDataSet(params):
     quiz = mongo.db.quizzes.find_one({
@@ -1044,18 +1035,14 @@ def viewQuiz():
         print(auth_state['auth'])
         print(auth_state['reason'])
         quiz_id = ObjectId(request.args.get('id'))
-        user_id = auth_state['id']
 
         quiz = buildViewQuizDataSet({
             'show_answers': True,
-            'quiz_id': quiz_id,
-            'user_id': user_id
+            'quiz_id': quiz_id
         })
 
         print(quiz)
-        quiz['html'] = buildViewQuizHtml(quiz)
         return render_template("view_quiz.html", viewQuiz=quiz)
-        # return redirect(url_for("my_quizzes"))
 
     print(auth_state['auth'])
     print(auth_state['reason'])
@@ -1067,31 +1054,15 @@ def viewQuiz():
 # View quiz sheet (without answers) as a web page
 @app.route("/quiz_sheet")
 def quizSheet():
-    auth_criteria = {
-        'auth': True
-    }
-    auth_state = auth_user(auth_criteria)
-    if auth_state['auth']:
-        print(auth_state['auth'])
-        print(auth_state['reason'])
-        quiz_id = ObjectId(request.args.get('id'))
-        user_id = auth_state['id']
+    quiz_id = ObjectId(request.args.get('id'))
 
-        quiz = buildViewQuizDataSet({
-            'show_answers': False,
-            'quiz_id': quiz_id,
-            'user_id': user_id
-        })
+    quiz = buildViewQuizDataSet({
+        'show_answers': False,
+        'quiz_id': quiz_id
+    })
 
-        print(quiz)
-        quiz['html'] = buildViewQuizHtml(quiz)
-        return render_template("quiz_sheet.html", viewQuiz=quiz)
-        # return redirect(url_for("my_quizzes"))
-
-    print(auth_state['auth'])
-    print(auth_state['reason'])
-    flash("Permission Denied")
-    return redirect(url_for("login"))
+    print(quiz)
+    return render_template("quiz_sheet.html", viewQuiz=quiz)
 
 
 # User Search
