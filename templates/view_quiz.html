@@ -5,47 +5,65 @@
         <div class="divider"></div>
         <h4 class="light-blue-text text-darken-4 center-align"><i class="fas {{ viewQuiz.category_icon.class }} fa-fw"></i>{{ viewQuiz.category }}</h4>
         <div class="divider"></div>
-        {% for round in viewQuiz.rounds %}
-            <h4 class="light-blue-text text-darken-4 center-align">
-                {% if viewQuiz.category == 'general knowledge' %}
-                    <i class="fas {{ round.category_icon.class }} fa-fw"></i>
-                {% endif %}
-                Round {{ round.round_num }} : {{ round.title }}
-            </h4>
-            {% for question in round.questions %}
-                <h6 class="light-blue-text text-darken-4 left-align">
-                    Q{{ question.question_num}}) {{ question.question_text }}
-                </h6>
-
-                {% if question.question_img_url != '' %}
-                    <div class="center-align">
-                        <img class="quiz-image hidden" src="{{ question.question_img_url }}">
-                    </div>
-                {% endif %}
-                {% if question.multiple_choice == False %}
+        <div class="quiz-container">
+            {% for round in viewQuiz.rounds %}
+                <h5 class="light-blue-text text-darken-4 center-align">
+                    Round {{ round.round_num }}
+                    <p>
+                        {% if viewQuiz.category == 'general knowledge' %}
+                            <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                        {% endif %}
+                        {{ round.title }}
+                    </p>
+                </h5>
+                {% for question in round.questions %}
                     <h6 class="light-blue-text text-darken-4 left-align">
-                        &emsp;A{{ question.question_num }}) {{ question.answer_text }}
+                        Q{{ question.question_num}}) {{ question.question_text }}
                     </h6>
-                    {% if question.answer_img_url != '' %}
+
+                    {% if question.question_img_url != '' %}
                         <div class="center-align">
-                            <img class="quiz-image hidden" src="{{ question.answer_img_url }}">
+                            <img class="quiz-image hidden" src="{{ question.question_img_url }}">
                         </div>
                     {% endif %}
-                {% else %}
-                    {% for option in question.multiple_choice_options %}
-                        <h6 class="light-blue-text text-darken-4">
-                            &emsp;{{ option.option_num}}) {{ option.answer_text }}
+                    {% if question.multiple_choice == False %}
+                        <h6 class="light-blue-text text-darken-4 left-align">
+                            &emsp;A{{ question.question_num }}) {{ question.answer_text }}
                         </h6>
-                        {% if option.answer_img_url != '' %}
+                        {% if question.answer_img_url != '' %}
                             <div class="center-align">
-                                <img class="quiz-image hidden" src="{{ option.answer_img_url }}">
+                                <img class="quiz-image hidden" src="{{ question.answer_img_url }}">
                             </div>
                         {% endif %}
-                    {% endfor %}
-                {% endif %}
+                    {% else %}
+                        {% for option in question.multiple_choice_options %}
+                            <h6 class="light-blue-text text-darken-4">
+                                &emsp;{{ option.option_num}}) {{ option.answer_text }}
+                                {% if option.answer_text != '' %}
+                                    {% if option.correct == True %}
+                                        <i class="fas fa-check fa-fw"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </h6>
+                            {% if option.answer_img_url != '' %}
+                                <div class="center-align">
+                                    <img class="quiz-image hidden" src="{{ option.answer_img_url }}">
+                                </div>
+                                {% if option.answer_text == '' %}
+                                    {% if option.correct == True %}
+                                        <h6 class="light-blue-text text-darken-4">
+                                            <i class="fas fa-check fa-fw"></i>
+                                        </h6>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <div class="divider"></div>
+                {% endfor %}
+                <div class="divider"></div>
             {% endfor %}
-            <div class="divider"></div>
-        {% endfor %}
+        </div>
     </div>
 {% endblock %}
 {% block scripts %}
