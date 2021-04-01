@@ -1023,43 +1023,42 @@ def buildViewQuizDataSet(params):
     return quiz
 
 
-# View Quiz
-# View quiz as a web page
-@app.route("/view_quiz")
-def viewQuiz():
-    auth_criteria = {
-        'auth': True
-    }
-    auth_state = auth_user(auth_criteria)
-    if auth_state['auth']:
-        print(auth_state['auth'])
-        print(auth_state['reason'])
-        quiz_id = ObjectId(request.args.get('id'))
-
-        quiz = buildViewQuizDataSet({
-            'show_answers': True,
-            'quiz_id': quiz_id
-        })
-
-        print(quiz)
-        return render_template("view_quiz.html", viewQuiz=quiz)
-
-    print(auth_state['auth'])
-    print(auth_state['reason'])
-    flash("Permission Denied")
-    return redirect(url_for("login"))
-
-
 # Quiz Sheet
 # View quiz sheet (without answers) as a web page
-@app.route("/quiz_sheet")
-def quizSheet():
+@app.route("/quiz_sheet", endpoint='quiz_sheet')
+# View Quiz
+# View quiz as a web page
+@app.route("/view_quiz", endpoint='view_quiz')
+def displayQuiz():
     quiz_id = ObjectId(request.args.get('id'))
 
-    quiz = buildViewQuizDataSet({
+    params = {
         'show_answers': False,
         'quiz_id': quiz_id
-    })
+    }
+
+    if (request.endpoint == 'view_quiz'):
+        auth_criteria = {
+            'auth': True
+        }
+        auth_state = auth_user(auth_criteria)
+        if auth_state['auth']:
+            print(auth_state['auth'])
+            print(auth_state['reason'])
+
+            params['show_answers'] = True
+
+            quiz = buildViewQuizDataSet(params)
+
+            print(quiz)
+            return render_template("view_quiz.html", viewQuiz=quiz)
+
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        flash("Permission Denied")
+        return redirect(url_for("login"))
+
+    quiz = buildViewQuizDataSet(params)
 
     print(quiz)
     return render_template("quiz_sheet.html", viewQuiz=quiz)
