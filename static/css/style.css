@@ -534,3 +534,9 @@ form .user-search .search-radio-row {
 #quizSearchResults .collection-item.avatar {
     min-height: initial;
 }
+
+#viewQuiz .quiz-container {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
