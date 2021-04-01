@@ -654,6 +654,7 @@ def buildQuizHtml(quiz_data, user_role):
     <ul class="collection">'''
     for quiz in quiz_data:
         secUrlClass = 'class="light-blue-text text-darken-4" '
+        secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
         secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
         secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
         secUrlDeleteClass = 'class="light-blue-text text-darken-4 del-quiz" '
@@ -667,6 +668,9 @@ def buildQuizHtml(quiz_data, user_role):
                 </h6>
                 <span>Author: ''' + quiz['author'] + '''</span>
                 <div class="secondary-content light-blue-text text-darken-4">
+                    <a ''' + secUrlClass + secHrefQuiz + '''>
+                        <i class="fas fa-comment fa-fw"></i>
+                    </a>
                     <a ''' + secUrlClass + secHrefView + '''>
                         <i class="fas fa-eye fa-fw"></i>
                     </a>
@@ -956,6 +960,78 @@ def buildViewQuizHtml(quiz_data):
     return Markup(html)
 
 
+# Build View Quiz Data Set
+def buildViewQuizDataSet(params):
+    quiz = mongo.db.quizzes.find_one({
+        '_id': params['quiz_id']
+    }, {
+        '_id': 0,
+        'title': 1,
+        'category_id': 1,
+        'author_id': 1
+    })
+    category = mongo.db.categories.find_one({
+        '_id': quiz['category_id']
+    }, {
+        '_id': 0
+    })
+    quiz['category'] = category['category']
+    quiz['category_icon'] = category['category_icon']
+    quiz.pop('category_id')
+    quiz['author'] = mongo.db.users.find_one({
+        '_id': quiz['author_id']
+    }, {
+        '_id': 0,
+        'user_id': 1
+    })['user_id']
+    quiz.pop('author_id')
+    quiz['rounds'] = list(mongo.db.rounds.find({
+        'quiz_id': params['quiz_id']
+    }, {
+        'round_num': 1,
+        'title': 1,
+        'category_id': 1
+    }).sort('round_num'))
+    for round in quiz['rounds']:
+        category = mongo.db.categories.find_one({
+            '_id': round['category_id']
+        }, {
+            '_id': 0
+        })
+        round.pop('category_id')
+        round['category'] = category['category']
+        round['category_icon'] = category['category_icon']
+        if (params['show_answers']):
+            round['questions'] = list(mongo.db.questions.find({
+                'round_id': round['_id']
+            }, {
+                '_id': 0,
+                'question_num': 1,
+                'question_text': 1,
+                'question_img_url': 1,
+                'answer_text': 1,
+                'answer_img_url': 1,
+                'multiple_choice': 1,
+                'multiple_choice_options': 1
+            }).sort('question_num'))
+        else:
+            round['questions'] = list(mongo.db.questions.find({
+                'round_id': round['_id']
+            }, {
+                '_id': 0,
+                'question_num': 1,
+                'question_text': 1,
+                'question_img_url': 1,
+                'multiple_choice': 1,
+                'multiple_choice_options.option_num': 1,
+                'multiple_choice_options.answer_text': 1,
+                'multiple_choice_options.answer_img_url': 1
+            }).sort('question_num'))
+        round.pop('_id')
+
+    return quiz
+
+
 # View Quiz
 # View quiz as a web page
 @app.route("/view_quiz")
@@ -969,62 +1045,47 @@ def viewQuiz():
         print(auth_state['reason'])
         quiz_id = ObjectId(request.args.get('id'))
         user_id = auth_state['id']
-        quiz = mongo.db.quizzes.find_one({
-            '_id': quiz_id
-        }, {
-            '_id': 0,
-            'title': 1,
-            'category_id': 1,
-            'author_id': 1
+
+        quiz = buildViewQuizDataSet({
+            'show_answers': True,
+            'quiz_id': quiz_id,
+            'user_id': user_id
         })
-        category = mongo.db.categories.find_one({
-            '_id': quiz['category_id']
-        }, {
-            '_id': 0
-        })
-        quiz['category'] = category['category']
-        quiz['category_icon'] = category['category_icon']
-        quiz.pop('category_id')
-        quiz['author'] = mongo.db.users.find_one({
-            '_id': quiz['author_id']
-        }, {
-            '_id': 0,
-            'user_id': 1
-        })['user_id']
-        quiz.pop('author_id')
-        quiz['rounds'] = list(mongo.db.rounds.find({
-            'quiz_id': quiz_id
-        }, {
-            'round_num': 1,
-            'title': 1,
-            'category_id': 1
-        }).sort('round_num'))
-        for round in quiz['rounds']:
-            category = mongo.db.categories.find_one({
-                '_id': round['category_id']
-            }, {
-                '_id': 0
-            })
-            round.pop('category_id')
-            round['category'] = category['category']
-            round['category_icon'] = category['category_icon']
-            round['questions'] = list(mongo.db.questions.find({
-                'round_id': round['_id']
-            }, {
-                '_id': 0,
-                'question_num': 1,
-                'question_text': 1,
-                'question_img_url': 1,
-                'answer_text': 1,
-                'answer_img_url': 1,
-                'multiple_choice': 1,
-                'multiple_choice_options': 1
-            }).sort('question_num'))
-            round.pop('_id')
 
         print(quiz)
         quiz['html'] = buildViewQuizHtml(quiz)
         return render_template("view_quiz.html", viewQuiz=quiz)
+        # return redirect(url_for("my_quizzes"))
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
+
+
+# Quiz Sheet
+# View quiz sheet (without answers) as a web page
+@app.route("/quiz_sheet")
+def quizSheet():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        quiz_id = ObjectId(request.args.get('id'))
+        user_id = auth_state['id']
+
+        quiz = buildViewQuizDataSet({
+            'show_answers': False,
+            'quiz_id': quiz_id,
+            'user_id': user_id
+        })
+
+        print(quiz)
+        quiz['html'] = buildViewQuizHtml(quiz)
+        return render_template("quiz_sheet.html", viewQuiz=quiz)
         # return redirect(url_for("my_quizzes"))
 
     print(auth_state['auth'])
