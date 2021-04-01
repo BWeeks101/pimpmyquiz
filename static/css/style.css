@@ -540,3 +540,57 @@ form .user-search .search-radio-row {
     margin-left: auto;
     margin-right: auto;
 }
+
+.divider {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#viewQuiz .quiz-container .divider {
+    margin-top: 42px;
+}
+
+@media print {
+    @page {
+        size: auto;
+        width: 210mm;
+        height: 297mm;
+        margin: 30mm 30mm 30mm 30mm;
+    }
+
+    body {
+        max-width: 210mm !important;
+        width: 150mm !important;
+        padding: initial !important;
+   }
+
+   .quiz-container.container {
+       max-width: 210mm !important;
+       width: 150mm !important;
+       margin: initial !important;
+   }
+
+   #viewQuiz>h3 {
+       margin-top: 0;
+   }
+
+   /* Images */
+   #viewQuiz img {
+       max-width: 30mm;
+       max-height: 30mm;
+   }
+
+   .page-break-before-always {
+       page-break-before: always;
+   }
+
+   .page-break-inside-avoid {
+       page-break-inside: avoid;
+   }
+
+   .page-break-after-avoid {
+       page-break-after: avoid;
+   }
+
+}
