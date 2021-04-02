@@ -1025,10 +1025,12 @@ def buildViewQuizDataSet(params):
 
 # Quiz Sheet
 # View quiz sheet (without answers) as a web page
-@app.route("/quiz_sheet", endpoint='quiz_sheet')
+@app.route("/quiz_sheet", endpoint="quiz_sheet")
 # View Quiz
 # View quiz as a web page
-@app.route("/view_quiz", endpoint='view_quiz')
+@app.route("/view_quiz", endpoint="view_quiz")
+# Edit Quiz
+@app.route("/edit_quiz", methods=["GET", "POST"], endpoint="edit_quiz")
 def displayQuiz():
     quiz_id = ObjectId(request.args.get('id'))
 
@@ -1052,6 +1054,29 @@ def displayQuiz():
 
             print(quiz)
             return render_template("view_quiz.html", viewQuiz=quiz)
+
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        flash("Permission Denied")
+        return redirect(url_for("login"))
+    elif (request.endpoint == 'edit_quiz'):
+        auth_criteria = {
+            'auth': True
+        }
+        auth_state = auth_user(auth_criteria)
+        if auth_state['auth']:
+            print(auth_state['auth'])
+            print(auth_state['reason'])
+
+            params['show_answers'] = True
+
+            quiz = buildViewQuizDataSet(params)
+
+            print(quiz)
+
+            category_data = getCategories()
+            return render_template("edit_quiz.html",
+                                   quiz=quiz, quiz_categories=category_data)
 
         print(auth_state['auth'])
         print(auth_state['reason'])
@@ -1518,13 +1543,7 @@ def new_quiz():
                     {'$set': {'copy_of': round_id}}
                 )
 
-    query = [{
-        '$project': {
-            '_id': 0,
-
-        }
-    }]
-    category_data = list(mongo.db.categories.aggregate(query))
+    category_data = getCategories()
     return render_template("new_quiz.html", quiz_categories=category_data)
 
 
