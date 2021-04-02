@@ -1061,7 +1061,11 @@ def displayQuiz():
         return redirect(url_for("login"))
     elif (request.endpoint == 'edit_quiz'):
         auth_criteria = {
-            'auth': True
+            'is_admin': True,
+            'role': [
+                'Global Admin',
+                'Content Admin'
+            ]
         }
         auth_state = auth_user(auth_criteria)
         if auth_state['auth']:
