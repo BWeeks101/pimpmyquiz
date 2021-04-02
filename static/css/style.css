@@ -74,98 +74,121 @@ img {
         box-shadow: initial;
     }
 
-    /* new_quiz.html */
-    #createQuiz .card {
+    /* new_quiz.html, edit_quiz.html */
+    #createQuiz .card,
+    #editQuiz .card {
         margin-bottom: 0;
         transition: none;
         border-radius: initial !important;
         box-shadow: initial;
     }
 
-    #createQuiz .card-content {
+    #createQuiz .card-content,
+    #editQuiz .card-content {
         padding: 0 !important;
         border-radius: initial !important;
     }
 
-    #createQuiz .card .card-content .card-title {
+    #createQuiz .card .card-content .card-title,
+    #editQuiz .card .card-content .card-title {
         font-size: 20px !important;
         margin-bottom: 0.5rem !important;
     }
 
-    #createQuiz .card .card-content .row {
+    #createQuiz .card .card-content .row,
+    #editQuiz .card .card-content .row {
         margin-bottom: 1rem;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-body {
+    #createQuiz .card .card-content .row .collapsible .collapsible-body,
+    #editQuiz .card .card-content .row .collapsible .collapsible-body {
         padding: 1rem;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-body .col .row {
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .col .row,
+    #editQuiz .card .card-content .row .collapsible .collapsible-body .col .row {
         margin-left: 0;
         margin-right: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-body .row .s12 {
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .row .s12,
+    #editQuiz .card .card-content .row .collapsible .collapsible-body .row .s12 {
         padding: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-body .title {
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .title,
+    #editQuiz .card .card-content .row .collapsible .collapsible-body .title {
         font-size: 20px;
         margin-bottom: 0.5rem;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-body .input-field.col:not(.multi-input):not(.inline-input) label {
+    #createQuiz .card .card-content .row .collapsible .collapsible-body .input-field.col:not(.multi-input):not(.inline-input) label,
+    #editQuiz .card .card-content .row .collapsible .collapsible-body .input-field.col:not(.multi-input):not(.inline-input) label {
         left: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .round-row~.row {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .round-row~.row,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .round-row~.row {
         margin-bottom: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .row .collapsible {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .row .collapsible,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-round]~.collapsible-body .row .collapsible {
         margin-bottom: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body {
         padding-bottom: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) i {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) i,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) i {
         width: 0;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) label {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) label,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) label {
         margin-left: 0;
         width: 100%
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) input {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) input,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .input-field:not(.multi-input) input {
         margin-left: 0;
         width: 100%;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .checkbox-container:not(.inline-input) label {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .checkbox-container:not(.inline-input) label,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .checkbox-container:not(.inline-input) label {
         width: 100% !important;
     }
 
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row {
         margin-bottom: 0;
     }
 
     #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s10,
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s10 {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s10,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s10,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s10 {
         padding-left: 0;
         padding-right: 0.25rem;
     }
 
     #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s2,
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2 {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s2,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2 {
         padding-right: 0;
         padding-left: 0;
     }
 
     #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s10,
-    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s2 {
+    #createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s2,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s10,
+    #editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .title .col.s2 {
         font-size: 1rem;
     }
 
@@ -212,7 +235,8 @@ img {
     min-width: 2rem;
 }
 
-.collapsible-header .col strong, .dummy-collapsible-header .col strong {
+.collapsible-header .col strong,
+.dummy-collapsible-header .col strong {
     margin: 5px;
     line-height: 42px;
 }
@@ -256,7 +280,8 @@ nav .fa-caret-down {
     max-width: 512px;
 }
 
-form .modal-content .row, form .user-search .row {
+form .modal-content .row,
+form .user-search .row {
     margin-bottom: 10px;
 }
 
@@ -273,7 +298,8 @@ form .modal-content .row, form .user-search .row {
     margin-top: -.5rem;
 }
 
-form .modal-content .input-field, form .user-search .input-field {
+form .modal-content .input-field,
+form .user-search .input-field {
     margin-bottom: 0;
 }
 
@@ -316,7 +342,8 @@ form .user-search .search-radio-row {
 	box-shadow: none;
 }
 
-#modalChangePasswordCollapsible .collapsible-header, #modalChangePasswordCollapsible .collapsible-body {
+#modalChangePasswordCollapsible .collapsible-header,
+#modalChangePasswordCollapsible .collapsible-body {
     padding: 0;
     border: none;
 }
@@ -336,11 +363,15 @@ form .user-search .search-radio-row {
 }
 
 
-.modal-action-container, .search-action-container {
+.modal-action-container,
+.search-action-container {
     margin-bottom: 0 !important;
 }
 
-.modal-action-container button, .modal-action-container button i, .search-action-container button, .search-action-container button i {
+.modal-action-container button,
+.modal-action-container button i,
+.search-action-container button,
+.search-action-container button i {
     font-size: 1.2rem;
 }
 
@@ -353,35 +384,67 @@ form .user-search .search-radio-row {
     margin-left: 1rem;
 }
 
-.modal .subopt span:hover, #createQuiz .subopt span:hover, .quiz-search .subopt span:hover {
+.modal .subopt span:hover,
+#createQuiz .subopt span:hover,
+#editQuiz .subopt span:hover,
+.quiz-search .subopt span:hover {
     border-bottom: 1px solid #01579b;
 }
 
-.modal .optgroup-option, #createQuiz .optgroup-option, .quiz-search .optgroup-option {
+.modal .optgroup-option,
+#createQuiz .optgroup-option,
+#editQuiz .optgroup-option,
+.quiz-search .optgroup-option {
     display: none;
 }
 
-.modal .select-dropdown.dropdown-content li, #createQuiz .select-dropdown.dropdown-content li, .quiz-search .select-dropdown.dropdown-content li {
+.modal .select-dropdown.dropdown-content li,
+#createQuiz .select-dropdown.dropdown-content li,
+#editQuiz .select-dropdown.dropdown-content li,
+.quiz-search .select-dropdown.dropdown-content li {
 	background-color: rgba(0,0,0,0.08);
 }
 
-.modal .select-wrapper input.select-dropdown:focus, #createQuiz .select-wrapper input.select-dropdown:focus, .quiz-search .select-wrapper input.select-dropdown:focus {
+.modal .select-wrapper input.select-dropdown:focus,
+#createQuiz .select-wrapper input.select-dropdown:focus,
+#editQuiz .select-wrapper input.select-dropdown:focus,
+.quiz-search .select-wrapper input.select-dropdown:focus {
 	border-bottom: 1px solid #9e9e9e;
 }
 
-.modal .select-dropdown.dropdown-content li, .modal .select-dropdown.dropdown-content li:hover, #createQuiz .select-dropdown.dropdown-content li, #createQuiz .select-dropdown.dropdown-content li:hover, .quiz-search .select-dropdown.dropdown-content li, .quiz-search .select-dropdown.dropdown-content li:hover {
+.modal .select-dropdown.dropdown-content li,
+.modal .select-dropdown.dropdown-content li:hover,
+#createQuiz .select-dropdown.dropdown-content li,
+#createQuiz .select-dropdown.dropdown-content li:hover,
+#editQuiz .select-dropdown.dropdown-content li,
+#editQuiz .select-dropdown.dropdown-content li:hover,
+.quiz-search .select-dropdown.dropdown-content li,
+.quiz-search .select-dropdown.dropdown-content li:hover {
 	background-color: rgba(0,0,0,0);
 }
 
-.modal .select-dropdown li.optgroup, #createQuiz .select-dropdown li.optgroup, .quiz-search .select-dropdown li.optgroup {
+.modal .select-dropdown li.optgroup,
+#createQuiz .select-dropdown li.optgroup,
+#editQuiz .select-dropdown li.optgroup,
+.quiz-search .select-dropdown li.optgroup {
 	border-top: 0;
 }
 
-.modal .dropdown-content li, #createQuiz .dropdown-content li, .quiz-search .dropdown-content li {
+.modal .dropdown-content li,
+#createQuiz .dropdown-content li,
+#editQuiz .dropdown-content li,
+.quiz-search .dropdown-content li {
 	min-height: 40px;
 }
 
-.modal .dropdown-content li > a, .modal .dropdown-content li > span, #createQuiz .dropdown-content li > a, #createQuiz .dropdown-content li > span, .quiz-search .dropdown-content li > a, .quiz-search .dropdown-content li > span {
+.modal .dropdown-content li > a,
+.modal .dropdown-content li > span,
+#createQuiz .dropdown-content li > a,
+#createQuiz .dropdown-content li > span,
+#editQuiz .dropdown-content li > a,
+#editQuiz .dropdown-content li > span,
+.quiz-search .dropdown-content li > a,
+.quiz-search .dropdown-content li > span {
 	padding: 7px 16px;
 }
 
@@ -395,7 +458,8 @@ form .user-search .search-radio-row {
     font-size: 1rem !important;
 }
 
-.results-control .pageNumber, .results-control .totalPages {
+.results-control .pageNumber,
+.results-control .totalPages {
     width: 2.35rem !important;
     text-align: center !important;
     display: inline-block;
@@ -456,70 +520,95 @@ form .user-search .search-radio-row {
 }
 
 
-#createQuiz .answers-container .inline-input span {
+#createQuiz .answers-container .inline-input span,
+#editQuiz .answers-container .inline-input span {
         height: 20px;
     }
 
-#createQuiz .answers-container .inline-input [type="checkbox"] + span:not(.lever)::before {
+#createQuiz .answers-container .inline-input [type="checkbox"] + span:not(.lever)::before,
+#editQuiz .answers-container .inline-input [type="checkbox"] + span:not(.lever)::before {
     left: 3.5px;
 }
 
-#createQuiz .answers-container .inline-input [type="checkbox"]:checked + span:not(.lever)::before {
+#createQuiz .answers-container .inline-input [type="checkbox"]:checked + span:not(.lever)::before,
+#editQuiz .answers-container .inline-input [type="checkbox"]:checked + span:not(.lever)::before {
     transform: translateX(-3.5px) rotate(40deg);
 }
 
-#createQuiz .row div.title.col, #createQuiz .row div.answers-container.col {
+#createQuiz .row div.title.col,
+#createQuiz .row div.answers-container.col,
+#editQuiz .row div.title.col,
+#editQuiz .row div.answers-container.col {
     padding: 0;
 }
 
-#createQuiz .collapsible-header div.col {
+#createQuiz .collapsible-header div.col,
+#editQuiz .collapsible-header div.col {
     padding: 0;
 }
 
-#createQuiz .card .card-content .card-title {
+#createQuiz .card .card-content .card-title,
+#editQuiz .card .card-content .card-title {
     margin-bottom: 1rem;
 }
 
-#createQuiz .round-row {
+#createQuiz .round-row,
+#editQuiz .round-row {
     margin-bottom: 0;
 }
 
-#createQuiz .round-title, #createQuiz .question-title, #createQuiz .collapsible-body .title {
+#createQuiz .round-title,
+#createQuiz .question-title,
+#createQuiz .collapsible-body .title,
+#editQuiz .round-title,
+#editQuiz .question-title,
+#editQuiz .collapsible-body .title {
 	font-size: 24px;
 	font-weight: 300;
     line-height: 32px;
     margin-bottom: 1rem;
 }
 
-#createQuiz .collapsible-body .title {
+#createQuiz .collapsible-body .title,
+#editQuiz .collapsible-body .title {
     display: block;
 }
 
-#createQuiz .collapsible-header.round-title, #createQuiz .collapsible-header.question-title {
+#createQuiz .collapsible-header.round-title,
+#createQuiz .collapsible-header.question-title,
+#editQuiz .collapsible-header.round-title,
+#editQuiz .collapsible-header.question-title {
     margin-bottom: 0;
 }
 
-#createQuiz .collapsible-body {
+#createQuiz .collapsible-body,
+#editQuiz .collapsible-body {
     padding: 1rem 2rem;
 }
 
-#createQuiz .collapsible-header .qcontrols, #createQuiz .collapsible-header .rcontrols {
+#createQuiz .collapsible-header .qcontrols,
+#createQuiz .collapsible-header .rcontrols,
+#editQuiz .collapsible-header .qcontrols,
+#editQuiz .collapsible-header .rcontrols {
     font-size: 2rem;
     line-height: 1;
     font-weight: 400;
 }
 
-#createQuiz div.col.image-preview {
+#createQuiz div.col.image-preview,
+#editQuiz div.col.image-preview {
     margin-bottom: 1rem;
     padding-left: 3.75rem;
 }
 
-#createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2.checkbox-container label {
+#createQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2.checkbox-container label,
+#editQuiz .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2.checkbox-container label {
     height: 3rem;
 }
 
 
-#createQuiz .multi-control-remove {
+#createQuiz .multi-control-remove,
+#editQuiz .multi-control-remove {
     margin-right: 5px;
 }
 
