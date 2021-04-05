@@ -293,7 +293,7 @@ function imgPreview(imgUrl, target) {
     let request = 'imgPreview';
     $(target).html(returnHtml({request, imgUrl}));
     imgPreviewPreloader(target);
-    listenToImgPreview();
+    listenToImgPreview(target.children('img'));
 }
 
 $(function() {
