@@ -115,12 +115,16 @@ function listenToImgInputs() {
         inputHelperLabel($(elem).attr('id'));
     };
 
+    const updImgPreview = (elem) => {
+        checkImgUrl(elem);
+        imgPreview($(elem).val(), $(elem).
+            closest('.input-field').
+            next());
+    };
+
     $('input.img-url').
         on("focusout", (e) => {
-            checkImgUrl(e.currentTarget);
-            imgPreview($(e.currentTarget).val(), $(e.currentTarget).
-                closest('.input-field').
-                next());
+            updImgPreview(e.currentTarget);
         });
 
     $('input.img-url').
@@ -128,24 +132,21 @@ function listenToImgInputs() {
             if (e.key === 'Enter' ||
                     e.key === 'Delete' ||
                     e.key === 'Backspace') {
-                checkImgUrl(e.currentTarget);
-                imgPreview($(e.currentTarget).val(), $(e.currentTarget).
-                    closest('.input-field').
-                    next());
+                updImgPreview(e.currentTarget);
             }
         });
 }
 
-function stopListeningToImgPreview() {
-    $('div.image-preview img').off("error");
-    $('div.image-preview img').off("load");
+function stopListeningToImgPreview(elem) {
+    $(elem).off("error");
+    $(elem).off("load");
 }
 
 // eslint-disable-next-line no-unused-vars
-function listenToImgPreview() {
-    stopListeningToImgPreview();
-    $('div.image-preview img').
-        on("error", (e) => imgPreviewError(e.currentTarget));
-    $('div.image-preview img').
-        on("load", (e) => imgPreviewLoad(e.currentTarget));
+function listenToImgPreview(elem) {
+    stopListeningToImgPreview(elem);
+    $(elem).
+        on("error", () => imgPreviewError(elem));
+    $(elem).
+        on("load", () => imgPreviewLoad(elem));
 }
