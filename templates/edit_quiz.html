@@ -38,7 +38,7 @@
                     <div class="row">
                         <ul class="collapsible expandable">
                             {% for round in quiz.rounds %}
-                                <li class="active">
+                                <li {% if round.round_num == 1 %} class="active" {% endif %}>
                                     <div class="collapsible-header round-title" data-round="{{ round.round_num }}">
                                         Round {{ round.round_num }}
                                         <svg class="caret" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
@@ -78,7 +78,7 @@
                                             <div class="col s12">
                                                 <ul class="collapsible expandable">
                                                     {% for question in round.questions %}
-                                                        <li {% if question.question_num == 1%} class="active" {% endif %}>
+                                                        <li {% if round.round_num == 1 and question.question_num == 1 %} class="active" {% endif %}>
                                                             <div class="collapsible-header question-title" data-question="{{ question.question_num }}">
                                                                 Question {{ question.question_num }}
                                                                 <svg class="caret" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
@@ -127,7 +127,7 @@
                                                                             <!-- Optional Image URL -->
                                                                             <div class="input-field col s12">
                                                                                 <span class="prefix light-blue-text text-darken-4 center-align"></span>
-                                                                                <input id="a_img_{{ round.round_num }}_{{ question.question_num }}" name="a_img_{{ round.round_num }}_{{ question.question_num }}" type="url" class="img-url validate" value="">
+                                                                                <input id="a_img_{{ round.round_num }}_{{ question.question_num }}" name="a_img_{{ round.round_num }}_{{ question.question_num }}" type="url" class="img-url validate" value="{{ question.answer_img_url }}">
                                                                                 <label for="a_img_{{ round.round_num }}_{{ question.question_num }}" data-error="Invalid URL" data-default="Optional Image URL">Optional Image URL</label>
                                                                             </div>
                                                                             <div class="image-preview col s12 center-align">
@@ -192,16 +192,20 @@
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/newquizlisteners.js') }}"></script>
     <script src="{{ url_for('static', filename='js/newquiz.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/editquiz.js') }}"></script>
     <script>
         // Convert mongoDB data to JS global array for use in this template
         let categoryList = createCategoryArray({{ quiz_categories | tojson }});
         let observerList = [];
+
         $(function () {
             setSelectValue($('#quizCategory'), '{{ quiz.category }}');
             {% for round in quiz.rounds %}
                 setSelectValue($('#roundCategory_{{ round.round_num}}'), '{{ round.category }}');
             {% endfor %}
             reinitSelectOnDisabled($('.round-category'));
+
+            $('li.active li.active .img-url').trigger('focusout');
         })
     </script>
 {% endblock %}
