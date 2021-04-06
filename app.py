@@ -658,7 +658,7 @@ def buildQuizHtml(quiz_data, user_role):
         secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
         secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
         secUrlDeleteClass = 'class="light-blue-text text-darken-4 del-quiz" '
-        secOnClick = 'onclick="deleteQuiz(`' + quiz['id'] + '`)"'
+        secData = 'data-quizId="' + quiz['id'] + '"'
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6>
@@ -680,7 +680,7 @@ def buildQuizHtml(quiz_data, user_role):
                     <a ''' + secUrlClass + secHrefEdit + '''>
                         <i class="fas fa-edit fa-fw"></i>
                     </a>
-                    <a ''' + secUrlDeleteClass + secOnClick + '''href="#!">
+                    <a ''' + secUrlDeleteClass + secData + '''href="#!">
                         <i class="fas fa-trash fa-fw"></i>
                     </a>'''
         else:
