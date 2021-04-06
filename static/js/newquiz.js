@@ -1,39 +1,17 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global observerList, stopListeningToSelect, listenToSelect, returnHtml,
-stopListeningToMultiControls, listenToMultiControls, stopListeningToQControls,
-listenToQControls, stopListeningToRControls, M, listenToRControls,
-listenToImgInputs, listenToImgPreview, setSelectValue */
-
-function getObserver(elem) {
-    let observer = observerList.find((obj) => obj.elem === elem);
-    if (observer !== undefined) {
-        return observer.obs;
-    }
-    return observer;
-}
-
-function stopObserver(elem) {
-    let observer = getObserver(elem);
-    observer.disconnect();
-}
-
-function addObserver(elem) {
-    let observer = getObserver(elem);
-    if (observer === undefined) {
-        observerList.push({
-            elem,
-            'obs': new MutationObserver(() => {
-                stopListeningToSelect();
-                $(elem).formSelect();
-                listenToSelect();
-            })
-        });
-    }
-}
+/* global addObserver, getObserver, stopObserver, stopListeningToSelect,
+listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
+stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
+listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue */
 
 function reinitSelectOnDisabled(elem) {
     $(elem).each((i, el) => {
-        addObserver(el);
+        const observerFunc = () => {
+            stopListeningToSelect();
+            $(el).formSelect();
+            listenToSelect();
+        };
+        addObserver(el, observerFunc);
         let observer = getObserver(el);
         observer.observe(el, {attributeFilter: ['disabled']});
     });

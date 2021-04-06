@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global roleList, userList, categoryList */
+/* global roleList, userList, categoryList, observerList */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -617,6 +617,31 @@ function getCategory(catId) {
     }
 
     return result;
+}
+
+function getObserver(elem) {
+    let observer = observerList.find((obj) => obj.elem === elem);
+    if (observer !== undefined) {
+        return observer.obs;
+    }
+    return observer;
+}
+
+// eslint-disable-next-line no-unused-vars
+function stopObserver(elem) {
+    let observer = getObserver(elem);
+    observer.disconnect();
+}
+
+// eslint-disable-next-line no-unused-vars
+function addObserver(elem, func) {
+    let observer = getObserver(elem);
+    if (observer === undefined) {
+        observerList.push({
+            elem,
+            'obs': new MutationObserver(func)
+        });
+    }
 }
 
 // eslint-disable-next-line no-unused-vars
