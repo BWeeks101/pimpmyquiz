@@ -1,4 +1,27 @@
-/* global addRecordPositions, inputHelperLabel, xHttpRequest, setSelectValue */
+/* global addRecordPositions, inputHelperLabel, xHttpRequest, setSelectValue,
+addObserver, getObserver */
+
+function deleteQuiz(quizId) {
+    let confText = 'If you delete this quiz, all associated rounds and ' +
+        'questions will also be deleted.  Do you wish to continue?';
+    // eslint-disable-next-line no-alert
+    let response = confirm(confText);
+    if (response === true) {
+        open(`/delete_quiz?&id=${quizId}`, '_self');
+    }
+}
+
+function stopListeningToDelLinks() {
+    $('.del-quiz').off('click');
+}
+
+function listenToDelLinks() {
+    stopListeningToDelLinks();
+    $('.del-quiz').on('click', (e) => {
+        e.stopPropagation();
+        deleteQuiz($(e.currentTarget).attr('data-quizId'));
+    });
+}
 
 function getQuizSearchResults(isGlobal) {
     let value = $('#quizSearch').val();
@@ -37,6 +60,7 @@ function quizSearchCreateListeners() {
                 nextAll('.search-action-container').
                 children('button[data-type="global"]').
                 attr('data-type');
+            stopListeningToDelLinks();
             if (isGlobal) {
                 getQuizSearchResults(true);
             } else {
@@ -47,6 +71,7 @@ function quizSearchCreateListeners() {
 
     $("#searchButton").on("click", (e) => {
         let isGlobal = $(e.currentTarget).attr('data-type');
+        stopListeningToDelLinks();
         if (isGlobal) {
             getQuizSearchResults(true);
         } else {
@@ -67,17 +92,6 @@ function listenToSelect() {
     });
 }
 
-// eslint-disable-next-line no-unused-vars
-function deleteQuiz(quizId) {
-    let confText = 'If you delete this quiz, all associated rounds and ' +
-        'questions will also be deleted.  Do you wish to continue?';
-    // eslint-disable-next-line no-alert
-    let response = confirm(confText);
-    if (response === true) {
-        open(`/delete_quiz?&id=${quizId}`, '_self');
-    }
-}
-
 function getInitialQuizList() {
     let request = {
         'type':
@@ -96,8 +110,18 @@ function getInitialQuizList() {
     xHttpRequest(request, $('#quizSearchResults')[0]);
 }
 
+function observeQuizResults() {
+    addObserver($('#quizSearchResults')[0], listenToDelLinks);
+    let observer = getObserver($('#quizSearchResults')[0]);
+    observer.observe($('#quizSearchResults')[0], {childList: true});
+}
+
+// eslint-disable-next-line no-unused-vars
+let observerList = [];
+
 $(function() {
     getInitialQuizList();
     quizSearchCreateListeners();
     listenToSelect();
+    observeQuizResults();
 });
