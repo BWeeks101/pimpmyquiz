@@ -880,14 +880,16 @@ def globalQuizSearch():
         print(auth_state['auth'])
         print(auth_state['reason'])
         page = request.args.get('page')
-        if (page == 'undefined'):
+        if (page == 'undefined' or page is None):
             page = 1
         else:
             page = int(page)
         searchStr = request.args.get('searchStr')
-        if (searchStr == 'undefined'):
+        if (searchStr == 'undefined' or searchStr is None):
             searchStr = '*'
         category = request.args.get('category')
+        if (category == 'undefined' or category is None):
+            category = 'All'
         limit = 10
         skip = (page * limit) - limit
 
@@ -1035,6 +1037,7 @@ def buildViewQuizDataSet(params):
 # Edit Quiz
 @app.route("/edit_quiz", methods=["GET", "POST"], endpoint="edit_quiz")
 def displayQuiz():
+    # Set default values
     quiz_id = ObjectId(request.args.get('id'))
 
     params = {
@@ -1042,7 +1045,9 @@ def displayQuiz():
         'quiz_id': quiz_id
     }
 
+    # View Quiz request
     if request.endpoint == 'view_quiz':
+        # Check user is logged in
         auth_criteria = {
             'auth': True
         }
@@ -1058,11 +1063,15 @@ def displayQuiz():
             print(quiz)
             return render_template("view_quiz.html", viewQuiz=quiz)
 
+        # If not logged in, redirect to login
         print(auth_state['auth'])
         print(auth_state['reason'])
         flash("Permission Denied")
         return redirect(url_for("login"))
+
+    # Edit Quiz request
     elif request.endpoint == 'edit_quiz':
+        # Check user is logged in, and member of Global or Content admin
         auth_criteria = {
             'is_admin': True,
             'role': [
@@ -1071,14 +1080,19 @@ def displayQuiz():
             ]
         }
         auth_state = auth_user(auth_criteria)
-        if auth_state['reason']['auth'] is True:
-            author_id = mongo.db.quizzes.find_one({
-                '_id': quiz_id
-            }, {
-                '_id': 0,
-                'author_id': 1
-            })['author_id']
-        if auth_state['auth'] or auth_state['id'] == author_id:
+        # If user is logged in
+        if type(auth_state['reason']) != str:
+            if auth_state['reason']['auth'] is True:
+                # Get the author_id
+                author_id = mongo.db.quizzes.find_one({
+                    '_id': quiz_id
+                }, {
+                    '_id': 0,
+                    'author_id': 1
+                })['author_id']
+        # If user is authorised, or user is author
+        if auth_state['auth'] or (
+                'id' in auth_state and auth_state['id'] == author_id):
             print(auth_state['auth'])
             print(auth_state['reason'])
 
@@ -1092,10 +1106,16 @@ def displayQuiz():
             return render_template("edit_quiz.html",
                                    quiz=quiz, quiz_categories=category_data)
 
+        # If not authorised or author
         print(auth_state['auth'])
         print(auth_state['reason'])
         flash("Permission Denied")
-        return redirect(url_for("login"))
+        # If not logged in redirect to login
+        if auth_state['auth'] is False and type(auth_state['reason']) == str:
+            return redirect(url_for('login'))
+
+        # If logged in, redirect to quiz_search
+        return redirect(url_for('quiz_search'))
 
     quiz = buildViewQuizDataSet(params)
 
