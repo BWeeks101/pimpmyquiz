@@ -673,21 +673,24 @@ def buildQuizHtml(quiz_data, user_role):
                     </a>
                     <a ''' + secUrlClass + secHrefView + '''>
                         <i class="fas fa-eye fa-fw"></i>
-                    </a>
-                    <a ''' + secUrlClass + secHrefEdit + '''>
-                        <i class="fas fa-edit fa-fw"></i>
                     </a>'''
         if ((quiz['author'] == session['user']) or
                 (user_role == 'Global Admin' or user_role == 'Content Admin')):
             html += '''
+                    <a ''' + secUrlClass + secHrefEdit + '''>
+                        <i class="fas fa-edit fa-fw"></i>
+                    </a>
                     <a ''' + secUrlDeleteClass + secOnClick + '''href="#!">
                         <i class="fas fa-trash fa-fw"></i>
                     </a>'''
         else:
             html += '''
-                    <a class="grey-text" href="#!">
+                    <span class="grey-text">
+                        <i class="fas fa-edit fa-fw"></i>
+                    </span>
+                    <span class="grey-text">
                         <i class="fas fa-trash fa-fw"></i>
-                    </a>'''
+                    </span>'''
         html += '''
                 </div>
             </li>
@@ -1039,7 +1042,7 @@ def displayQuiz():
         'quiz_id': quiz_id
     }
 
-    if (request.endpoint == 'view_quiz'):
+    if request.endpoint == 'view_quiz':
         auth_criteria = {
             'auth': True
         }
@@ -1059,7 +1062,7 @@ def displayQuiz():
         print(auth_state['reason'])
         flash("Permission Denied")
         return redirect(url_for("login"))
-    elif (request.endpoint == 'edit_quiz'):
+    elif request.endpoint == 'edit_quiz':
         auth_criteria = {
             'is_admin': True,
             'role': [
@@ -1072,6 +1075,7 @@ def displayQuiz():
             author_id = mongo.db.quizzes.find_one({
                 '_id': quiz_id
             }, {
+                '_id': 0,
                 'author_id': 1
             })['author_id']
         if auth_state['auth'] or auth_state['id'] == author_id:
