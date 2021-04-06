@@ -1068,7 +1068,13 @@ def displayQuiz():
             ]
         }
         auth_state = auth_user(auth_criteria)
-        if auth_state['auth']:
+        if auth_state['reason']['auth'] is True:
+            author_id = mongo.db.quizzes.find_one({
+                '_id': quiz_id
+            }, {
+                'author_id': 1
+            })['author_id']
+        if auth_state['auth'] or auth_state['id'] == author_id:
             print(auth_state['auth'])
             print(auth_state['reason'])
 
