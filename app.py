@@ -1096,6 +1096,10 @@ def displayQuiz():
             print(auth_state['auth'])
             print(auth_state['reason'])
 
+            if request.method == 'POST':
+                print('UPDATE THE QUIZ!')
+                return redirect(request.referrer)
+
             params['show_answers'] = True
 
             quiz = buildViewQuizDataSet(params)
@@ -1576,6 +1580,9 @@ def new_quiz():
                     {'_id': question_id},
                     {'$set': {'copy_of': round_id}}
                 )
+
+                flash('Quiz Created')
+                return redirect(url_for('edit_quiz', id=quiz_id))
 
     category_data = getCategories()
     return render_template("new_quiz.html", quiz_categories=category_data)
