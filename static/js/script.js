@@ -175,7 +175,7 @@ function returnHtml(params) {
         <div class="input-field col s12">
             <span class="prefix" data-question="${qId}" ` +
                 `data-multi="0"></span>
-            <input id="answer_${rId}_${qId}" name="answer_${qId}" ` +
+            <input id="answer_${rId}_${qId}" name="answer_${rId}_${qId}" ` +
                 `type="text" minlength="1" maxlength="100" ` +
                 `class="validate" value="" required>
             <label for="answer_${rId}_${qId}" ` +
