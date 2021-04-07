@@ -1001,7 +1001,7 @@ def buildViewQuizDataSet(params):
             round['questions'] = list(mongo.db.questions.find({
                 'round_id': round['_id']
             }, {
-                '_id': 0,
+                '_id': 1,
                 'question_num': 1,
                 'question_text': 1,
                 'question_img_url': 1,
@@ -1014,7 +1014,7 @@ def buildViewQuizDataSet(params):
             round['questions'] = list(mongo.db.questions.find({
                 'round_id': round['_id']
             }, {
-                '_id': 0,
+                '_id': 1,
                 'question_num': 1,
                 'question_text': 1,
                 'question_img_url': 1,
@@ -1023,7 +1023,6 @@ def buildViewQuizDataSet(params):
                 'multiple_choice_options.answer_text': 1,
                 'multiple_choice_options.answer_img_url': 1
             }).sort('question_num'))
-        round.pop('_id')
 
     return quiz
 
