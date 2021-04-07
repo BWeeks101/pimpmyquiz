@@ -40,6 +40,7 @@
                             {% for round in quiz.rounds %}
                                 <li {% if round.round_num == 1 %} class="active" {% endif %}>
                                     <div class="collapsible-header round-title" data-round="{{ round.round_num }}">
+                                        <input id="roundId_{{ round.round_num}}" name="round_{{ round.round_num }}_id" type="text" class="hidden" value={{ round._id }}>
                                         Round {{ round.round_num }}
                                         <svg class="caret" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M7 10l5 5 5-5z"></path>
@@ -80,6 +81,7 @@
                                                     {% for question in round.questions %}
                                                         <li {% if round.round_num == 1 and question.question_num == 1 %} class="active" {% endif %}>
                                                             <div class="collapsible-header question-title" data-question="{{ question.question_num }}">
+                                                                <input id="questionId_{{ round.round_num}}_{{ question.question_num }}" name="question_{{ round.round_num }}_{{ question.question_num }}_id" type="text" class="hidden" value={{ question._id }}>
                                                                 Question {{ question.question_num }}
                                                                 <svg class="caret" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
                                                                     <path d="M7 10l5 5 5-5z"></path>
