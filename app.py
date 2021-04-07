@@ -1097,6 +1097,271 @@ def displayQuiz():
 
             if request.method == 'POST':
                 print('UPDATE THE QUIZ!')
+                # Quiz ID
+                quiz_id = ObjectId(request.args.get('id'))
+
+                quiz_category = request.form.get('quizCategory')
+
+                # Get category_id
+                category_id = mongo.db.categories.find_one(
+                    {'category': quiz_category},
+                    {'_id': 1}
+                )['_id']
+
+                # Update quiz doc
+                mongo.db.quizzes.update_one(
+                    {'_id': quiz_id},
+                    {'$set': {
+                        'title': request.form.get('quiz_title'),
+                        'category_id': category_id
+                    }}
+                )
+
+                # Update rounds
+                round_count = int(request.form.get('roundCount')) + 1
+                for rId in range(1, round_count):
+                    rId = str(rId)
+                    if (quiz_category == 'general knowledge'):
+                        round_category_id = mongo.db.categories.find_one(
+                            {'category': request.form.get(
+                                'roundCategory_' + rId
+                            )},
+                            {'_id': 1}
+                        )['_id']
+                    else:
+                        round_category_id = category_id
+
+                    round_id = request.form.get('round_' + rId + '_id')
+                    if round_id is None:
+                        print('No Round Id!')
+                        # create_round = {
+                        #     'quiz_id': quiz_id,
+                        #     'round_num': int(rId),
+                        #     'title': request.form.get('round_title_' + rId),
+                        #     'author_id': author_id,
+                        #     'date': create_quiz['date'],
+                        #     'category_id': round_category_id,
+                        #     'public': False
+                        # }
+
+                        # mongo.db.rounds.insert_one(create_round)
+
+                        # round_id = mongo.db.rounds.find_one(
+                        #     {'author_id': create_round['author_id'],
+                        #         'quiz_id': create_round['quiz_id'],
+                        #         'title': create_round['title']},
+                        #     {'_id': 1}
+                        # )['_id']
+
+                        # mongo.db.rounds.update_one(
+                        #     {'_id': round_id},
+                        #     {'$set': {'copy_of': round_id}}
+                        # )
+
+                        # # Create Questions
+                        # question_count = int(request.form.get(
+                        #     'questionCount_' + rId
+                        # )) + 1
+                        # for qId in range(1, question_count):
+                        #     qId = str(qId)
+
+                        #     create_question = {
+                        #         'author_id': author_id,
+                        #         'date': create_quiz['date'],
+                        #         'round_id': round_id,
+                        #         'question_num': int(qId),
+                        #         'question_text': request.form.get(
+                        #             'question_' + rId + '_' + qId
+                        #         ),
+                        #         'question_img_url': request.form.get(
+                        #             'q_img_' + rId + '_' + qId
+                        #         ),
+                        #         'public': False
+                        #     }
+
+                        #     multiple_choice = request.form.get(
+                        #         'quizMulti_' + rId + '_' + qId
+                        #     )
+
+                        #     # Massage multiple_choice value into boolean
+                        #     if multiple_choice is None:
+                        #         multiple_choice = False
+                        #         create_question[
+                        #             'answer_text'
+                        #         ] = request.form.get(
+                        #             'answer_' + rId + '_' + qId
+                        #         )
+                        #         create_question[
+                        #             'answer_img_url'
+                        #         ] = request.form.get(
+                        #             'a_img_' + rId + '_' + qId
+                        #         )
+
+                        #     if multiple_choice == 'on':
+                        #         multiple_choice = True
+
+                        #     create_question[
+                        #         'multiple_choice'
+                        #     ] = multiple_choice
+                        #     if multiple_choice is True:
+                        #         multi_array = []
+                        #         multi_count = int(request.form.get(
+                        #             'multiCount_' + rId + '_' + qId
+                        #         )) + 1
+                        #         for multi in range(1, multi_count):
+                        #             answer_text = request.form.get(
+                        #                 'answer_' + rId + '_' + qId + '_' +
+                        #                 str(multi))
+                        #             correct = request.form.get(
+                        #                 'correct_' + rId + '_' + qId + '_' +
+                        #                 str(multi))
+                        #             answer_url = request.form.get(
+                        #                 'a_img_' + rId + '_' + qId + '_' +
+                        #                 str(multi))
+
+                        #             if correct is None:
+                        #                 correct = False
+
+                        #             if correct == 'on':
+                        #                 correct = True
+
+                        #             multi_array.append({
+                        #                 'option_num': int(multi),
+                        #                 'answer_text': answer_text,
+                        #                 'correct': correct,
+                        #                 'answer_img_url': answer_url
+                        #             })
+
+                        #         create_question[
+                        #             'multiple_choice_options'
+                        #         ] = multi_array
+
+                        #     mongo.db.questions.insert_one(create_question)
+
+                        #     question_id = mongo.db.questions.find_one(
+                        #         {'author_id': create_question['author_id'],
+                        #             'round_id': create_question['round_id'],
+                        #             'question_text': create_question[
+                        #                 'question_text'
+                        #             ]
+                        #          },
+                        #         {'_id': 1}
+                        #     )['_id']
+
+                        #     mongo.db.questions.update_one(
+                        #         {'_id': question_id},
+                        #         {'$set': {'copy_of': round_id}}
+                        #     )
+                    else:
+                        round_id = ObjectId(round_id)
+                        print('Update the Round!')
+                        mongo.db.rounds.update_one(
+                            {'_id': round_id},
+                            {'$set': {
+                                'title': request.form.get(
+                                    'round_title_' + rId
+                                ),
+                                'category_id': round_category_id
+                            }}
+                        )
+
+                        # Update Questions
+                        question_count = int(request.form.get(
+                            'questionCount_' + rId
+                        )) + 1
+                        for qId in range(1, question_count):
+                            qId = str(qId)
+                            question_id = request.form.get(
+                                'question_' + rId + '_' + qId + '_id'
+                            )
+                            if question_id is None:
+                                print('No Question Id!')
+                            else:
+                                question_id = ObjectId(question_id)
+                                print('Update the Question!')
+                                update_question = {
+                                    'question_text': request.form.get(
+                                        'question_' + rId + '_' + qId
+                                    ),
+                                    'question_img_url': request.form.get(
+                                        'q_img_' + rId + '_' + qId
+                                    )
+                                }
+
+                                multiple_choice = request.form.get(
+                                    'quizMulti_' + rId + '_' + qId
+                                )
+
+                                # Massage multiple_choice value into boolean
+                                if multiple_choice is None:
+                                    multiple_choice = False
+                                    update_question[
+                                        'answer_text'
+                                    ] = request.form.get(
+                                        'answer_' + rId + '_' + qId
+                                    )
+                                    update_question[
+                                        'answer_img_url'
+                                    ] = request.form.get(
+                                        'a_img_' + rId + '_' + qId
+                                    )
+
+                                if multiple_choice == 'on':
+                                    multiple_choice = True
+
+                                update_question[
+                                    'multiple_choice'
+                                ] = multiple_choice
+
+                                if multiple_choice is True:
+                                    multi_array = []
+                                    multi_count = int(request.form.get(
+                                        'multiCount_' + rId + '_' + qId
+                                    )) + 1
+                                    for multi in range(1, multi_count):
+                                        answer_text = request.form.get(
+                                            'answer_' + rId + '_' + qId +
+                                            '_' + str(multi))
+                                        correct = request.form.get(
+                                            'correct_' + rId + '_' + qId +
+                                            '_' + str(multi))
+                                        answer_url = request.form.get(
+                                            'a_img_' + rId + '_' + qId +
+                                            '_' + str(multi))
+
+                                        if correct is None:
+                                            correct = False
+
+                                        if correct == 'on':
+                                            correct = True
+
+                                        multi_array.append({
+                                            'option_num': int(multi),
+                                            'answer_text': answer_text,
+                                            'correct': correct,
+                                            'answer_img_url': answer_url
+                                        })
+
+                                    update_question[
+                                        'multiple_choice_options'
+                                    ] = multi_array
+
+                                update_params = [
+                                    {'$set': update_question}
+                                ]
+
+                                if multiple_choice is False:
+                                    update_params.append(
+                                        {'$unset': 'multiple_choice_options'}
+                                    )
+
+                                print(update_params)
+
+                                mongo.db.questions.update_one(
+                                    {'_id': question_id},
+                                    update_params
+                                )
+
                 return redirect(request.referrer)
 
             params['show_answers'] = True
@@ -1503,7 +1768,6 @@ def new_quiz():
             )
 
             # Create Questions
-            # Expand to handle multiple choice questions
             question_count = int(request.form.get('questionCount_' + rId)) + 1
             for qId in range(1, question_count):
                 qId = str(qId)
