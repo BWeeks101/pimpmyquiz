@@ -1036,6 +1036,13 @@ def transposeWithBoolean(val):
     return val
 
 
+def getCategoryId(category):
+    return mongo.db.categories.find_one(
+                {'category': category},
+                {'_id': 1}
+            )['_id']
+
+
 def createQuestion(rId, qId, question_data):
     multiple_choice = request.form.get('quizMulti_' + rId + '_' + qId)
 
@@ -1127,6 +1134,55 @@ def createRound(rId, round_data):
         createQuestion(rId, qId, question_data)
 
 
+def createQuiz(author_id):
+    quiz_category = request.form.get('quizCategory')
+    category_id = getCategoryId(quiz_category)
+
+    quiz_data = {
+        'author_id': author_id,
+        'date': datetime.datetime.now(),
+        'title': request.form.get('quiz_title'),
+        'category_id': category_id,
+        'public': False
+    }
+    mongo.db.quizzes.insert_one(quiz_data)
+
+    quiz_id = mongo.db.quizzes.find_one(
+        {'author_id': quiz_data['author_id'],
+            'title': quiz_data['title']},
+        {'_id': 1}
+    )['_id']
+
+    mongo.db.quizzes.update_one(
+        {'_id': quiz_id},
+        {'$set': {'copy_of': quiz_id}}
+    )
+
+    # Create Rounds
+    round_count = int(request.form.get('roundCount')) + 1
+    for rId in range(1, round_count):
+        rId = str(rId)
+        if (quiz_category == 'general knowledge'):
+            round_category_id = getCategoryId(
+                request.form.get('roundCategory_' + rId)
+            )
+        else:
+            round_category_id = category_id
+
+        round_data = {
+            'quiz_id': quiz_id,
+            'round_num': int(rId),
+            'title': request.form.get('round_title_' + rId),
+            'author_id': author_id,
+            'date': quiz_data['date'],
+            'category_id': round_category_id,
+            'public': False
+        }
+        createRound(rId, round_data)
+
+    return quiz_id
+
+
 # Quiz Sheet
 # View quiz sheet (without answers) as a web page
 @app.route("/quiz_sheet", endpoint="quiz_sheet")
@@ -1202,10 +1258,7 @@ def displayQuiz():
                 quiz_category = request.form.get('quizCategory')
 
                 # Get category_id
-                category_id = mongo.db.categories.find_one(
-                    {'category': quiz_category},
-                    {'_id': 1}
-                )['_id']
+                category_id = getCategoryId(quiz_category)
 
                 # Update quiz doc
                 mongo.db.quizzes.update_one(
@@ -1251,12 +1304,9 @@ def displayQuiz():
                 for rId in range(1, round_count):
                     rId = str(rId)
                     if (quiz_category == 'general knowledge'):
-                        round_category_id = mongo.db.categories.find_one(
-                            {'category': request.form.get(
-                                'roundCategory_' + rId
-                            )},
-                            {'_id': 1}
-                        )['_id']
+                        round_category_id = getCategoryId(
+                            request.form.get('roundCategory_' + rId)
+                        )
                     else:
                         round_category_id = category_id
 
@@ -1363,9 +1413,12 @@ def displayQuiz():
                                     'quizMulti_' + rId + '_' + qId
                                 )
 
+                                multiple_choice = transposeWithBoolean(
+                                    multiple_choice
+                                )
+
                                 # Massage multiple_choice value into boolean
-                                if multiple_choice is None:
-                                    multiple_choice = False
+                                if multiple_choice is False:
                                     update_question[
                                         'answer_text'
                                     ] = request.form.get(
@@ -1376,9 +1429,6 @@ def displayQuiz():
                                     ] = request.form.get(
                                         'a_img_' + rId + '_' + qId
                                     )
-
-                                if multiple_choice == 'on':
-                                    multiple_choice = True
 
                                 update_question[
                                     'multiple_choice'
@@ -1400,11 +1450,7 @@ def displayQuiz():
                                             'a_img_' + rId + '_' + qId +
                                             '_' + str(multi))
 
-                                        if correct is None:
-                                            correct = False
-
-                                        if correct == 'on':
-                                            correct = True
+                                        correct = transposeWithBoolean(correct)
 
                                         multi_array.append({
                                             'option_num': int(multi),
@@ -1763,71 +1809,26 @@ def getUsers():
 
 @app.route("/new_quiz", methods=["GET", "POST"])
 def new_quiz():
-    if 'user' not in session:
-        return redirect(url_for("login"))
+    # Check user is logged in
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
 
-    if request.method == "POST":
+        if request.method == "POST":
+            # Create Quiz
+            quiz_id = createQuiz(auth_state['id'])
 
-        # Create Quiz
-        author_id = mongo.db.users.find_one(
-                {'user_id': session['user'].lower()},
-                {'_id': 1}
-        )['_id']
+            flash('Quiz Created')
+            return redirect(url_for('edit_quiz', id=quiz_id))
 
-        quiz_category = request.form.get('quizCategory')
-        category_id = mongo.db.categories.find_one(
-            {'category': quiz_category},
-            {'_id': 1}
-        )['_id']
+        category_data = getCategories()
+        return render_template("new_quiz.html", quiz_categories=category_data)
 
-        create_quiz = {
-            'author_id': author_id,
-            'date': datetime.datetime.now(),
-            'title': request.form.get('quiz_title'),
-            'category_id': category_id,
-            'public': False
-        }
-        mongo.db.quizzes.insert_one(create_quiz)
-
-        quiz_id = mongo.db.quizzes.find_one(
-            {'author_id': create_quiz['author_id'],
-                'title': create_quiz['title']},
-            {'_id': 1}
-        )['_id']
-
-        mongo.db.quizzes.update_one(
-            {'_id': quiz_id},
-            {'$set': {'copy_of': quiz_id}}
-        )
-
-        # Create Rounds
-        round_count = int(request.form.get('roundCount')) + 1
-        for rId in range(1, round_count):
-            rId = str(rId)
-            if (quiz_category == 'general knowledge'):
-                round_category_id = mongo.db.categories.find_one(
-                    {'category': request.form.get('roundCategory_' + rId)},
-                    {'_id': 1}
-                )['_id']
-            else:
-                round_category_id = category_id
-
-            round_data = {
-                'quiz_id': quiz_id,
-                'round_num': int(rId),
-                'title': request.form.get('round_title_' + rId),
-                'author_id': author_id,
-                'date': create_quiz['date'],
-                'category_id': round_category_id,
-                'public': False
-            }
-            createRound(rId, round_data)
-
-        flash('Quiz Created')
-        return redirect(url_for('edit_quiz', id=quiz_id))
-
-    category_data = getCategories()
-    return render_template("new_quiz.html", quiz_categories=category_data)
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
