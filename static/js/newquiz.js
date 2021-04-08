@@ -133,6 +133,26 @@ function addQ(elem) {
     listenToQControls();
     listenToCheckbox();
     listenToImgInputs();
+
+    $(target).children('li').
+        children(`.collapsible-header[data-question="${qId - 1}"]`).
+        parent().
+        removeClass('active');
+    $(target).children('li').
+        children(`.collapsible-header[data-question="${qId - 1}"]`).
+        next().
+        css('display', "");
+    $(target).children('li').
+        children(`.collapsible-header[data-question="${qId}"]`).
+        parent().
+        addClass('active');
+    $(target).children('li').
+        children(`.collapsible-header[data-question="${qId}"]`).
+        next().
+        css('display', 'block');
+    $(target).children('li').
+        children(`.collapsible-header[data-question="${qId}"]`)[0].
+        scrollIntoView();
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -156,6 +176,16 @@ function removeQ(elem) {
     $(qControlsTarget).append(qControlsHtml);
     listenToQControls();
     listenToCheckbox();
+
+    $(prevQ).addClass('active');
+    $(prevQ).
+        children(`.collapsible-header[data-question="${qId}"]`).
+        next().
+        css('display', 'block');
+    $(prevQ).
+        children(`.collapsible-header[data-question="${qId}"]`)[0].
+        scrollIntoView();
+
 }
 
 // eslint-disable-next-line no-unused-vars
