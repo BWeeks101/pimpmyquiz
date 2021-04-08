@@ -1330,7 +1330,6 @@ def displayQuiz():
                     round_id = request.form.get('round_' + rId + '_id')
                     # No round_id, so this is a new round
                     if round_id is None:
-                        print('No Round Id!')
                         round_data = {
                             'quiz_id': quiz_id,
                             'round_num': int(rId),
@@ -1376,7 +1375,6 @@ def displayQuiz():
                             qst_id = request.form.get('question_' + rId +
                                                       '_' + str(qId) + '_id')
                             for question_id in question_id_list:
-                                print(question_id['_id'])
                                 if (question_id['_id'] == ObjectId(qst_id) and
                                         qst_id is not None):
                                     delete_list.remove(question_id['_id'])
@@ -1398,8 +1396,6 @@ def displayQuiz():
                             )
                             # No question id, so this is a new question
                             if question_id is None:
-                                print('No Question Id!')
-                                print('Create New Question!')
                                 question_data = {
                                     'author_id': auth_state['id'],
                                     'date': datetime.datetime.now(),
@@ -1499,8 +1495,6 @@ def displayQuiz():
             params['show_answers'] = True
 
             quiz = buildViewQuizDataSet(params)
-
-            print(quiz)
 
             category_data = getCategories()
             return render_template("edit_quiz.html",
