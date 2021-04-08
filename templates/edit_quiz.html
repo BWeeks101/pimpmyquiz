@@ -27,7 +27,7 @@
                         <!-- Quiz Name -->
                         <span class="card-title col s12 hide-on-extra-large-only">Provide a Title for your Quiz</span>
                         <div class="input-field col s12 xl7">
-                            <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="25" class="validate" data-id="{{ quiz._id }}"value="{{ quiz.title }}" required>
+                            <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="25" class="validate" data-id="{{ quiz._id }}" data-au="{{ quiz.author }}" value="{{ quiz.title }}" required>
                             <label for="quizTitle" data-error="Invalid Quiz Title" data-dup="Quiz Title already in use.  Please choose another." data-default="Quiz Title">Quiz Title</label>
                         </div>
                     </div>
