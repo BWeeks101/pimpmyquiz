@@ -961,7 +961,7 @@ def buildViewQuizDataSet(params):
     quiz = mongo.db.quizzes.find_one({
         '_id': params['quiz_id']
     }, {
-        '_id': 0,
+        '_id': 1,
         'title': 1,
         'category_id': 1,
         'author_id': 1
@@ -1504,6 +1504,43 @@ def displayQuiz():
 
     print(quiz)
     return render_template("quiz_sheet.html", viewQuiz=quiz)
+
+
+@app.route("/validate_quiz_title")
+def validateQuizTitle():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+
+        title = request.args.get('quizTitle')
+        exists = mongo.db.quizzes.find_one(
+            {
+                'title': title,
+                'author_id': auth_state['id']
+            }, {
+                '_id': 1
+            })
+        if exists:
+            quiz_id = request.args.get('id')
+            if quiz_id is not None and ObjectId(quiz_id) == exists['_id']:
+                exists = 'false'
+            else:
+                exists = 'true'
+        else:
+            exists = 'false'
+
+        print(exists)
+
+        return exists
+
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
 
 
 # User Search
