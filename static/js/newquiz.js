@@ -286,7 +286,6 @@ function quizTitleValidate() {
     };
     if ($('#quizTitle').attr('data-id')) {
         request.params.id = $('#quizTitle').attr('data-id');
-        request.params.au = $('#quizTitle').attr('data-au');
     }
     let xhttp = xHttpRequest(request);
     xhttp.onreadystatechange = () => {
