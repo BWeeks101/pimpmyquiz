@@ -169,6 +169,11 @@ function listenToSubmitButton() {
             return;
         }
 
-        $('#createQuizForm')[0].submit();
+        let quizForm = $('#createQuizForm')[0];
+        if ($('#quizTitle').attr('data-id')) {
+            quizForm = $('#editQuizForm')[0];
+        }
+
+        $(quizForm).submit();
     });
 }
