@@ -648,6 +648,16 @@ def getCategories():
     return list(mongo.db.categories.aggregate(categories_query))
 
 
+# Returns user id
+def getUserId(username):
+    userId = mongo.db.users.find_one({'user_id': username}, {'_id': 1})
+
+    if userId is not None:
+        userId = userId['_id']
+
+    return userId
+
+
 # Returns formatted HTML output for quiz data sets
 def buildQuizHtml(quiz_data, user_role):
     html = '''
@@ -676,6 +686,11 @@ def buildQuizHtml(quiz_data, user_role):
                     </a>'''
         if ((quiz['author'] == session['user']) or
                 (user_role == 'Global Admin' or user_role == 'Content Admin')):
+
+            if quiz['author'] != session['user']:
+                author_id = str(getUserId(quiz['author']))
+                secUrlClass += ' data-auid="' + author_id + '"'
+
             html += '''
                     <a ''' + secUrlClass + secHrefEdit + '''>
                         <i class="fas fa-edit fa-fw"></i>
@@ -1037,10 +1052,15 @@ def transposeWithBoolean(val):
 
 
 def getCategoryId(category):
-    return mongo.db.categories.find_one(
-                {'category': category},
-                {'_id': 1}
-            )['_id']
+    category_id = mongo.db.categories.find_one(
+        {'category': category},
+        {'_id': 1}
+    )
+
+    if category_id is not None:
+        category_id = category_id['_id']
+
+    return category_id
 
 
 def createQuestion(rId, qId, question_data):
@@ -1516,26 +1536,36 @@ def validateQuizTitle():
         print(auth_state['auth'])
         print(auth_state['reason'])
 
-        title = request.args.get('quizTitle')
-        exists = mongo.db.quizzes.find_one(
-            {
-                'title': title,
-                'author_id': auth_state['id']
-            }, {
-                '_id': 1
-            })
-        if exists:
-            quiz_id = request.args.get('id')
-            if quiz_id is not None and ObjectId(quiz_id) == exists['_id']:
-                exists = 'false'
+        author_id = getUserId(request.args.get('au'))
+        if ((author_id is not None and author_id == auth_state['id']) or
+            (auth_state['reason']['role'] == 'Global Admin' or
+                auth_state['reason']['role'] == 'Content Admin')):
+
+            title = request.args.get('quizTitle')
+            exists = mongo.db.quizzes.find_one(
+                {
+                    'title': title,
+                    'author_id': author_id
+                }, {
+                    '_id': 1
+                })
+            if exists:
+                quiz_id = request.args.get('id')
+                if quiz_id is not None and ObjectId(quiz_id) == exists['_id']:
+                    exists = 'false'
+                else:
+                    exists = 'true'
             else:
-                exists = 'true'
-        else:
-            exists = 'false'
+                exists = 'false'
 
-        print(exists)
+            print(exists)
 
-        return exists
+            return exists
+
+        print(author_id)
+        print(session['user'])
+        flash("Permission Denied")
+        return redirect(url_for("quiz_search"))
 
     print(auth_state['auth'])
     print(auth_state['reason'])
