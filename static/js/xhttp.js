@@ -281,6 +281,9 @@ function xHttpRequest(requestObj, elem) {
         };
     }
     xhttp.send();
+    if (requestObj.type === 'validate_quiz_title') {
+        return xhttp;
+    }
 }
 
 function getRecordPage(elem, key, currentPage) {
