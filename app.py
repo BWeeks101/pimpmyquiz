@@ -838,14 +838,16 @@ def myQuizSearch():
         print(auth_state['auth'])
         print(auth_state['reason'])
         page = request.args.get('page')
-        if (page == 'undefined'):
+        if (page == 'undefined' or page is None):
             page = 1
         else:
             page = int(page)
         searchStr = request.args.get('searchStr')
-        if (searchStr == 'undefined'):
+        if (searchStr == 'undefined' or searchStr is None):
             searchStr = '*'
         category = request.args.get('category')
+        if (category == 'undefined' or category is None):
+            category = 'All'
         limit = 10
         skip = (page * limit) - limit
 
