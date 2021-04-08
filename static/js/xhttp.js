@@ -224,7 +224,7 @@ function xHttpRenderResult(elem, result) {
     };
 
     let html = result.html;
-    if (result.type === "quizSearch") {
+    if (result.type === "globalQuizSearch" || result.type === "myQuizSearch") {
         addRecordPositions(result.request);
         updateRecordControls(elem, {'quizSearch': result.request.quizSearch});
     } else if (result.type === "userSearch") {
@@ -293,12 +293,18 @@ function getRecordPage(elem, key, currentPage) {
         addRecordObj = ({'quizSearch': key.quizSearch, currentPage});
         request = {
             'type':
-                'quizSearch',
+                'myQuizSearch',
             'params': {
                 'searchStr': key.quizSearch,
-                'page': currentPage
+                'page': currentPage,
+                'category': $('#quizCategory').val()
             }
         };
+        let isGlobal = $('.search-action-container button[data-type="global"]').
+            attr('data-type');
+        if (isGlobal) {
+            request.type = 'globalQuizSearch';
+        }
     } else if ('userSearch' in key) {
         addRecordObj = ({'userSearch': key.userSearch, currentPage});
         request = {
@@ -375,17 +381,26 @@ function getSelectedRecord(elem, key, pageNum) {
     let recordPosition = getRecordPosition(key);
     let totalPages = recordPosition.totalPages;
     let currentPage = Math.ceil(Number(pageNum));
+    let addRecordObj;
     let request;
     if ('quizSearch' in key) {
+        addRecordObj = ({'quizSearch': key.quizSearch, currentPage});
         request = {
             'type':
-                'quizSearch',
+                'myQuizSearch',
             'params': {
                 'searchStr': key.quizSearch,
-                'page': quizSearchPositions.currentPage
+                'page': currentPage,
+                'category': $('#quizCategory').val()
             }
         };
+        let isGlobal = $('.search-action-container button[data-type="global"]').
+            attr('data-type');
+        if (isGlobal) {
+            request.type = 'globalQuizSearch';
+        }
     } else if ('userSearch' in key) {
+        addRecordObj = ({'userSearch': key.userSearch, currentPage});
         request = {
             'type':
                 'userSearch',
@@ -399,7 +414,7 @@ function getSelectedRecord(elem, key, pageNum) {
             totalPages = Math.ceil((getRole(key.role).member_count) / 10);
             currentPage = 1;
         }
-        addRecordPositions({'role': key.role, totalPages, currentPage});
+        addRecordObj = ({'role': key.role, totalPages, currentPage});
         request = {
             'type':
             'getUsers',
@@ -409,6 +424,7 @@ function getSelectedRecord(elem, key, pageNum) {
             }
         };
     }
+    addRecordPositions(addRecordObj);
     updateRecordControls(elem, key);
     xHttpRequest(request, elem);
 }
@@ -441,7 +457,6 @@ function listenToPageNumberInputs() {
         } else if (pageNumber < 1) {
             pageNumber = 1;
         }
-
         self.value = pageNumber;
         getSelectedRecord(target, key, pageNumber);
     };
