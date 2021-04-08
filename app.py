@@ -649,13 +649,13 @@ def getCategories():
 
 
 # Returns user id
-def getUserId(username):
-    userId = mongo.db.users.find_one({'user_id': username}, {'_id': 1})
+# def getUserId(username):
+#     userId = mongo.db.users.find_one({'user_id': username}, {'_id': 1})
 
-    if userId is not None:
-        userId = userId['_id']
+#     if userId is not None:
+#         userId = userId['_id']
 
-    return userId
+#     return userId
 
 
 # Returns formatted HTML output for quiz data sets
@@ -686,11 +686,6 @@ def buildQuizHtml(quiz_data, user_role):
                     </a>'''
         if ((quiz['author'] == session['user']) or
                 (user_role == 'Global Admin' or user_role == 'Content Admin')):
-
-            if quiz['author'] != session['user']:
-                author_id = str(getUserId(quiz['author']))
-                secUrlClass += ' data-auid="' + author_id + '"'
-
             html += '''
                     <a ''' + secUrlClass + secHrefEdit + '''>
                         <i class="fas fa-edit fa-fw"></i>
@@ -1536,22 +1531,32 @@ def validateQuizTitle():
         print(auth_state['auth'])
         print(auth_state['reason'])
 
-        author_id = getUserId(request.args.get('au'))
-        if ((author_id is not None and author_id == auth_state['id']) or
-            (auth_state['reason']['role'] == 'Global Admin' or
-                auth_state['reason']['role'] == 'Content Admin')):
+        author_id = auth_state['id']
+        quiz_id = request.args.get('id')
+        if quiz_id is not None:
+            author_id = mongo.db.quizzes.find_one({
+                '_id': ObjectId(quiz_id)
+            }, {
+                '_id': 0,
+                'author_id': 1
+            })
 
-            title = request.args.get('quizTitle')
+            if author_id is not None:
+                author_id = author_id['author_id']
+
+        if (author_id is not None and (author_id == auth_state['id'] or
+            (auth_state['reason']['role'] == 'Global Admin' or
+                auth_state['reason']['role'] == 'Content Admin'))):
+
             exists = mongo.db.quizzes.find_one(
                 {
-                    'title': title,
+                    'title': request.args.get('quizTitle'),
                     'author_id': author_id
                 }, {
                     '_id': 1
                 })
             if exists:
-                quiz_id = request.args.get('id')
-                if quiz_id is not None and ObjectId(quiz_id) == exists['_id']:
+                if ObjectId(quiz_id) == exists['_id']:
                     exists = 'false'
                 else:
                     exists = 'true'
@@ -1562,8 +1567,8 @@ def validateQuizTitle():
 
             return exists
 
+        print('author_id Not Found')
         print(author_id)
-        print(session['user'])
         flash("Permission Denied")
         return redirect(url_for("quiz_search"))
 
