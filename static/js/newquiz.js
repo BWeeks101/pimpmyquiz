@@ -219,6 +219,26 @@ function addRound(elem) {
         $(`#roundCategory_${rId}`).attr('disabled', true);
     }
     listenToImgInputs();
+
+    $(target).children('li').
+        children(`.collapsible-header[data-round="${rId - 1}"]`).
+        parent().
+        removeClass('active');
+    $(target).children('li').
+        children(`.collapsible-header[data-round="${rId - 1}"]`).
+        next().
+        css('display', "");
+    $(target).children('li').
+        children(`.collapsible-header[data-round="${rId}"]`).
+        parent().
+        addClass('active');
+    $(target).children('li').
+        children(`.collapsible-header[data-round="${rId}"]`).
+        next().
+        css('display', 'block');
+    $(target).children('li').
+        children(`.collapsible-header[data-round="${rId}"]`)[0].
+        scrollIntoView();
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -247,6 +267,15 @@ function removeRound(elem) {
     listenToSelect();
     listenToQControls();
     listenToCheckbox();
+
+    $(prevR).addClass('active');
+    $(prevR).
+        children(`.collapsible-header[data-round="${rId}"]`).
+        next().
+        css('display', 'block');
+    $(prevR).
+        children(`.collapsible-header[data-round="${rId}"]`)[0].
+        scrollIntoView();
 }
 
 // eslint-disable-next-line no-unused-vars
