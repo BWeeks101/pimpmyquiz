@@ -176,7 +176,7 @@ function returnHtml(params) {
             <span class="prefix" data-question="${qId}" ` +
                 `data-multi="0"></span>
             <input id="answer_${rId}_${qId}" name="answer_${rId}_${qId}" ` +
-                `type="text" minlength="1" maxlength="100" ` +
+                `type="text" minlength="1" maxlength="255" ` +
                 `class="validate" value="" required>
             <label for="answer_${rId}_${qId}" ` +
                 `data-error="Invalid Answer" ` +
@@ -308,7 +308,7 @@ function returnHtml(params) {
                                 `data-multi="0"></span>
                             <input id="answer_${rId}_${qId}" ` +
                                 `name="answer_${rId}_${qId}" ` +
-                                `type="text" minlength="5" maxlength="255" ` +
+                                `type="text" minlength="1" maxlength="255" ` +
                                 `class="validate" value="" required>
                             <label for="answer_${rId}_${qId}" ` +
                                     `data-error="Invalid Answer" ` +
@@ -424,7 +424,7 @@ function returnHtml(params) {
                         <div class="input-field col s12 xl7 ">
                             <input id="roundTitle_${rId}" ` +
                                 `name="round_title_${rId}" type="text" ` +
-                                `minlength="5" maxlength="25" ` +
+                                `minlength="5" maxlength="100" ` +
                                 `class="validate" ` +
                                 `value="Round ${rId}" required>
                             <label for="roundTitle_${rId}" ` +
