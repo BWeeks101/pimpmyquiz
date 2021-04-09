@@ -26,8 +26,8 @@ function listenToDelLinks() {
 function getQuizSearchResults(isGlobal) {
     let value = $('#quizSearch').val();
     let category = $('#quizCategory').val();
-    if (value === "" || value === undefined || value.length < 2) {
-        return;
+    if (value === "" || value === undefined || value.length < 1) {
+        value = '*';
     }
     let request = {
         'type':
