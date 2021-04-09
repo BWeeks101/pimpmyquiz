@@ -640,6 +640,12 @@ form .user-search .search-radio-row {
     margin-top: 42px;
 }
 
+/* Fix #quizTitle label to width of parent div.input-field elem */
+/* Prevents errors with select boxes at small resolutions */
+#quizTitle ~ label {
+    width: calc(100% - 1.5rem);
+}
+
 @media print {
     @page {
         size: auto;
