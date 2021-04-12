@@ -1232,7 +1232,6 @@ def displayQuiz():
 
             quiz = buildViewQuizDataSet(params)
 
-            print(quiz)
             return render_template("view_quiz.html", viewQuiz=quiz)
 
         # If not logged in, redirect to login
