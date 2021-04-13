@@ -1,3 +1,6 @@
+/*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
+/* global copyQuizListener, initDupTitleModal */
+
 // eslint-disable-next-line no-unused-vars
 function imgLoad(elem) {
     let self = $(elem);
@@ -21,6 +24,20 @@ function imgLoad(elem) {
     $(self).removeClass('hidden');
 }
 
+function listenToCopyQuiz() {
+    $('.copy-quiz').on("click", () => {
+        copyQuizListener();
+    });
+}
+
+function resetQuizTitleInput() {
+    $('#quizTitle').attr('data-prev', '');
+    $('#quizTitle:hidden').
+    val($('#quizOriginalTitle').html());
+}
+
 $(function() {
+    initDupTitleModal(resetQuizTitleInput);
+    listenToCopyQuiz();
     $('.quiz-image').each((i, elem) => imgLoad(elem));
 });
