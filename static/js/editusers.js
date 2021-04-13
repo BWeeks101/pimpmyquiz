@@ -244,6 +244,11 @@ function userSearchCreateListeners() {
         on("click", () => getUserSearchResults($("#searchButton")[0]));
 }
 
-listenToUserRoleCollapsibleHeaders();
-listenToUserSearchCollapsibleHeaders();
-userSearchCreateListeners();
+$(function() {
+    $('.collapsible').collapsible();
+    $('select').formSelect();
+    $('.modal').modal();
+    listenToUserRoleCollapsibleHeaders();
+    listenToUserSearchCollapsibleHeaders();
+    userSearchCreateListeners();
+});
