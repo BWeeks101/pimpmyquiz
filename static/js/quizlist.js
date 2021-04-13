@@ -1,5 +1,6 @@
-/* global addRecordPositions, inputHelperLabel, xHttpRequest, setSelectValue,
-addObserver, getObserver */
+/*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
+/* global copyQuizListener, addRecordPositions, inputHelperLabel, xHttpRequest,
+setSelectValue, addObserver, getObserver, initDupTitleModal */
 
 function deleteQuiz(quizId) {
     let confText = 'If you delete this quiz, all associated rounds and ' +
@@ -13,6 +14,25 @@ function deleteQuiz(quizId) {
 
 function stopListeningToDelLinks() {
     $('.del-quiz').off('click');
+}
+
+function stopListeningToCopyQuizLinks() {
+    $('.copy-quiz').off('click');
+}
+
+function listenToCopyQuizLinks() {
+    stopListeningToCopyQuizLinks();
+    $('.copy-quiz').on("click", (e) => {
+        let self = e.currentTarget;
+        $('#quizTitle').val($(self).closest('li').
+            find('.quiz-title').
+            html());
+
+        $('#modalSubmitButton').
+            attr('data-quizId', $(self).attr('data-quizId'));
+
+        copyQuizListener();
+    });
 }
 
 function listenToDelLinks() {
@@ -110,18 +130,34 @@ function getInitialQuizList() {
     xHttpRequest(request, $('#quizSearchResults')[0]);
 }
 
+function listenToLinks() {
+    listenToCopyQuizLinks();
+    listenToDelLinks();
+}
+
 function observeQuizResults() {
-    addObserver($('#quizSearchResults')[0], listenToDelLinks);
+    addObserver($('#quizSearchResults')[0], listenToLinks);
     let observer = getObserver($('#quizSearchResults')[0]);
     observer.observe($('#quizSearchResults')[0], {childList: true});
+}
+
+function resetQuizTitleInput() {
+    $('#quizTitle').attr('data-prev', '');
+    $('#quizTitle:hidden').val('');
+    $('#modalSubmitButton').attr('data-quizId', '');
+    listenToCopyQuizLinks();
 }
 
 // eslint-disable-next-line no-unused-vars
 let observerList = [];
 
 $(function() {
+    $('select').formSelect();
     getInitialQuizList();
     quizSearchCreateListeners();
     listenToSelect();
+
+    initDupTitleModal(resetQuizTitleInput);
+
     observeQuizResults();
 });
