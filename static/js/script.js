@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global roleList, userList, categoryList, observerList */
+/* global roleList, userList, categoryList, observerList, xHttpRequest */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -688,11 +688,67 @@ function setSelectValue(elem, value) {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
+function quizTitleValidate(invalid, valid) {
+    let quizTitle = $('#quizTitle').val();
+    if (quizTitle.length < 5 || quizTitle.length > 100) {
+        $('#quizTitle').addClass("invalid");
+        $('#quizTitle ~ label').
+            html($('#quizTitle ~ label').
+            attr('data-error'));
+        if (invalid) {
+            invalid(quizTitle);
+        }
+        return false;
+    }
+
+    let prevTitle = $('#quizTitle').attr('data-prev');
+    if (quizTitle === prevTitle && $('#quizTitle').hasClass('invalid')) {
+        return;
+    }
+
+    $('#quizTitle').attr('data-prev', quizTitle);
+
+    let request = {
+        'type':
+            'validate_quiz_title',
+        'params': {
+            quizTitle
+        }
+    };
+    if ($('#quizTitle').attr('data-id')) {
+        request.params.id = $('#quizTitle').attr('data-id');
+    }
+    let xhttp = xHttpRequest(request);
+    xhttp.onreadystatechange = () => {
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+            if (xhttp.responseText === 'false') {
+                $('#quizTitle').removeClass("valid");
+                $('#quizTitle').addClass("invalid");
+                $('#quizTitle ~ label').
+                    html($('#quizTitle ~ label').
+                    attr('data-dup'));
+                if (invalid) {
+                    invalid(quizTitle);
+                }
+                return false;
+            }
+
+            $('#quizTitle').removeClass('invalid');
+            $('#quizTitle').addClass('valid');
+            $('#quizTitle ~ label').
+                html($('#quizTitle ~ label').
+                attr('data-default'));
+            if (valid) {
+                valid(quizTitle);
+            }
+            return true;
+        }
+    };
+}
+
 //document ready
 $(function() {
     $('.sidenav').sidenav({edge: "right"});
     $(".dropdown-trigger").dropdown();
-    $('.collapsible').collapsible();
-    $('select').formSelect();
-    $('.modal').modal();
 });
