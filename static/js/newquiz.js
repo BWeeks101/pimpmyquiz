@@ -3,7 +3,7 @@
 listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
 stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
 listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue,
-xHttpRequest, listenToQuizTitle, listenToSubmitButton */
+listenToQuizTitle, listenToSubmitButton */
 
 function reinitSelectOnDisabled(elem) {
     $(elem).each((i, el) => {
@@ -334,43 +334,9 @@ function imgPreview(imgUrl, target) {
     listenToImgPreview(target.children('img'));
 }
 
-// eslint-disable-next-line no-unused-vars
-function quizTitleValidate() {
-    let request = {
-        'type':
-            'validate_quiz_title',
-        'params': {
-            'quizTitle': $('#quizTitle').val()
-        }
-    };
-    if ($('#quizTitle').attr('data-id')) {
-        request.params.id = $('#quizTitle').attr('data-id');
-    }
-    let xhttp = xHttpRequest(request);
-    xhttp.onreadystatechange = () => {
-        if (xhttp.readyState === 4 && xhttp.status === 200) {
-            if (xhttp.responseText === 'true') {
-                $('#quizTitle ~ label').
-                    html($('#quizTitle ~ label').
-                    attr('data-dup'));
-                $('#quizTitle').addClass("invalid");
-                return false;
-            } else if ($('#quizTitle').hasClass("invalid")) {
-                $('#quizTitle ~ label').
-                html($('#quizTitle ~ label').
-                attr('data-error'));
-                return false;
-            }
-
-            $('#quizTitle ~ label').
-                html($('#quizTitle ~ label').
-                attr('data-default'));
-            return true;
-        }
-    };
-}
-
 $(function() {
+    $('.collapsible').collapsible();
+    $('select').formSelect();
     listenToCheckbox();
     listenToSelect();
     setSelectValue($('#quizCategory'), 'general knowledge');
