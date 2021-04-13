@@ -667,14 +667,15 @@ def buildQuizHtml(quiz_data, user_role):
         secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
         secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
         secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
+        secUrlCopyClass = 'class="light-blue-text text-darken-4 copy-quiz" '
         secUrlDeleteClass = 'class="light-blue-text text-darken-4 del-quiz" '
-        secData = 'data-quizId="' + quiz['id'] + '"'
+        secData = 'data-quizId="' + quiz['id'] + '" '
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6>
                     <i class="fas ''' + quiz['category_icon']['class']
         html += ''' fa-fw"></i>
-                    <span>''' + quiz['title'] + '''</span>
+                    <span class="quiz-title">''' + quiz['title'] + '''</span>
                 </h6>
                 <span>Author: ''' + quiz['author'] + '''</span>
                 <div class="secondary-content light-blue-text text-darken-4">
@@ -683,6 +684,9 @@ def buildQuizHtml(quiz_data, user_role):
                     </a>
                     <a ''' + secUrlClass + secHrefView + '''>
                         <i class="fas fa-eye fa-fw"></i>
+                    </a>
+                    <a ''' + secUrlCopyClass + secData + '''href="#!">
+                        <i class="fas fa-copy fa-fw"></i>
                     </a>'''
         if ((quiz['author'] == session['user']) or
                 (user_role == 'Global Admin' or user_role == 'Content Admin')):
@@ -973,7 +977,7 @@ def buildViewQuizDataSet(params):
     quiz = mongo.db.quizzes.find_one({
         '_id': params['quiz_id']
     }, {
-        '_id': 1,
+        # '_id': 1,
         'title': 1,
         'category_id': 1,
         'author_id': 1
@@ -1198,6 +1202,80 @@ def createQuiz(author_id):
         createRound(rId, round_data)
 
     return quiz_id
+
+
+# Copy Quiz for Current User
+@app.route("/copy_quiz")
+def copyQuiz():
+    # Check user is logged in
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+
+        quiz_id = ObjectId(request.args.get('id'))
+        author_id = auth_state['id']
+
+        quiz = mongo.db.quizzes.find_one({
+            '_id': quiz_id
+        }, {
+            'copy_of': 0,
+            'author_id': 0,
+            'date': 0
+        })
+        quiz['copy_of'] = quiz['_id']
+        quiz.pop('_id')
+        quiz['author_id'] = author_id
+        quiz['date'] = datetime.datetime.now()
+        quiz['title'] = request.args.get('title')
+        validate_title = validateQuizTitle(quiz['title'])
+        if validate_title is False:
+            quiz['title'] = quiz['title'] + ' - ' + str(quiz['date'])
+
+        q_id = mongo.db.quizzes.insert_one(quiz).inserted_id
+
+        rounds = list(mongo.db.rounds.find({
+            'quiz_id': quiz_id
+        }, {
+            'quiz_id': 0,
+            'copy_of': 0,
+            'author_id': 0,
+            'date': 0
+        }).sort('round_num'))
+        for round in rounds:
+            questions = list(mongo.db.questions.find({
+                'round_id': round['_id']
+            }, {
+                'round_id': 0,
+                'copy_of': 0,
+                'author_id': 0,
+                'date': 0
+            }).sort('question_num'))
+            round['quiz_id'] = q_id
+            round['copy_of'] = round['_id']
+            round.pop('_id')
+            round['author_id'] = author_id
+            round['date'] = quiz['date']
+            r_id = mongo.db.rounds.insert_one(round).inserted_id
+            for question in questions:
+                question['round_id'] = r_id
+                question['copy_of'] = question['_id']
+                question.pop('_id')
+                question['author_id'] = author_id
+                question['date'] = quiz['date']
+            mongo.db.questions.insert_many(questions)
+
+        flash("Quiz Copied")
+        return redirect(url_for("quiz_search"))
+
+    # If not logged in, redirect to login
+    print(auth_state['auth'])
+    print(auth_state['reason'])
+    flash("Permission Denied")
+    return redirect(url_for("login"))
 
 
 # Quiz Sheet
@@ -1516,8 +1594,7 @@ def displayQuiz():
     return render_template("quiz_sheet.html", viewQuiz=quiz)
 
 
-@app.route("/validate_quiz_title")
-def validateQuizTitle():
+def validateQuizTitle(quiz_title, quiz_id=None):
     auth_criteria = {
         'auth': True
     }
@@ -1527,7 +1604,7 @@ def validateQuizTitle():
         print(auth_state['reason'])
 
         author_id = auth_state['id']
-        quiz_id = request.args.get('id')
+
         if quiz_id is not None:
             author_id = mongo.db.quizzes.find_one({
                 '_id': ObjectId(quiz_id)
@@ -1543,24 +1620,22 @@ def validateQuizTitle():
             (auth_state['reason']['role'] == 'Global Admin' or
                 auth_state['reason']['role'] == 'Content Admin'))):
 
-            exists = mongo.db.quizzes.find_one(
+            validate = mongo.db.quizzes.find_one(
                 {
-                    'title': request.args.get('quizTitle'),
+                    'title': quiz_title,
                     'author_id': author_id
                 }, {
                     '_id': 1
                 })
-            if exists:
-                if ObjectId(quiz_id) == exists['_id']:
-                    exists = 'false'
+            if validate:
+                if ObjectId(quiz_id) == validate['_id']:
+                    validate = True
                 else:
-                    exists = 'true'
+                    validate = False
             else:
-                exists = 'false'
+                validate = True
 
-            print(exists)
-
-            return exists
+            return validate
 
         print('author_id Not Found')
         print(author_id)
@@ -1571,6 +1646,21 @@ def validateQuizTitle():
     print(auth_state['reason'])
     flash("Permission Denied")
     return redirect(url_for("login"))
+
+
+@app.route("/validate_quiz_title")
+def validate_quiz_title():
+    quiz_title = request.args.get('quizTitle')
+    quiz_id = request.args.get('id')
+
+    validate_title = validateQuizTitle(quiz_title, quiz_id)
+    # Convert python boolean to js boolean
+    if validate_title is False:
+        validate_title = 'false'
+    else:
+        validate_title = 'true'
+
+    return validate_title
 
 
 # User Search
