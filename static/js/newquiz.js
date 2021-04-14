@@ -3,7 +3,7 @@
 listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
 stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
 listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue,
-listenToQuizTitle, listenToSubmitButton */
+listenToQuizTitle, listenToSubmitButton, listenToChangeConfModalButtons */
 
 function reinitSelectOnDisabled(elem) {
     $(elem).each((i, el) => {
@@ -93,18 +93,51 @@ function checkBoxMulti(elem) {
     listenToImgInputs();
 }
 
-function checkBoxChanged(elem) {
-    let clss = $(elem).attr('class');
-    switch (clss) {
-    case 'quizMulti':
-        checkBoxMulti(elem);
+let removeActionParams;
+
+function popModal(type, elem) {
+    let title;
+    let message;
+    switch (type) {
+    case 'mu':
+        title = 'Confirmation Required';
+        message = 'If you disable multiple choice, all existing multiple ' +
+        'choice options for this question will be deleted.  Do you wish to ' +
+        'continue?';
         break;
+    case 'mc':
+        title = 'Confirmation Required';
+        message = 'If you enable multiple choice, existing answer data for ' +
+        'this question will be deleted.  Do you wish to continue?';
+        break;
+    case 'q':
+        title = 'Confirmation Required';
+        message = 'Are you sure you wish to delete this question?';
+        break;
+    case 'r':
+        title = 'Confirmation Required';
+        message = 'If you delete this round, all associated questions will ' +
+        'also be deleted.  Do you wish to continue?';
     }
+    $('#modalTitle').html(title);
+    $('#modalMessage').html(message);
+
+    removeActionParams = {type, elem};
+
+    let instance = M.Modal.
+        getInstance(document.querySelector('#changeConfModal'));
+    instance.open();
 }
 
 function listenToCheckbox() {
-    $('input[type="checkbox"]').
-        on("change", (e) => checkBoxChanged(e.currentTarget));
+    $('input[type="checkbox"].quizMulti').on('change', (e) => {
+        let self = e.currentTarget;
+        if (!$(self).prop('checked')) {
+            popModal('mu', self);
+            return;
+        }
+        popModal('mc', self);
+    });
 }
 
 function stopListeningToCheckbox() {
@@ -157,6 +190,10 @@ function addQ(elem) {
 
 // eslint-disable-next-line no-unused-vars
 function removeQ(elem) {
+    popModal('q', elem);
+}
+
+function removeQAction(elem) {
     let rId = parseInt($(elem).closest('.collapsible-body').
         prev().
         attr('data-round'));
@@ -185,7 +222,6 @@ function removeQ(elem) {
     $(prevQ).
         children(`.collapsible-header[data-question="${qId}"]`)[0].
         scrollIntoView();
-
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -243,6 +279,10 @@ function addRound(elem) {
 
 // eslint-disable-next-line no-unused-vars
 function removeRound(elem) {
+    popModal('r', elem);
+}
+
+function removeRoundAction(elem) {
     let rId = parseInt($(elem).closest('.collapsible-header').
         attr('data-round'));
     let rCount = parseInt($('#roundCount').val()) - 1;
@@ -279,41 +319,20 @@ function removeRound(elem) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function imgPreviewLoad(elem) {
-    let self = $(elem);
-    let img = {
-        'height': self.height(),
-        'width': self.width()
-    };
-    let max = $(self).closest('.collapsible-body').
-        width();
-    if (max > parseInt(self.css('max-width'))) {
-        max = parseInt(self.css('max-width'));
+function removeAction({type, elem}) {
+    switch (type) {
+    case 'mu':
+    case 'mc':
+        checkBoxMulti(elem);
+        break;
+    case 'q':
+        removeQAction(elem);
+        break;
+    case 'r':
+        removeRoundAction(elem);
+        break;
+    default:
     }
-    let val;
-    if (img.width === img.height) {
-        val = max;
-        self.height(val);
-    } else if (img.width > img.height) {
-        val = (max / 100) * ((img.height / img.width) * 100);
-        self.height(val);
-
-    } else {
-        val = (max / 100) * ((img.width / img.height) * 100);
-        self.width(val);
-    }
-    $(elem).next().
-        remove();
-    $(elem).removeClass('hidden');
-}
-
-// eslint-disable-next-line no-unused-vars
-function imgPreviewError(elem) {
-    $(elem).next().
-        remove();
-    $(elem).removeClass('hidden');
-    $(elem).attr('alt', "Unable to preview Image.  Please check the URL.");
-    $(elem).attr('style', "padding: 10px; border: solid 1px black");
 }
 
 function imgPreviewPreloader(elem) {
@@ -334,9 +353,26 @@ function imgPreview(imgUrl, target) {
     listenToImgPreview(target.children('img'));
 }
 
+// eslint-disable-next-line no-unused-vars
+function initChangeConfModal() {
+    const resetModal = () => {
+        // eslint-disable-next-line no-unused-vars
+        removeActionParams = "";
+        $('#modalTitle').html("");
+        $('#modalMessage').html("");
+    };
+
+    M.Modal.init(document.querySelector('#changeConfModal'), {
+        onCloseEnd: resetModal,
+        preventScrolling: true
+    });
+}
+
 $(function() {
+    initChangeConfModal();
     $('.collapsible').collapsible();
     $('select').formSelect();
+    listenToChangeConfModalButtons();
     listenToCheckbox();
     listenToSelect();
     setSelectValue($('#quizCategory'), 'general knowledge');
