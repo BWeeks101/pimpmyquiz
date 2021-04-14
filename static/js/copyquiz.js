@@ -1,5 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global M, quizTitleValidate */
+/* global M, quizTitleValidate, listenToQuizTitle */
+
 function copyQuiz() {
     let url = '/copy_quiz?id=' +
     $('#modalSubmitButton').attr('data-quizId') +
@@ -25,28 +26,13 @@ function copyQuizListener() {
     quizTitleValidate(invalid, valid);
 }
 
-function listenToQuizTitle() {
-    $('#quizTitle').on("focusout keyup", (e) => {
-        if ($('#quizTitle').val().length > 0) {
-            if (e.type === 'keyup' && e.key !== 'Enter') {
-                return;
-            }
-            quizTitleValidate();
-        }
-    });
-}
-
 function listenToModalSaveButton() {
     $('#modalSubmitButton').on("click", () => {
-        const invalid = () => {
-            $('#modalSubmitButton').attr('disabled', false);
-        };
-
         const valid = () => {
             copyQuiz();
         };
 
-        quizTitleValidate(invalid, valid);
+        quizTitleValidate('', valid);
     });
 }
 
