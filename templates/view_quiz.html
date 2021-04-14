@@ -36,11 +36,13 @@
                 <h3 id="quizOriginalTitle" class="light-blue-text text-darken-4 center-align">{{ viewQuiz.title }}</h3>
             </div>
             <div class="col s1">
-                <h3 class="right-align">
-                    <a class="light-blue-text text-darken-4 copy-quiz" href="#!">
-                        <i class="fas fa-copy fa-fw"></i>
-                    </a>
-                </h3>
+                {% if 'user' in session %}
+                    <h3 class="right-align">
+                        <a class="light-blue-text text-darken-4 copy-quiz" href="#!">
+                            <i class="fas fa-copy fa-fw"></i>
+                        </a>
+                    </h3>
+                {% endif %}
             </div>
         </div>
         <h5 class="light-blue-text text-darken-4 center-align">By: {{ viewQuiz.author }}</h5>
