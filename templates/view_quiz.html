@@ -43,8 +43,8 @@
                 </h3>
             </div>
         </div>
-        <div class="divider"></div>
-        <h4 class="light-blue-text text-darken-4 center-align"><i class="fas {{ viewQuiz.category_icon.class }} fa-fw"></i>{{ viewQuiz.category }}</h4>
+        <h5 class="light-blue-text text-darken-4 center-align">By: {{ viewQuiz.author }}</h5>
+        <h5 class="light-blue-text text-darken-4 center-align">Category: <i class="fas {{ viewQuiz.category_icon.class }} fa-fw"></i> {{ viewQuiz.category }}</h5>
         <div class="divider"></div>
         <div class="quiz-container">
             {% for round in viewQuiz.rounds %}
@@ -64,7 +64,22 @@
 
                     {% if question.question_img_url != '' %}
                         <div class="center-align">
-                            <img class="quiz-image hidden" src="{{ question.question_img_url }}">
+                            <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" src="">
+                            <div class="preloader-container">
+                                <div class="preloader-wrapper big active">
+                                    <div class="spinner-layer">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     {% endif %}
                     {% if question.multiple_choice == False %}
@@ -73,7 +88,22 @@
                         </h6>
                         {% if question.answer_img_url != '' %}
                             <div class="center-align">
-                                <img class="quiz-image hidden" src="{{ question.answer_img_url }}">
+                                <img id="img_a_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" src="">
+                                <div class="preloader-container">
+                                    <div class="preloader-wrapper big active">
+                                        <div class="spinner-layer">
+                                            <div class="circle-clipper left">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <div class="gap-patch">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <div class="circle-clipper right">
+                                                <div class="circle"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         {% endif %}
                     {% else %}
@@ -88,7 +118,22 @@
                             </h6>
                             {% if option.answer_img_url != '' %}
                                 <div class="center-align">
-                                    <img class="quiz-image hidden" src="{{ option.answer_img_url }}">
+                                    <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" src="">
+                                    <div class="preloader-container">
+                                        <div class="preloader-wrapper big active">
+                                            <div class="spinner-layer">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 {% if option.answer_text == '' %}
                                     {% if option.correct == True %}
@@ -110,4 +155,9 @@
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/copyquiz.js') }}"></script>
     <script src="{{ url_for('static', filename='js/viewquiz.js') }}"></script>
+    <script>
+        $(function() {
+          loadImg({{ viewQuiz.rounds | tojson }});
+        });
+    </script>
 {% endblock %}
