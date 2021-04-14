@@ -1,6 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel */
+removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel, M,
+removeAction, removeActionParams */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -48,7 +49,11 @@ function stopListeningToRControls() {
 
 // eslint-disable-next-line no-unused-vars
 function listenToRControls() {
-    $('.rcontrols-remove').on("click", (e) => removeRound(e.currentTarget));
+    $('.rcontrols-remove').on("click", (e) => {
+        e.stopPropagation();
+        removeRound(e.currentTarget);
+    });
+
     $('.rcontrols-add').on("click", (e) => {
         e.stopPropagation();
         addRound(e.currentTarget);
@@ -63,7 +68,11 @@ function stopListeningToQControls() {
 
 // eslint-disable-next-line no-unused-vars
 function listenToQControls() {
-    $('.qcontrols-remove').on("click", (e) => removeQ(e.currentTarget));
+    $('.qcontrols-remove').on("click", (e) => {
+        e.stopPropagation();
+        removeQ(e.currentTarget);
+    });
+
     $('.qcontrols-add').on("click", (e) => {
         e.stopPropagation();
         addQ(e.currentTarget);
@@ -145,20 +154,13 @@ function stopListeningToImgPreview(elem) {
 // eslint-disable-next-line no-unused-vars
 function listenToImgPreview(elem) {
     stopListeningToImgPreview(elem);
-    $(elem).
-        on("error", () => imgPreviewError(elem));
-    $(elem).
-        on("load", () => imgPreviewLoad(elem));
+    $(elem).on("error", () => imgPreviewError(elem,
+        "Unable to preview Image.  Please check the URL."));
+    $(elem).on("load", () => imgPreviewLoad(elem, $(elem).
+            closest('.collapsible-body').
+            width())
+    );
 }
-
-// eslint-disable-next-line no-unused-vars
-// function listenToQuizTitle() {
-//     $('#quizTitle').on("focusout", () => {
-//         if ($('#quizTitle').val().length > 0) {
-//             quizTitleValidate();
-//         }
-//     });
-// }
 
 // eslint-disable-next-line no-unused-vars
 function listenToSubmitButton() {
@@ -174,5 +176,33 @@ function listenToSubmitButton() {
         }
 
         $(quizForm).submit();
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToChangeConfModalButtons() {
+    const modalClose = () => {
+        let instance = M.Modal.
+        getInstance(document.querySelector('#changeConfModal'));
+        instance.close();
+    };
+
+    $('#modalYesButton').on("click", () => {
+        modalClose();
+        removeAction(removeActionParams);
+    });
+
+
+    $('#modalNoButton').on("click", () => {
+        modalClose();
+        switch (removeActionParams.type) {
+        case 'mu':
+            $(removeActionParams.elem).prop('checked', true);
+            break;
+        case 'mc':
+            $(removeActionParams.elem).prop('checked', false);
+            break;
+        default:
+        }
     });
 }
