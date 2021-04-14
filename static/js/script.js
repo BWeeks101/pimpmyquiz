@@ -1,5 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global roleList, userList, categoryList, observerList, xHttpRequest */
+/* global roleList, userList, categoryList, observerList, xHttpRequest, M,
+checkBoxMulti, removeQAction, removeRoundAction */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -835,6 +836,103 @@ function imgPreviewError(elem, errText) {
     $(elem).removeClass('hidden');
     $(elem).attr('alt', errText);
     $(elem).attr('style', "padding: 10px; border: solid 1px black");
+}
+
+let removeActionParams;
+
+// eslint-disable-next-line no-unused-vars
+function popChangeConfModal(type, elem) {
+    let title;
+    let message;
+    switch (type) {
+    case 'mu':
+        title = 'Confirmation Required';
+        message = 'If you disable multiple choice, all existing multiple ' +
+        'choice options for this question will be deleted.  Do you wish to ' +
+        'continue?';
+        break;
+    case 'mc':
+        title = 'Confirmation Required';
+        message = 'If you enable multiple choice, existing answer data for ' +
+        'this question will be deleted.  Do you wish to continue?';
+        break;
+    case 'q':
+        title = 'Confirmation Required';
+        message = 'Are you sure you wish to delete this question?';
+        break;
+    case 'r':
+        title = 'Confirmation Required';
+        message = 'If you delete this round, all associated questions will ' +
+        'also be deleted.  Do you wish to continue?';
+    }
+    $('#modalTitle').html(title);
+    $('#modalMessage').html(message);
+
+    removeActionParams = {type, elem};
+
+    let instance = M.Modal.
+        getInstance(document.querySelector('#changeConfModal'));
+    instance.open();
+}
+
+// eslint-disable-next-line no-unused-vars
+function removeAction({type, elem}) {
+    switch (type) {
+    case 'mu':
+    case 'mc':
+        checkBoxMulti(elem);
+        break;
+    case 'q':
+        removeQAction(elem);
+        break;
+    case 'r':
+        removeRoundAction(elem);
+        break;
+    default:
+    }
+}
+
+// eslint-disable-next-line no-unused-vars
+function initChangeConfModal() {
+    const resetModal = () => {
+        // eslint-disable-next-line no-unused-vars
+        removeActionParams = "";
+        $('#modalTitle').html("");
+        $('#modalMessage').html("");
+    };
+
+    M.Modal.init(document.querySelector('#changeConfModal'), {
+        onCloseEnd: resetModal,
+        preventScrolling: true
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToChangeConfModalButtons() {
+    const modalClose = () => {
+        let instance = M.Modal.
+        getInstance(document.querySelector('#changeConfModal'));
+        instance.close();
+    };
+
+    $('#modalYesButton').on("click", () => {
+        modalClose();
+        removeAction(removeActionParams);
+    });
+
+
+    $('#modalNoButton').on("click", () => {
+        modalClose();
+        switch (removeActionParams.type) {
+        case 'mu':
+            $(removeActionParams.elem).prop('checked', true);
+            break;
+        case 'mc':
+            $(removeActionParams.elem).prop('checked', false);
+            break;
+        default:
+        }
+    });
 }
 
 //document ready

@@ -1,7 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel, M,
-removeAction, removeActionParams */
+removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -176,33 +175,5 @@ function listenToSubmitButton() {
         }
 
         $(quizForm).submit();
-    });
-}
-
-// eslint-disable-next-line no-unused-vars
-function listenToChangeConfModalButtons() {
-    const modalClose = () => {
-        let instance = M.Modal.
-        getInstance(document.querySelector('#changeConfModal'));
-        instance.close();
-    };
-
-    $('#modalYesButton').on("click", () => {
-        modalClose();
-        removeAction(removeActionParams);
-    });
-
-
-    $('#modalNoButton').on("click", () => {
-        modalClose();
-        switch (removeActionParams.type) {
-        case 'mu':
-            $(removeActionParams.elem).prop('checked', true);
-            break;
-        case 'mc':
-            $(removeActionParams.elem).prop('checked', false);
-            break;
-        default:
-        }
     });
 }

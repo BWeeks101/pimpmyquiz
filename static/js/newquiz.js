@@ -3,7 +3,8 @@
 listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
 stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
 listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue,
-listenToQuizTitle, listenToSubmitButton, listenToChangeConfModalButtons */
+listenToQuizTitle, listenToSubmitButton, listenToChangeConfModalButtons,
+popChangeConfModal, initChangeConfModal */
 
 function reinitSelectOnDisabled(elem) {
     $(elem).each((i, el) => {
@@ -71,6 +72,7 @@ function removeMulti(elem) {
     listenToMultiControls();
 }
 
+// eslint-disable-next-line no-unused-vars
 function checkBoxMulti(elem) {
     let rId = parseInt($(elem).closest('.collapsible').
         closest('.collapsible-body').
@@ -91,42 +93,6 @@ function checkBoxMulti(elem) {
     $(`#multiCount_${rId}_${qId}`).val(html.multiCount);
     listenToMultiControls();
     listenToImgInputs();
-}
-
-let removeActionParams;
-
-function popChangeConfModal(type, elem) {
-    let title;
-    let message;
-    switch (type) {
-    case 'mu':
-        title = 'Confirmation Required';
-        message = 'If you disable multiple choice, all existing multiple ' +
-        'choice options for this question will be deleted.  Do you wish to ' +
-        'continue?';
-        break;
-    case 'mc':
-        title = 'Confirmation Required';
-        message = 'If you enable multiple choice, existing answer data for ' +
-        'this question will be deleted.  Do you wish to continue?';
-        break;
-    case 'q':
-        title = 'Confirmation Required';
-        message = 'Are you sure you wish to delete this question?';
-        break;
-    case 'r':
-        title = 'Confirmation Required';
-        message = 'If you delete this round, all associated questions will ' +
-        'also be deleted.  Do you wish to continue?';
-    }
-    $('#modalTitle').html(title);
-    $('#modalMessage').html(message);
-
-    removeActionParams = {type, elem};
-
-    let instance = M.Modal.
-        getInstance(document.querySelector('#changeConfModal'));
-    instance.open();
 }
 
 function listenToCheckbox() {
@@ -193,6 +159,7 @@ function removeQ(elem) {
     popChangeConfModal('q', elem);
 }
 
+// eslint-disable-next-line no-unused-vars
 function removeQAction(elem) {
     let rId = parseInt($(elem).closest('.collapsible-body').
         prev().
@@ -282,6 +249,7 @@ function removeRound(elem) {
     popChangeConfModal('r', elem);
 }
 
+// eslint-disable-next-line no-unused-vars
 function removeRoundAction(elem) {
     let rId = parseInt($(elem).closest('.collapsible-header').
         attr('data-round'));
@@ -318,23 +286,6 @@ function removeRoundAction(elem) {
         scrollIntoView();
 }
 
-// eslint-disable-next-line no-unused-vars
-function removeAction({type, elem}) {
-    switch (type) {
-    case 'mu':
-    case 'mc':
-        checkBoxMulti(elem);
-        break;
-    case 'q':
-        removeQAction(elem);
-        break;
-    case 'r':
-        removeRoundAction(elem);
-        break;
-    default:
-    }
-}
-
 function imgPreviewPreloader(elem) {
     let request = 'preloader';
     let html = returnHtml({request});
@@ -351,21 +302,6 @@ function imgPreview(imgUrl, target) {
     $(target).html(returnHtml({request, imgUrl}));
     imgPreviewPreloader(target);
     listenToImgPreview(target.children('img'));
-}
-
-// eslint-disable-next-line no-unused-vars
-function initChangeConfModal() {
-    const resetModal = () => {
-        // eslint-disable-next-line no-unused-vars
-        removeActionParams = "";
-        $('#modalTitle').html("");
-        $('#modalMessage').html("");
-    };
-
-    M.Modal.init(document.querySelector('#changeConfModal'), {
-        onCloseEnd: resetModal,
-        preventScrolling: true
-    });
 }
 
 $(function() {
