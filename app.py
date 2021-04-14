@@ -41,21 +41,8 @@ def my_quizzes():
 
 @app.route("/quiz_search")
 def quiz_search():
-    auth_criteria = {
-        'auth': True
-    }
-    auth_state = auth_user(auth_criteria)
-    if auth_state['auth']:
-        print(auth_state['auth'])
-        print(auth_state['reason'])
-        # Get method
-        categories = getCategories()
-        return render_template("quiz_search.html", categories=categories)
-
-    print(auth_state['auth'])
-    print(auth_state['reason'])
-    flash("Permission Denied")
-    return redirect(url_for("login"))
+    categories = getCategories()
+    return render_template("quiz_search.html", categories=categories)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -674,11 +661,18 @@ def buildQuizHtml(quiz_data, user_role):
                     </a>
                     <a ''' + secUrlClass + secHrefView + '''>
                         <i class="fas fa-eye fa-fw"></i>
-                    </a>
+                    </a>'''
+        if ('user' in session):
+            html += '''
                     <a ''' + secUrlCopyClass + secData + '''href="#!">
                         <i class="fas fa-copy fa-fw"></i>
                     </a>'''
-        if ((quiz['author'] == session['user']) or
+        else:
+            html += '''
+                    <span class="grey-text">
+                        <i class="fas fa-copy fa-fw"></i>
+                    </span>'''
+        if (('user' in session and quiz['author'] == session['user']) or
                 (user_role == 'Global Admin' or user_role == 'Content Admin')):
             html += '''
                     <a ''' + secUrlClass + secHrefEdit + '''>
@@ -706,6 +700,9 @@ def buildQuizHtml(quiz_data, user_role):
 
 # Returns quiz query parameters
 def buildQuizQuery(params):
+    if ('userId' not in params):
+        params['userId'] = None
+
     query = [{
         "$search": {
             "wildcard": {
@@ -878,6 +875,7 @@ def myQuizSearch():
 # Return batch of 10 quizzes for provided search criteria
 @app.route("/globalQuizSearch")
 def globalQuizSearch():
+    user_role = None
     auth_criteria = {
         'auth': True
     }
@@ -885,47 +883,44 @@ def globalQuizSearch():
     if auth_state['auth']:
         print(auth_state['auth'])
         print(auth_state['reason'])
-        page = request.args.get('page')
-        if (page == 'undefined' or page is None):
-            page = 1
-        else:
-            page = int(page)
-        searchStr = request.args.get('searchStr')
-        if (searchStr == 'undefined' or searchStr is None):
-            searchStr = '*'
-        category = request.args.get('category')
-        if (category == 'undefined' or category is None):
-            category = 'All'
-        limit = 10
-        skip = (page * limit) - limit
 
-        user_quiz_query = buildQuizQuery({
-            'searchType': 'globalQuizSearch',
-            'userId': auth_state['id'],
-            'page': page,
-            'searchStr': searchStr,
-            'category': category,
-            'limit': limit,
-            'skip': skip
-        })
+        user_role = auth_state['reason']['role']
 
-        quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
+    page = request.args.get('page')
+    if (page == 'undefined' or page is None):
+        page = 1
+    else:
+        page = int(page)
+    searchStr = request.args.get('searchStr')
+    if (searchStr == 'undefined' or searchStr is None):
+        searchStr = '*'
+    category = request.args.get('category')
+    if (category == 'undefined' or category is None):
+        category = 'All'
+    limit = 10
+    skip = (page * limit) - limit
 
-        results = processQuizQueryResults({
-            'searchType': 'globalQuizSearch',
-            'user_role': auth_state['reason']['role'],
-            'quiz_data': quiz_data,
-            'limit': limit,
-            'searchStr': searchStr,
-            'page': page
-        })
+    user_quiz_query = buildQuizQuery({
+        'searchType': 'globalQuizSearch',
+        'page': page,
+        'searchStr': searchStr,
+        'category': category,
+        'limit': limit,
+        'skip': skip
+    })
 
-        return results
+    quiz_data = list(mongo.db.quizzes.aggregate(user_quiz_query))
 
-    print(auth_state['auth'])
-    print(auth_state['reason'])
-    flash("Permission Denied")
-    return redirect(url_for("login"))
+    results = processQuizQueryResults({
+        'searchType': 'globalQuizSearch',
+        'user_role': user_role,
+        'quiz_data': quiz_data,
+        'limit': limit,
+        'searchStr': searchStr,
+        'page': page
+    })
+
+    return results
 
 
 # Delete Quiz
@@ -1291,20 +1286,11 @@ def displayQuiz():
 
     # View Quiz request
     if request.endpoint == 'view_quiz':
-        # Check user is logged in
-        auth_criteria = {
-            'auth': True
-        }
-        auth_state = auth_user(auth_criteria)
-        if auth_state['auth']:
-            print(auth_state['auth'])
-            print(auth_state['reason'])
+        params['show_answers'] = True
 
-            params['show_answers'] = True
+        quiz = buildViewQuizDataSet(params)
 
-            quiz = buildViewQuizDataSet(params)
-
-            return render_template("view_quiz.html", viewQuiz=quiz)
+        return render_template("view_quiz.html", viewQuiz=quiz)
 
         # If not logged in, redirect to login
         print(auth_state['auth'])
