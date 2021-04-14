@@ -95,7 +95,7 @@ function checkBoxMulti(elem) {
 
 let removeActionParams;
 
-function popModal(type, elem) {
+function popChangeConfModal(type, elem) {
     let title;
     let message;
     switch (type) {
@@ -133,10 +133,10 @@ function listenToCheckbox() {
     $('input[type="checkbox"].quizMulti').on('change', (e) => {
         let self = e.currentTarget;
         if (!$(self).prop('checked')) {
-            popModal('mu', self);
+            popChangeConfModal('mu', self);
             return;
         }
-        popModal('mc', self);
+        popChangeConfModal('mc', self);
     });
 }
 
@@ -190,7 +190,7 @@ function addQ(elem) {
 
 // eslint-disable-next-line no-unused-vars
 function removeQ(elem) {
-    popModal('q', elem);
+    popChangeConfModal('q', elem);
 }
 
 function removeQAction(elem) {
@@ -279,7 +279,7 @@ function addRound(elem) {
 
 // eslint-disable-next-line no-unused-vars
 function removeRound(elem) {
-    popModal('r', elem);
+    popChangeConfModal('r', elem);
 }
 
 function removeRoundAction(elem) {
