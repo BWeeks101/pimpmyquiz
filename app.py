@@ -1590,7 +1590,6 @@ def displayQuiz():
 
     quiz = buildViewQuizDataSet(params)
 
-    print(quiz)
     return render_template("quiz_sheet.html", viewQuiz=quiz)
 
 
