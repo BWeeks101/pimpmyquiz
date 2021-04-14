@@ -1,6 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global roleList, userList, categoryList, observerList, xHttpRequest, M,
-checkBoxMulti, removeQAction, removeRoundAction */
+checkBoxMulti, removeQAction, removeRoundAction, deleteQuiz */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -864,6 +864,14 @@ function popChangeConfModal(type, elem) {
         title = 'Confirmation Required';
         message = 'If you delete this round, all associated questions will ' +
         'also be deleted.  Do you wish to continue?';
+        break;
+    case 'd':
+        title = 'Confirmation Required';
+        message = 'If you delete this quiz, all associated rounds and ' +
+        'questions will also be deleted.  Do you wish to continue?';
+        break;
+    default:
+        return;
     }
     $('#modalTitle').html(title);
     $('#modalMessage').html(message);
@@ -887,6 +895,9 @@ function removeAction({type, elem}) {
         break;
     case 'r':
         removeRoundAction(elem);
+        break;
+    case 'd':
+        deleteQuiz($(elem).attr('data-quizId'));
         break;
     default:
     }
