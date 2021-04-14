@@ -648,16 +648,6 @@ def getCategories():
     return list(mongo.db.categories.aggregate(categories_query))
 
 
-# Returns user id
-# def getUserId(username):
-#     userId = mongo.db.users.find_one({'user_id': username}, {'_id': 1})
-
-#     if userId is not None:
-#         userId = userId['_id']
-
-#     return userId
-
-
 # Returns formatted HTML output for quiz data sets
 def buildQuizHtml(quiz_data, user_role):
     html = '''
@@ -1269,7 +1259,7 @@ def copyQuiz():
             mongo.db.questions.insert_many(questions)
 
         flash("Quiz Copied")
-        return redirect(url_for("quiz_search"))
+        return redirect(request.referrer)
 
     # If not logged in, redirect to login
     print(auth_state['auth'])
