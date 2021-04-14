@@ -688,26 +688,73 @@ function setSelectValue(elem, value) {
     });
 }
 
+let titleValidationInProgress = false;
+
 // eslint-disable-next-line no-unused-vars
 function quizTitleValidate(invalid, valid) {
-    let quizTitle = $('#quizTitle').val();
+    if (titleValidationInProgress) {
+        return;
+    }
+    titleValidationInProgress = true;
+    const setQuizTitleLabel = (dataAttr) => {
+
+        if (!$('#quizTitle ~ label').attr(`data-${dataAttr}`)) {
+            console.log(`Error: data attr (data-${dataAttr}) does not exist`);
+            return;
+        }
+
+        const setValidationClass = (valid) => {
+            if (!valid) {
+                $('#quizTitle').removeClass("valid");
+                $('#quizTitle').addClass("invalid");
+                return;
+            }
+            $('#quizTitle').removeClass("invalid");
+            $('#quizTitle').addClass("valid");
+        };
+
+        const updLabelText = () => {
+            $('#quizTitle ~ label').
+                html($('#quizTitle ~ label').
+                    data(dataAttr));
+        };
+
+        const enableSubmitButton = (enabled) => {
+            if ($('#modalSubmitButton').length) {
+                if (!enabled) {
+                    $('#modalSubmitButton').attr('disabled', true);
+                    return;
+                }
+                $('#modalSubmitButton').attr('disabled', false);
+            }
+        };
+
+        switch (dataAttr) {
+        case 'error':
+        case 'dup':
+            setValidationClass(false);
+            updLabelText();
+            enableSubmitButton(false);
+            break;
+        case 'default':
+            setValidationClass(true);
+            updLabelText();
+            enableSubmitButton(true);
+            break;
+        default:
+        }
+    };
+
+    let quizTitle = $('#quizTitle').val().
+        trim();
     if (quizTitle.length < 5 || quizTitle.length > 100) {
-        $('#quizTitle').addClass("invalid");
-        $('#quizTitle ~ label').
-            html($('#quizTitle ~ label').
-            attr('data-error'));
+        setQuizTitleLabel('error');
         if (invalid) {
             invalid(quizTitle);
         }
+        titleValidationInProgress = false;
         return false;
     }
-
-    let prevTitle = $('#quizTitle').attr('data-prev');
-    if (quizTitle === prevTitle && $('#quizTitle').hasClass('invalid')) {
-        return;
-    }
-
-    $('#quizTitle').attr('data-prev', quizTitle);
 
     let request = {
         'type':
@@ -723,28 +770,35 @@ function quizTitleValidate(invalid, valid) {
     xhttp.onreadystatechange = () => {
         if (xhttp.readyState === 4 && xhttp.status === 200) {
             if (xhttp.responseText === 'false') {
-                $('#quizTitle').removeClass("valid");
-                $('#quizTitle').addClass("invalid");
-                $('#quizTitle ~ label').
-                    html($('#quizTitle ~ label').
-                    attr('data-dup'));
+                setQuizTitleLabel('dup');
                 if (invalid) {
                     invalid(quizTitle);
                 }
+                titleValidationInProgress = false;
                 return false;
             }
 
-            $('#quizTitle').removeClass('invalid');
-            $('#quizTitle').addClass('valid');
-            $('#quizTitle ~ label').
-                html($('#quizTitle ~ label').
-                attr('data-default'));
+            setQuizTitleLabel('default');
             if (valid) {
                 valid(quizTitle);
             }
+            titleValidationInProgress = false;
             return true;
         }
     };
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToQuizTitle() {
+    $('#quizTitle').on("focusout keyup input", (e) => {
+        if ((e.type === 'keyup' && e.key !== 'Enter') || (e.type === 'input')) {
+            setTimeout(function() {
+                quizTitleValidate();
+            }, 1000);
+            return;
+        }
+        quizTitleValidate();
+    });
 }
 
 //document ready
