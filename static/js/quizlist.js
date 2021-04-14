@@ -1,15 +1,11 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global copyQuizListener, addRecordPositions, inputHelperLabel, xHttpRequest,
-setSelectValue, addObserver, getObserver, initDupTitleModal */
+setSelectValue, addObserver, getObserver, initDupTitleModal,
+popChangeConfModal, initChangeConfModal, listenToChangeConfModalButtons */
 
+// eslint-disable-next-line no-unused-vars
 function deleteQuiz(quizId) {
-    let confText = 'If you delete this quiz, all associated rounds and ' +
-        'questions will also be deleted.  Do you wish to continue?';
-    // eslint-disable-next-line no-alert
-    let response = confirm(confText);
-    if (response === true) {
-        open(`/delete_quiz?&id=${quizId}`, '_self');
-    }
+    open(`/delete_quiz?&id=${quizId}`, '_self');
 }
 
 function stopListeningToDelLinks() {
@@ -39,7 +35,7 @@ function listenToDelLinks() {
     stopListeningToDelLinks();
     $('.del-quiz').on('click', (e) => {
         e.stopPropagation();
-        deleteQuiz($(e.currentTarget).attr('data-quizId'));
+        popChangeConfModal('d', e.currentTarget);
     });
 }
 
@@ -156,8 +152,8 @@ $(function() {
     getInitialQuizList();
     quizSearchCreateListeners();
     listenToSelect();
-
     initDupTitleModal(resetQuizTitleInput);
-
+    initChangeConfModal();
+    listenToChangeConfModalButtons();
     observeQuizResults();
 });
