@@ -972,6 +972,7 @@ def buildViewQuizDataSet(params):
         'category_id': 1,
         'author_id': 1
     })
+    quiz['_id'] = str(quiz['_id'])
     category = mongo.db.categories.find_one({
         '_id': quiz['category_id']
     }, {
@@ -1029,6 +1030,9 @@ def buildViewQuizDataSet(params):
                 'multiple_choice_options.answer_text': 1,
                 'multiple_choice_options.answer_img_url': 1
             }).sort('question_num'))
+        round['_id'] = str(round['_id'])
+        for question in round['questions']:
+            question['_id'] = str(question['_id'])
 
     return quiz
 
@@ -1564,8 +1568,14 @@ def displayQuiz():
             quiz = buildViewQuizDataSet(params)
 
             category_data = getCategories()
+
+            cancel_edit = request.referrer
+            if cancel_edit is None:
+                cancel_edit = url_for('my_quizzes')
             return render_template("edit_quiz.html",
-                                   quiz=quiz, quiz_categories=category_data)
+                                   quiz=quiz,
+                                   quiz_categories=category_data,
+                                   cancel_edit=cancel_edit)
 
         # If not authorised or author
         print(auth_state['auth'])
