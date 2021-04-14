@@ -1,7 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel,
-quizTitleValidate */
+removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -153,13 +152,13 @@ function listenToImgPreview(elem) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function listenToQuizTitle() {
-    $('#quizTitle').on("focusout", () => {
-        if ($('#quizTitle').val().length > 0) {
-            quizTitleValidate();
-        }
-    });
-}
+// function listenToQuizTitle() {
+//     $('#quizTitle').on("focusout", () => {
+//         if ($('#quizTitle').val().length > 0) {
+//             quizTitleValidate();
+//         }
+//     });
+// }
 
 // eslint-disable-next-line no-unused-vars
 function listenToSubmitButton() {
