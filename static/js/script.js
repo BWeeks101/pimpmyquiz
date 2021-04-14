@@ -801,6 +801,42 @@ function listenToQuizTitle() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
+function imgPreviewLoad(elem, max) {
+    let img = {
+        'height': $(elem).height(),
+        'width': $(elem).width()
+    };
+
+    if (max === undefined || max > parseInt($(elem).css('max-width'))) {
+        max = parseInt($(elem).css('max-width'));
+    }
+    let val;
+    if (img.width === img.height) {
+        val = max;
+        $(elem).height(val);
+    } else if (img.width > img.height) {
+        val = (max / 100) * ((img.height / img.width) * 100);
+        $(elem).height(val);
+
+    } else {
+        val = (max / 100) * ((img.width / img.height) * 100);
+        $(elem).width(val);
+    }
+    $(elem).next().
+        remove();
+    $(elem).removeClass('hidden');
+}
+
+// eslint-disable-next-line no-unused-vars
+function imgPreviewError(elem, errText) {
+    $(elem).next().
+        remove();
+    $(elem).removeClass('hidden');
+    $(elem).attr('alt', errText);
+    $(elem).attr('style', "padding: 10px; border: solid 1px black");
+}
+
 //document ready
 $(function() {
     $('.sidenav').sidenav({edge: "right"});
