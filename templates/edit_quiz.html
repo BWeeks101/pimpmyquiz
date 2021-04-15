@@ -267,13 +267,19 @@
         let observerList = [];
 
         $(function () {
-            setSelectValue($('#quizCategory'), '{{ quiz.category }}');
-            {% for round in quiz.rounds %}
-                setSelectValue($('#roundCategory_{{ round.round_num}}'), '{{ round.category }}');
-            {% endfor %}
-            reinitSelectOnDisabled($('.round-category'));
+            let initialSelectVals = [{
+                'elem': '#quizCategory',
+                'category': '{{ quiz.category }}'
+            }];
 
-            $('li.active li.active .img-url').trigger('focusout');
+            {% for round in quiz.rounds %}
+                initialSelectVals.push({
+                    'elem': '#roundCategory_{{ round.round_num }}',
+                    'category': '{{ round.category }}'
+                });
+            {% endfor %}
+
+            setInitialSelectVals(initialSelectVals);
         })
     </script>
 {% endblock %}
