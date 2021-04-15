@@ -656,6 +656,10 @@ form .user-search .search-radio-row {
     width: calc(100% - 1.5rem);
 }
 
+.modal #quizTitle ~ label {
+    width: 100%;
+}
+
 @media print {
     @page {
         size: auto;
