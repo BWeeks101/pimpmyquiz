@@ -813,17 +813,26 @@ function imgPreviewLoad(elem, max) {
         max = parseInt($(elem).css('max-width'));
     }
     let val;
+    let maxPrint = 50;
+    let printVal;
+    let style;
     if (img.width === img.height) {
         val = max;
+        printVal = maxPrint;
         $(elem).height(val);
     } else if (img.width > img.height) {
         val = (max / 100) * ((img.height / img.width) * 100);
+        printVal = (maxPrint / 100) * ((img.height / img.width) * 100);
+        style = `@media print {height: ${printVal}mm}`;
         $(elem).height(val);
 
     } else {
         val = (max / 100) * ((img.width / img.height) * 100);
+        printVal = (maxPrint / 100) * ((img.width / img.height) * 100);
+        style = `@media print {width: ${printVal}mm}`;
         $(elem).width(val);
     }
+    $(elem).attr('style', style);
     $(elem).next().
         remove();
     $(elem).removeClass('hidden');
