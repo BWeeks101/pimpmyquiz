@@ -1567,7 +1567,12 @@ def displayQuiz():
                                     update_params
                                 )
 
-                return redirect(request.referrer)
+                cancel_edit = request.form.get('cancel_edit')
+                if cancel_edit is None:
+                    return redirect(request.referrer)
+
+                return redirect(request.referrer +
+                                '&cancel_edit=' + cancel_edit)
 
             params['show_answers'] = True
 
@@ -1575,8 +1580,12 @@ def displayQuiz():
 
             category_data = getCategories()
 
-            cancel_edit = request.referrer
+            cancel_edit = request.args.get('cancel_edit')
             if cancel_edit is None:
+                cancel_edit = request.referrer
+            if cancel_edit is not None and cancel_edit.find('quiz_search') > 1:
+                cancel_edit = url_for('quiz_search')
+            else:
                 cancel_edit = url_for('my_quizzes')
             return render_template("edit_quiz.html",
                                    quiz=quiz,
