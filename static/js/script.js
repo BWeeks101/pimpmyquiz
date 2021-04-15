@@ -610,7 +610,8 @@ function createCategoryArray(pyList) {
 // eslint-disable-next-line no-unused-vars
 function getCategory(catId) {
     let result = false;
-    let record = categoryList.find((category) => category.category === catId);
+    let record = categoryList.
+        find((category) => category.category.toLowerCase() === catId);
 
     if (record) {
         result = {"category": record.category,
@@ -683,7 +684,7 @@ function setSelectValue(elem, value) {
         selector += 'ul li.optgroup-option';
         Object.keys($(selector, selectContainer)).
             map((key) => $(selector, selectContainer)[key]).
-                find((obj) => obj.innerText === value).
+                find((obj) => obj.innerText.toLowerCase() === value).
                     click();
         setSelectIcon(selectIcon, value);
     });
