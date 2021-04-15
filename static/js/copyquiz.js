@@ -1,4 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
+// eslint-disable-next-line no-unused-vars
+/* global titleValidationInProgress:writable */
 /* global M, quizTitleValidate, listenToQuizTitle */
 
 function copyQuiz() {
@@ -28,6 +30,8 @@ function copyQuizListener() {
 
 function listenToModalSaveButton() {
     $('#modalSubmitButton').on("click", () => {
+        titleValidationInProgress = false;
+
         const valid = () => {
             copyQuiz();
         };
