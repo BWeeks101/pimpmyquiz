@@ -216,9 +216,9 @@ function addRound(elem) {
     stopListeningToSelect();
     $('select').formSelect();
     listenToSelect();
-    setSelectValue($(`#roundCategory_${rId}`), quizCategory);
+    setSelectValue($(`#roundCategory_${rId}`), quizCategory.toLowerCase());
     reinitSelectOnDisabled($(`#roundCategory_${rId}`));
-    if (quizCategory !== 'general knowledge') {
+    if (quizCategory.toLowerCase() !== 'general knowledge') {
         $(`#roundCategory_${rId}`).attr('disabled', true);
     }
     listenToImgInputs();
