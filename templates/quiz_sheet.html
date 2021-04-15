@@ -18,53 +18,99 @@
         <div class="divider"></div>
         <div class="quiz-container page-break-after-avoid">
             {% for round in viewQuiz.rounds %}
-                {% if round.round_num == 1%}
-                    <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
-                {% else %}
-                    <h5 class="light-blue-text text-darken-4 center-align page-break-before-always page-break-inside-avoid page-break-after-avoid">
-                {% endif %}
-                    Round {{ round.round_num }}
-                    <p>
-                        {% if viewQuiz.category == 'general knowledge' %}
-                            <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                <div class="round-container">
+                    {% if loop.length > 1 or round.isPictureRound %}
+                        {% if round.round_num == 1%}
+                            <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
+                        {% else %}
+                            <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
                         {% endif %}
-                        {{ round.title }}
-                    </p>
-                </h5>
-                {% for question in round.questions %}
-                    <div class="question-container page-break-inside-avoid">
-                        <h6 class="light-blue-text text-darken-4 left-align">
-                            Q{{ question.question_num}}) {{ question.question_text }}
-                        </h6>
-                        {% if question.question_img_url != '' %}
-                            <div class="center-align">
-                                <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden inline-block" src="">
-                                <div class="preloader-container">
-                                    <div class="preloader-wrapper big active">
-                                        <div class="spinner-layer">
-                                            <div class="circle-clipper left">
-                                                <div class="circle"></div>
+                            Round {{ round.round_num }}
+                            <p>
+                                {% if viewQuiz.category == 'general knowledge' %}
+                                    <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                                {% endif %}
+                                {{ round.title }}
+                            </p>
+                        </h5>
+                    {% endif %}
+                    {% if round.isPictureRound == True %}
+                        <div class="question-container row">
+                        {% for question in round.questions %}
+                            {% if loop.last and question.question_num is odd %}
+                                <div class="center-align col s12 page-break-inside-avoid">
+                                    <div class="row">
+                                        <div class="col s3"></div>
+                                        <div class="col s6">
+                                            <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image small hidden inline-block" src="">
+                                            <div class="preloader-container">
+                                                <div class="preloader-wrapper big active">
+                                                    <div class="spinner-layer">
+                                                        <div class="circle-clipper left">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                        <div class="gap-patch">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                        <div class="circle-clipper right">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="gap-patch">
-                                                <div class="circle"></div>
-                                            </div>
-                                            <div class="circle-clipper right">
-                                                <div class="circle"></div>
+                                            <h6 class="light-blue-text text-darken-4 left-align">
+                                                Q{{ question.question_num}})
+                                            </h6>
+                                            <div class="divider"></div>
+                                        </div>
+                                        <div class="col s3"></div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="center-align col s6 page-break-inside-avoid">
+                                    <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image small hidden inline-block" src="">
+                                    <div class="preloader-container">
+                                        <div class="preloader-wrapper big active">
+                                            <div class="spinner-layer">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <h6 class="light-blue-text text-darken-4 left-align">
+                                        Q{{ question.question_num}})
+                                    </h6>
+                                    <div class="divider"></div>
                                 </div>
-                            </div>
-
-                        {% endif %}
-                        {% if question.multiple_choice == True %}
-                            {% for option in question.multiple_choice_options %}
-                                <h6 class="light-blue-text text-darken-4">
-                                    &emsp;{{ option.option_num}}) {{ option.answer_text }}
-                                </h6>
-                                {% if option.answer_img_url != '' %}
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                        <div class="divider"></div>
+                    {% else %}
+                        {% for question in round.questions %}
+                            <div class="question-container page-break-inside-avoid">
+                                <div class="row">
+                                    <div class="col s1">
+                                        <h6 class="light-blue-text text-darken-4 left-align">
+                                            Q{{ question.question_num}})
+                                        </h6>
+                                    </div>
+                                    <div class="col s11">
+                                        <h6 class="light-blue-text text-darken-4 left-align">
+                                            {{ question.question_text }}
+                                        </h6>
+                                    </div>
+                                </div>
+                                {% if question.question_img_url != '' %}
                                     <div class="center-align">
-                                        <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" src="">
+                                        <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden inline-block" src="">
                                         <div class="preloader-container">
                                             <div class="preloader-wrapper big active">
                                                 <div class="spinner-layer">
@@ -82,13 +128,45 @@
                                         </div>
                                     </div>
                                 {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                        <div class="divider"></div>
-                    </div>
-                {% endfor %}
+                                {% if question.multiple_choice == True %}
+                                    {% for option in question.multiple_choice_options %}
+                                        <div class="row">
+                                            <div class="col s1"></div>
+                                            <div class="col s11">
+                                                <h6 class="light-blue-text text-darken-4 left-align">
+                                                    {{ option.option_num}}) {{ option.answer_text }}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        {% if option.answer_img_url != '' %}
+                                            <div class="center-align">
+                                                <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" src="">
+                                                <div class="preloader-container">
+                                                    <div class="preloader-wrapper big active">
+                                                        <div class="spinner-layer">
+                                                            <div class="circle-clipper left">
+                                                                <div class="circle"></div>
+                                                            </div>
+                                                            <div class="gap-patch">
+                                                                <div class="circle"></div>
+                                                            </div>
+                                                            <div class="circle-clipper right">
+                                                                <div class="circle"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="divider"></div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             {% endfor %}
-        </div>
+        </>
     </main>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
