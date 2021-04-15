@@ -640,34 +640,45 @@ def buildQuizHtml(quiz_data, user_role):
     html = '''
     <ul class="collection">'''
     for quiz in quiz_data:
-        secUrlClass = 'class="light-blue-text text-darken-4" '
+        tTip = 'data-position="top" data-tooltip ='
+        baseClass = 'class="light-blue-text text-darken-4 tooltipped'
+        secUrlClass = baseClass + '" '
+        secTipQuiz = tTip + '"Quiz Sheet" '
         secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
+        secQuizSheet = secUrlClass + secTipQuiz + secHrefQuiz
+        secTipView = tTip + '"View Sheet" '
         secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
-        secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
-        secUrlCopyClass = 'class="light-blue-text text-darken-4 copy-quiz" '
-        secUrlDeleteClass = 'class="light-blue-text text-darken-4 del-quiz" '
+        secViewQuiz = secUrlClass + secTipView + secHrefView
         secData = 'data-quizId="' + quiz['id'] + '" '
+        secUrlCopyClass = baseClass + ' copy-quiz" '
+        secTipCopy = tTip + '"Copy Quiz" '
+        secCopyQuiz = secUrlCopyClass + secTipCopy + secData
+        secTipEdit = tTip + '"Edit Quiz" '
+        secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
+        secEditQuiz = secUrlClass + secTipEdit + secHrefEdit
+        secUrlDeleteClass = baseClass + ' del-quiz" '
+        secTipDelete = tTip + '"Delete Quiz" '
+        secDeleteQuiz = secUrlDeleteClass + secTipDelete + secData
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6 class="truncate">
                     <i class="fas ''' + quiz['category_icon']['class']
         html += ''' fa-fw"></i>
                     <span class="quiz-title">''' + quiz['title'] + '''</span>
-
                 </h6>
                 <div class = "truncate">
                     <span>Author: ''' + quiz['author'] + '''</span>
                 </div>
                 <div class="secondary-content light-blue-text text-darken-4">
-                    <a ''' + secUrlClass + secHrefQuiz + '''>
+                    <a ''' + secQuizSheet + '''>
                         <i class="far fa-file-alt fa-fw"></i>
                     </a>
-                    <a ''' + secUrlClass + secHrefView + '''>
+                    <a ''' + secViewQuiz + '''>
                         <i class="fas fa-eye fa-fw"></i>
                     </a>'''
         if ('user' in session):
             html += '''
-                    <a ''' + secUrlCopyClass + secData + '''href="#!">
+                    <a ''' + secCopyQuiz + '''href="#!">
                         <i class="fas fa-copy fa-fw"></i>
                     </a>'''
         else:
@@ -678,10 +689,10 @@ def buildQuizHtml(quiz_data, user_role):
         if (('user' in session and quiz['author'] == session['user']) or
                 (user_role == 'Global Admin' or user_role == 'Content Admin')):
             html += '''
-                    <a ''' + secUrlClass + secHrefEdit + '''>
+                    <a ''' + secEditQuiz + '''>
                         <i class="fas fa-edit fa-fw"></i>
                     </a>
-                    <a ''' + secUrlDeleteClass + secData + '''href="#!">
+                    <a ''' + secDeleteQuiz + '''href="#!">
                         <i class="fas fa-trash fa-fw"></i>
                     </a>'''
         else:
