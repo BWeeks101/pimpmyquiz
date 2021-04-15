@@ -50,6 +50,7 @@
     </div>
     <div id="editQuiz" class="container">
         <form id="editQuizForm" method="post">
+            <input id="cancelEditUrl" name="cancel_edit" type="text" class="hidden" value={{ cancel_edit }}>
             <!-- Prevent Submission of Form on Enter Keypress -->
             <!-- https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/51507806#51507806 -->
             <button class="hidden" type="submit" disabled></button>
