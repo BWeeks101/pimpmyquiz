@@ -1010,6 +1010,7 @@ def buildViewQuizDataSet(params):
                 'answer_text': 1,
                 'answer_img_url': 1,
                 'multiple_choice': 1,
+                'multi_count': 1,
                 'multiple_choice_options': 1
             }).sort('question_num'))
         else:
@@ -1021,6 +1022,7 @@ def buildViewQuizDataSet(params):
                 'question_text': 1,
                 'question_img_url': 1,
                 'multiple_choice': 1,
+                'multi_count': 1,
                 'multiple_choice_options.option_num': 1,
                 'multiple_choice_options.answer_text': 1,
                 'multiple_choice_options.answer_img_url': 1
@@ -1072,7 +1074,9 @@ def createQuestion(rId, qId, question_data):
         question_data['answer_img_url'] = request.form.get(
                 'a_img_' + rId + '_' + qId)
 
-    question_data['multiple_choice'] = multiple_choice
+        question_data['multi_count'] = 0
+        question_data['multiple_choice'] = multiple_choice
+
     if multiple_choice is True:
         multi_array = []
         multi_count = int(request.form.get(
@@ -1095,6 +1099,7 @@ def createQuestion(rId, qId, question_data):
                 'answer_img_url': answer_url
             })
 
+        question_data['multi_count'] = len(multi_array)
         question_data['multiple_choice_options'] = multi_array
 
     mongo.db.questions.insert_one(question_data)
@@ -1507,9 +1512,13 @@ def displayQuiz():
                                         'a_img_' + rId + '_' + qId
                                     )
 
-                                update_question[
-                                    'multiple_choice'
-                                ] = multiple_choice
+                                    update_question[
+                                        'multiple_choice'
+                                    ] = multiple_choice
+
+                                    update_question[
+                                        'multi_count'
+                                    ] = 0
 
                                 if multiple_choice is True:
                                     multi_array = []
@@ -1535,6 +1544,10 @@ def displayQuiz():
                                             'correct': correct,
                                             'answer_img_url': answer_url
                                         })
+
+                                    update_question[
+                                        'multi_count'
+                                    ] = len(multi_array)
 
                                     update_question[
                                         'multiple_choice_options'
