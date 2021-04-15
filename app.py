@@ -649,12 +649,15 @@ def buildQuizHtml(quiz_data, user_role):
         secData = 'data-quizId="' + quiz['id'] + '" '
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
-                <h6>
+                <h6 class="truncate">
                     <i class="fas ''' + quiz['category_icon']['class']
         html += ''' fa-fw"></i>
                     <span class="quiz-title">''' + quiz['title'] + '''</span>
+
                 </h6>
-                <span>Author: ''' + quiz['author'] + '''</span>
+                <div class = "truncate">
+                    <span>Author: ''' + quiz['author'] + '''</span>
+                </div>
                 <div class="secondary-content light-blue-text text-darken-4">
                     <a ''' + secUrlClass + secHrefQuiz + '''>
                         <i class="far fa-file-alt fa-fw"></i>
