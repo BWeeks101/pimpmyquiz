@@ -1026,8 +1026,15 @@ def buildViewQuizDataSet(params):
                 'multiple_choice_options.answer_img_url': 1
             }).sort('question_num'))
         round['_id'] = str(round['_id'])
+        isPictureRound = True
         for question in round['questions']:
             question['_id'] = str(question['_id'])
+            if isPictureRound is True:
+                if (len(question['question_img_url']) == 0 or
+                        len(question['question_text']) > 0 or
+                        question['multiple_choice'] is True):
+                    isPictureRound = False
+        round['isPictureRound'] = isPictureRound
 
     return quiz
 
