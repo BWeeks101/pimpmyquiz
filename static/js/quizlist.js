@@ -103,7 +103,7 @@ function listenToSelect() {
         let self = e.currentTarget;
         let selectContainer = self.closest('.select-container');
         let select = $('.select-wrapper select', selectContainer);
-        let value = self.innerText.trim();
+        let value = self.innerText.trim().toLowerCase();
         setSelectValue(select, value);
     });
 }
