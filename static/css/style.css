@@ -660,6 +660,10 @@ form .user-search .search-radio-row {
     width: 100%;
 }
 
+#quizSearchResults .collection-item.avatar h6.truncate {
+    width: calc(100% - 104px);
+}
+
 @media print {
     @page {
         size: auto;
