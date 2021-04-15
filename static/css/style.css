@@ -18,6 +18,11 @@ img {
     max-height: 600px;
 }
 
+img.small {
+    max-width: 300px;
+    max-height: 300px;
+}
+
 @media only screen and (max-width: 1200px) {
     .hide-on-large-and-down {
         display: none !important;
@@ -44,6 +49,11 @@ img {
     img {
         max-width: 340px;
         max-height: 340px;
+    }
+
+    img.small {
+        max-width: 150px;
+        max-height: 150px;
     }
 
     /* admin_users.html */
@@ -672,8 +682,8 @@ form .user-search .search-radio-row {
 
    /* Images */
    #viewQuiz img {
-       max-width: 30mm;
-       max-height: 30mm;
+       max-width: 50mm;
+       max-height: 50mm;
    }
 
    .page-break-before-always {
