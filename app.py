@@ -1184,7 +1184,7 @@ def createQuiz(author_id):
     round_count = int(request.form.get('roundCount')) + 1
     for rId in range(1, round_count):
         rId = str(rId)
-        if (quiz_category == 'general knowledge'):
+        if (quiz_category.lower() == 'general knowledge'):
             round_category_id = getCategoryId(
                 request.form.get('roundCategory_' + rId)
             )
@@ -1389,7 +1389,7 @@ def displayQuiz():
                 # Update rounds
                 for rId in range(1, round_count):
                     rId = str(rId)
-                    if (quiz_category == 'general knowledge'):
+                    if (quiz_category.lower() == 'general knowledge'):
                         round_category_id = getCategoryId(
                             request.form.get('roundCategory_' + rId)
                         )
