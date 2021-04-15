@@ -126,13 +126,14 @@ function getInitialQuizList() {
     xHttpRequest(request, $('#quizSearchResults')[0]);
 }
 
-function listenToLinks() {
+function initEmbeddedSearchResultControls() {
     listenToCopyQuizLinks();
     listenToDelLinks();
+    $('.tooltipped').tooltip();
 }
 
 function observeQuizResults() {
-    addObserver($('#quizSearchResults')[0], listenToLinks);
+    addObserver($('#quizSearchResults')[0], initEmbeddedSearchResultControls);
     let observer = getObserver($('#quizSearchResults')[0]);
     observer.observe($('#quizSearchResults')[0], {childList: true});
 }
