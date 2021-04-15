@@ -65,6 +65,5 @@ $(function() {
         initDupTitleModal(resetQuizTitleInput);
         listenToCopyQuiz();
     }
-    // $('.quiz-image').each((i, elem) => imgLoad(elem));
     $('.quiz-image').each((i, elem) => listenToQuizImg(elem));
 });
