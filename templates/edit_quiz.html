@@ -184,7 +184,7 @@
                                                                     {% if question.multiple_choice == False %}
                                                                         <!-- Answer -->
                                                                         <div class="title col s12"><span class="col s12">What is the Answer?</span></div>
-                                                                        <input id="multiCount_{{ round.round_num }}_{{ question.question_num }}" name="multiCount_{{ round.round_num }}_{{ question.question_num }}" type="text" class="hidden" value="1">
+                                                                        <input id="multiCount_{{ round.round_num }}_{{ question.question_num }}" name="multiCount_{{ round.round_num }}_{{ question.question_num }}" type="text" class="hidden" value="0">
                                                                         <div class="answers-container col s12">
                                                                             <div class="input-field col s12">
                                                                                 <span class="prefix" data-question="1" data-multi="0"></span>
@@ -205,7 +205,7 @@
                                                                             <span class="col s10">What are the Choices?</span>
                                                                             <span class="col s2 center-align">Correct?</span>
                                                                         </div>
-                                                                        <input id="multiCount_{{ round.round_num }}_{{ question.question_num }}" name="multiCount_{{ round.round_num }}_{{ question.question_num }}" type="text" class="hidden" value="1">
+                                                                        <input id="multiCount_{{ round.round_num }}_{{ question.question_num }}" name="multiCount_{{ round.round_num }}_{{ question.question_num }}" type="text" class="hidden" value="{{ question.multi_count }}">
                                                                         <div class="answers-container col s12">
                                                                             {% for option in question.multiple_choice_options %}
                                                                                 <div class="input-field multi-input col s10">
