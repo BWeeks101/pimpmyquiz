@@ -1567,6 +1567,7 @@ def displayQuiz():
                                     update_params
                                 )
 
+                flash("Quiz Saved")
                 cancel_edit = request.form.get('cancel_edit')
                 if cancel_edit is None:
                     return redirect(request.referrer)
