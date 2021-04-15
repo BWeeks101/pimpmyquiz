@@ -879,6 +879,10 @@ function popChangeConfModal(type, elem) {
         message = 'If you delete this quiz, all associated rounds and ' +
         'questions will also be deleted.  Do you wish to continue?';
         break;
+    case 'c':
+        title = 'Confirmation Required';
+        message = 'All unsaved changes will be lost.  Do you wish to continue?';
+        break;
     default:
         return;
     }
@@ -907,6 +911,9 @@ function removeAction({type, elem}) {
         break;
     case 'd':
         deleteQuiz($(elem).attr('data-quizId'));
+        break;
+    case 'c':
+        window.location.href = $(elem).attr('href');
         break;
     default:
     }
