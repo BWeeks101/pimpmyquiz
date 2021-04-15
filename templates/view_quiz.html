@@ -53,7 +53,7 @@
                 <h5 class="light-blue-text text-darken-4 center-align">
                     Round {{ round.round_num }}
                     <p>
-                        {% if viewQuiz.category == 'general knowledge' %}
+                        {% if viewQuiz.category.lower() == 'general knowledge' %}
                             <i class="fas {{ round.category_icon.class }} fa-fw"></i>
                         {% endif %}
                         {{ round.title }}
