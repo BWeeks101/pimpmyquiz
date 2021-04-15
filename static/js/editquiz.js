@@ -1,3 +1,5 @@
+/* global popChangeConfModal */
+
 function listenToCollapsibleHeaders() {
     $('.collapsible-header').on('click', (e) => {
         let self = $(e.currentTarget);
@@ -17,6 +19,14 @@ function listenToCollapsibleHeaders() {
     });
 }
 
+function listenToCancelEditUrl() {
+    $('#cancelEdit').on('click', (e) => {
+        e.preventDefault();
+        popChangeConfModal('c', e.currentTarget);
+    });
+}
+
 $(function () {
+    listenToCancelEditUrl();
     listenToCollapsibleHeaders();
 });
