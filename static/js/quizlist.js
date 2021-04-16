@@ -1,7 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global copyQuizListener, addRecordPositions, inputHelperLabel, xHttpRequest,
-setSelectValue, addObserver, getObserver, initDupTitleModal,
-popChangeConfModal, initChangeConfModal, listenToChangeConfModalButtons */
+setSelectValue, initDupTitleModal, popChangeConfModal, initChangeConfModal,
+listenToChangeConfModalButtons, observeResults */
 
 // eslint-disable-next-line no-unused-vars
 function deleteQuiz(quizId) {
@@ -132,21 +132,12 @@ function initEmbeddedSearchResultControls() {
     $('.tooltipped').tooltip();
 }
 
-function observeQuizResults() {
-    addObserver($('#quizSearchResults')[0], initEmbeddedSearchResultControls);
-    let observer = getObserver($('#quizSearchResults')[0]);
-    observer.observe($('#quizSearchResults')[0], {childList: true});
-}
-
 function resetQuizTitleInput() {
     $('#quizTitle').attr('data-prev', '');
     $('#quizTitle:hidden').val('');
     $('#modalSubmitButton').attr('data-quizId', '');
     listenToCopyQuizLinks();
 }
-
-// eslint-disable-next-line no-unused-vars
-let observerList = [];
 
 $(function() {
     $('select').formSelect();
@@ -156,5 +147,6 @@ $(function() {
     initDupTitleModal(resetQuizTitleInput);
     initChangeConfModal();
     listenToChangeConfModalButtons();
-    observeQuizResults();
+    observeResults($('#quizSearchResults')[0],
+        initEmbeddedSearchResultControls);
 });
