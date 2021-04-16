@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global getRole, createUserArray, returnHtml */
+/* global getRole, createUserArray, returnHtml, addObserver, getObserver */
 
 let recordPositions = [];
 let userSearchPositions = {};
@@ -575,6 +575,13 @@ function listenToRecordControls() {
 
         getRecord(record, self);
     });
+}
+
+// eslint-disable-next-line no-unused-vars
+function observeResults(elem, callback) {
+    addObserver(elem, callback);
+    let observer = getObserver(elem);
+    observer.observe(elem, {childList: true});
 }
 
 listenToRecordControls();
