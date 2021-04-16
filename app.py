@@ -638,15 +638,26 @@ def getCategories():
 # Returns formatted HTML output for quiz data sets
 def buildQuizHtml(quiz_data, user_role):
     html = '''
-    <ul class="collection">'''
+        <ul class="collection">'''
     for quiz in quiz_data:
-        tTip = 'data-position="top" data-tooltip ='
+        tTip = 'data-position="top" data-tooltip='
+        tTipAlt = 'data-position="bottom" data-tooltip='
+        qCatClass = 'class="fas ' + quiz['category_icon']['class']
+        qCatClass += ' fa-fw tooltipped"'
+        qTipCat = tTip + '"' + quiz['category'] + '"'
+        qCat = qCatClass + qTipCat
+        qTitleClass = 'class="quiz-title tooltipped" '
+        qTitle = 'span ' + qTitleClass + tTip + '"' + quiz['title'] + '"'
+        qAuthorSpan = 'span class="tooltipped" '
+        qAuthorText = 'Author: ' + quiz['author']
+        qTipAuthor = tTipAlt + '"' + qAuthorText + '"'
+        qAuthor = qAuthorSpan + qTipAuthor
         baseClass = 'class="light-blue-text text-darken-4 tooltipped'
         secUrlClass = baseClass + '" '
         secTipQuiz = tTip + '"Quiz Sheet" '
         secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
         secQuizSheet = secUrlClass + secTipQuiz + secHrefQuiz
-        secTipView = tTip + '"View Sheet" '
+        secTipView = tTip + '"View Quiz" '
         secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
         secViewQuiz = secUrlClass + secTipView + secHrefView
         secData = 'data-quizId="' + quiz['id'] + '" '
@@ -662,12 +673,11 @@ def buildQuizHtml(quiz_data, user_role):
         html += '''
             <li class="collection-item avatar light-blue-text text-darken-4">
                 <h6 class="truncate">
-                    <i class="fas ''' + quiz['category_icon']['class']
-        html += ''' fa-fw"></i>
-                    <span class="quiz-title">''' + quiz['title'] + '''</span>
+                    <i ''' + qCat + '''></i>
+                    <''' + qTitle + '>' + quiz['title'] + '</span>' + '''
                 </h6>
                 <div class = "truncate">
-                    <span>Author: ''' + quiz['author'] + '''</span>
+                    ''' + '<' + qAuthor + '>' + qAuthorText + '''</span>
                 </div>
                 <div class="secondary-content light-blue-text text-darken-4">
                     <a ''' + secQuizSheet + '''>
