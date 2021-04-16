@@ -1,6 +1,8 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global roleList, userList, categoryList, observerList, xHttpRequest, M,
-checkBoxMulti, removeQAction, removeRoundAction, deleteQuiz */
+// eslint-disable-next-line no-unused-vars
+/* global observerList */
+/* global roleList, userList, categoryList, xHttpRequest, M, checkBoxMulti,
+removeQAction, removeRoundAction, deleteQuiz */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -620,6 +622,8 @@ function getCategory(catId) {
 
     return result;
 }
+
+let observerList = [];
 
 function getObserver(elem) {
     let observer = observerList.find((obj) => obj.elem === elem);
