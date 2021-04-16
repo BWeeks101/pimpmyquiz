@@ -225,21 +225,52 @@ img.small {
     width: 100%;
 }
 
-.collection-item.avatar h6.truncate {
+.collection.user-search-results>.collection-item:last-child {
+	margin-bottom: -1rem;
+}
+
+.collection.user-search-results>.collection-item>.row,
+.collection.quiz-search-results>.collection-item>.row {
+    margin-bottom: 0;
+}
+
+.collection.user-search-results>.collection-item>.row>.col,
+.collection.quiz-search-results>.collection-item>.row>.col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.collection.user-search-results>.collection-item>.row>.col>h5,
+.collection.user-search-results>.collection-item>.row>.col>h6,
+.collection.quiz-search-results>.collection-item>.row>.col>h6,
+.collection.quiz-search-results>.collection-item>.row>.col.s5.m4.l3.xl2 {
+    margin-top: 0.8rem;
+}
+
+/* #quizSearchResults .collection-item {
+    min-height: initial;
+} */
+
+.collection.user-search-results>.collection-item>.row>.col>h6.truncate,
+.collection.quiz-search-results>.collection-item>.row>.col>h6.truncate {
     padding-bottom: .25rem;
 }
 
-.collection-item.avatar:not(.search-no-results) h6.truncate {
-    width: calc(100% - 35px);
-}
+/* .collection-item:not(.search-no-results) h6.truncate {
+    width: calc(100% - 64px);
+} */
 
-.collection-item.avatar.search-no-results {
+/* #quizSearchResults .collection-item h6.truncate {
+    width: calc(100% - 104px);
+} */
+
+/* .collection-item.search-no-results {
     text-align: center;
-}
+} */
 
-.collection-item.avatar.search-no-results h6.truncate {
+/* .collection-item.search-no-results h6.truncate {
     width: 100%;
-}
+} */
 
 .collapsible-header i.fa-fw {
     min-width: 2rem;
@@ -256,7 +287,7 @@ nav .fa-caret-down {
     margin-left: 3px;
 }
 
-.collection .collection-item.avatar {
+.collection .collection-item {
     padding-left: 20px;
 }
 
@@ -630,10 +661,6 @@ form .user-search .search-radio-row {
     margin-top: 0.5rem !important;
 }
 
-#quizSearchResults .collection-item.avatar {
-    min-height: initial;
-}
-
 #viewQuiz .quiz-container {
     max-width: 640px;
     margin-left: auto;
@@ -658,10 +685,6 @@ form .user-search .search-radio-row {
 
 .modal #quizTitle ~ label {
     width: 100%;
-}
-
-#quizSearchResults .collection-item.avatar h6.truncate {
-    width: calc(100% - 104px);
 }
 
 @media print {
