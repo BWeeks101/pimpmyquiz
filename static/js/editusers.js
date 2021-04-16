@@ -1,7 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global modalChangePasswordCollapsible, M, pWordValidation,
 inputHelperLabel, getRole, getUser, addRecordPositions, xHttpRequest,
-getCurrentRecord, getRecordPosition */
+getCurrentRecord, getRecordPosition, observeResults */
 
 function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
     checkBox = "#" + checkBox;
@@ -166,7 +166,7 @@ function modalSetInitialUserRoleSelectValue(role) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function modalPop(userId) {
+function popEditUserModal(userId) {
     let user = getUser(userId);
     $('#modalUserLockedInput').prop('checked', user.locked);
     modalUserLockedToggleIcon();
@@ -225,6 +225,19 @@ function listenToUserSearchCollapsibleHeaders() {
     });
 }
 
+function initResultObservers() {
+    const observerAction = (elem) => {
+        $(elem).find('.tooltipped').
+            tooltip();
+    };
+
+    $('.results-data').each((i, elem) => {
+        observeResults($(elem)[0], () => {
+            observerAction($(elem)[0]);
+        });
+    });
+}
+
 function userSearchCreateListeners() {
     const validateUserSearchInput = () => {
         let value = $('#userSearch').val();
@@ -267,4 +280,5 @@ $(function() {
     listenToUserRoleCollapsibleHeaders();
     listenToUserSearchCollapsibleHeaders();
     userSearchCreateListeners();
+    initResultObservers();
 });
