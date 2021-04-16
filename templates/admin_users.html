@@ -114,8 +114,8 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <i class="fas fa-user prefix light-blue-text text-darken-4"></i>
-                                    <input id="userSearch" name="userSearch" type="text" minlength="2" value="" class="validate">
-                                    <label class="truncate" for="userSearch" data-error="Please Enter at least 2 Characters." data-default="User Search">User Search</label>
+                                    <input id="userSearch" name="userSearch" type="text" minlength="1" value="" class="">
+                                    <label class="truncate" for="userSearch" data-error="Please Enter Search Criteria" data-default="User Search">User Search</label>
                                 </div>
                             </div>
                             <!-- search button -->
@@ -126,13 +126,13 @@
                             </div>
                             <ul class="collapsible">
                                 <div class="results-control hidden">
-                                    <a href="#" class="results-control-first">First</a>
-                                    <a href="#" class="results-control-prev">Prev</a>
+                                    <a href="#" class="results-control-first"><i class="fas fa-angle-double-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="First"></i></a>
+                                    <a href="#" class="results-control-prev"><i class="fas fa-angle-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Previous"></i></a>
                                     <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
-                                    <span>of</span>
-                                    <span class="totalPages"></span>
-                                    <a href="#" class="results-control-next">Next</a>
-                                    <a href="#" class="results-control-last">Last</a>
+                                    <span class="light-blue-text text-darken-4">of</span>
+                                    <span class="totalPages light-blue-text text-darken-4"></span>
+                                    <a href="#" class="results-control-next"><i class="fas fa-angle-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Next"></i></a>
+                                    <a href="#" class="results-control-last"><i class="fas fa-angle-double-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Last"></i></a>
                                 </div>
                                 <div id="userSearchResults" class="results-data">
                                     <!--returned records go here-->
@@ -169,14 +169,14 @@
                                         </div>
                                         <div class="collapsible-body">
                                             <ul class="collapsible">
-                                                <div class="results-control">
-                                                    <a href="#" class="results-control-first">First</a>
-                                                    <a href="#" class="results-control-prev">Prev</a>
+                                                <div class="results-control hidden">
+                                                    <a href="#" class="results-control-first"><i class="fas fa-angle-double-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="First"></i></a>
+                                                    <a href="#" class="results-control-prev"><i class="fas fa-angle-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Previous"></i></a>
                                                     <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
-                                                    <span>of</span>
-                                                    <span class="totalPages"></span>
-                                                    <a href="#" class="results-control-next">Next</a>
-                                                    <a href="#" class="results-control-last">Last</a>
+                                                    <span class="light-blue-text text-darken-4">of</span>
+                                                    <span class="totalPages light-blue-text text-darken-4"></span>
+                                                    <a href="#" class="results-control-next"><i class="fas fa-angle-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Next"></i></a>
+                                                    <a href="#" class="results-control-last"><i class="fas fa-angle-double-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Last"></i></a>
                                                 </div>
                                                 <div class="results-data">
                                                     <!--returned records go here-->
