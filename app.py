@@ -20,6 +20,20 @@ mongo = PyMongo(app)
 
 
 @app.route("/")
+def landing():
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
+    if auth_state['auth']:
+        print(auth_state['auth'])
+        print(auth_state['reason'])
+        # Get method
+        return redirect(url_for("my_quizzes"))
+
+    return redirect(url_for("quiz_search"))
+
+
 @app.route("/my_quizzes")
 def my_quizzes():
     auth_criteria = {
