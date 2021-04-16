@@ -565,61 +565,82 @@ def getUserTotals():
 # Returns formatted HTML output for user data sets
 def buildUserHtml(user_data):
     html = '''
-            <ul class="collection">'''
+    <ul class="collection user-search-results">'''
     if user_data:
         for user in user_data:
-            iconClass = 'fas ' + user['role_icon']['class'] + ' fa-fw'
+            tTip = 'data-position="top" data-tooltip='
+            tTipAlt = 'data-position="bottom" data-tooltip='
+            iconClass = 'class="fas ' + user['role_icon']['class']
+            iconClass += ' fa-fw tooltipped"'
+            userRoleTip = tTip + '"' + user['role'] + '"'
+            userRoleIcon = iconClass + ' ' + userRoleTip
             userId = user['user_id']
+            userIdClass = 'class="title tooltipped" '
+            userIdTip = tTip + '"' + userId + '"'
+            userIdSpan = 'span ' + userIdClass + userIdTip
             email = user['email']
-            secClass = 'class="secondary-content light-blue-text '
-            secClass += 'text-darken-4 modal-trigger" '
-            secHref = 'href="#editUserModal" '
-            secOnClick = 'onclick="modalPop(\'' + userId + '\')"'
-            lockIconClass = '"red-text text-darken-4 fas fa-lock fa-fw"'
+            emailClass = 'class="tooltipped" '
+            emailHref = 'href="mailto:' + email + '"'
+            emailTip = tTipAlt + '"' + email + '"'
+            emailLink = emailClass + emailHref + emailTip
+            emailIconClass = 'class="fas fa-envelope fa-fw"'
+            editClass = 'class="light-blue-text text-darken-4 '
+            editClass += 'modal-trigger tooltipped" '
+            editHref = 'href="#editUserModal" '
+            editTip = tTipAlt + '"Edit User" '
+            editOnClick = 'onclick="popEditUserModal(\'' + userId + '\')"'
+            editLink = editClass + editHref + editTip + editOnClick
+            lockIconClass = 'class="red-text text-darken-4 fas fa-lock fa-fw"'
+            lockIcon = lockIconClass + '></i'
+            unlockIconClass = 'class="fas fa-unlock fa-fw"'
+            unlockIcon = unlockIconClass + '></i'
             html += '''
-                <li class="collection-item avatar">
-                    <ul>
-                        <li>
-                            <h6 class="truncate">
-                                <i class="''' + iconClass + '''"></i>
-                                <span class="title">
-                                    ''' + userId + '''
-                                </span>
-                            </h6>
-                        </li>
-                        <li>
-                            <h6 class="truncate">
-                                <a href="mailto:''' + email + '''">
-                                    <i class="fas fa-envelope fa-fw"></i>
-                                    <span class="title">
-                                        ''' + email + '''
-                                    </span>
-                                </a>
-                            </h6>
-                        </li>
-                    </ul>
-                    <a ''' + secClass + secHref + secOnClick + '>'
+        <li class="collection-item light-blue-text text-darken-4">
+            <div class="row">
+                <div class="col s8 m10 xl11">
+                    <h6 class="truncate">
+                        <i ''' + userRoleIcon + '''></i>
+                        <''' + userIdSpan + '''>
+                            ''' + userId + '''
+                        </span>
+                    </h6>
+                    <h6 class="truncate">
+                        <a ''' + emailLink + '''>
+                            <i ''' + emailIconClass + '''></i>
+                            <span class="title">
+                                ''' + email + '''
+                            </span>
+                        </a>
+                    </h6>
+                </div>
+                <div class="right-align col s4 m2 xl1">
+                    <h5>
+                        <a ''' + editLink + '''>'''
             if (user['locked']):
                 html += '''
-                        <i class=''' + lockIconClass + '''></i>'''
+                            <i ''' + lockIcon + '''>'''
             else:
                 html += '''
-                        <i class="fas fa-unlock fa-fw"></i>'''
+                            <i ''' + unlockIcon + '''>'''
             html += '''
-                        <i class="fas fa-user-edit"></i>
-                    </a>
-                </li>'''
+                            <i class="fas fa-user-edit"></i>
+                        </a>
+                    </h5>
+                </div>
+            </div>
+        </li>'''
     else:
         html += '''
-                <li class="collection-item avatar search-no-results">
-                    <h6 class="truncate">
-                        <i class="fas fa-info fa-fw"></i>
-                        <span class="title">No Results.</span>
-                    </h6>
-                </li>'''
+        <li class="collection-item search-no-results '''
+        html += 'light-blue-text text-darken-4 ' + '''center-align">
+            <h5>
+                <i class="fas fa-info fa-fw"></i>
+                <span class="title">No Results.</span>
+            </h5>
+        </li>'''
+
     html += '''
-            </ul>
-    '''
+    </ul>\n'''
 
     return html
 
@@ -638,86 +659,106 @@ def getCategories():
 # Returns formatted HTML output for quiz data sets
 def buildQuizHtml(quiz_data, user_role):
     html = '''
-        <ul class="collection">'''
-    for quiz in quiz_data:
-        tTip = 'data-position="top" data-tooltip='
-        tTipAlt = 'data-position="bottom" data-tooltip='
-        qCatClass = 'class="fas ' + quiz['category_icon']['class']
-        qCatClass += ' fa-fw tooltipped"'
-        qTipCat = tTip + '"' + quiz['category'] + '"'
-        qCat = qCatClass + qTipCat
-        qTitleClass = 'class="quiz-title tooltipped" '
-        qTitle = 'span ' + qTitleClass + tTip + '"' + quiz['title'] + '"'
-        qAuthorSpan = 'span class="tooltipped" '
-        qAuthorText = 'Author: ' + quiz['author']
-        qTipAuthor = tTipAlt + '"' + qAuthorText + '"'
-        qAuthor = qAuthorSpan + qTipAuthor
-        baseClass = 'class="light-blue-text text-darken-4 tooltipped'
-        secUrlClass = baseClass + '" '
-        secTipQuiz = tTip + '"Quiz Sheet" '
-        secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
-        secQuizSheet = secUrlClass + secTipQuiz + secHrefQuiz
-        secTipView = tTip + '"View Quiz" '
-        secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
-        secViewQuiz = secUrlClass + secTipView + secHrefView
-        secData = 'data-quizId="' + quiz['id'] + '" '
-        secUrlCopyClass = baseClass + ' copy-quiz" '
-        secTipCopy = tTip + '"Copy Quiz" '
-        secCopyQuiz = secUrlCopyClass + secTipCopy + secData
-        secTipEdit = tTip + '"Edit Quiz" '
-        secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
-        secEditQuiz = secUrlClass + secTipEdit + secHrefEdit
-        secUrlDeleteClass = baseClass + ' del-quiz" '
-        secTipDelete = tTip + '"Delete Quiz" '
-        secDeleteQuiz = secUrlDeleteClass + secTipDelete + secData
-        html += '''
-            <li class="collection-item avatar light-blue-text text-darken-4">
-                <h6 class="truncate">
-                    <i ''' + qCat + '''></i>
-                    <''' + qTitle + '>' + quiz['title'] + '</span>' + '''
-                </h6>
-                <div class = "truncate">
-                    ''' + '<' + qAuthor + '>' + qAuthorText + '''</span>
+    <ul class="collection quiz-search-results">'''
+    if quiz_data:
+        for quiz in quiz_data:
+            tTip = 'data-position="top" data-tooltip='
+            tTipAlt = 'data-position="bottom" data-tooltip='
+            qCatClass = 'class="fas ' + quiz['category_icon']['class']
+            qCatClass += ' fa-fw tooltipped"'
+            qTipCat = tTip + '"' + quiz['category'] + '"'
+            qCat = qCatClass + qTipCat
+            qTitleClass = 'class="quiz-title tooltipped" '
+            qTitle = 'span ' + qTitleClass + tTip + '"' + quiz['title'] + '"'
+            qAuthorSpan = 'span class="tooltipped" '
+            qAuthorText = 'Author: ' + quiz['author']
+            qTipAuthor = tTipAlt + '"' + qAuthorText + '"'
+            qAuthor = qAuthorSpan + qTipAuthor
+            textClass = 'light-blue-text text-darken-4 '
+            baseClass = 'class="' + textClass + 'tooltipped'
+            secUrlClass = baseClass + '" '
+            secTipQuiz = tTip + '"Quiz Sheet" '
+            secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
+            secQuizSheet = secUrlClass + secTipQuiz + secHrefQuiz
+            secTipView = tTip + '"View Quiz" '
+            secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
+            secViewQuiz = secUrlClass + secTipView + secHrefView
+            secData = 'data-quizId="' + quiz['id'] + '" '
+            secUrlCopyClass = baseClass + ' copy-quiz" '
+            secTipCopy = tTip + '"Copy Quiz" '
+            secCopyQuiz = secUrlCopyClass + secTipCopy + secData
+            secTipEdit = tTip + '"Edit Quiz" '
+            secHrefEdit = 'href="/edit_quiz?&id=' + quiz['id'] + '"'
+            secEditQuiz = secUrlClass + secTipEdit + secHrefEdit
+            secUrlDeleteClass = baseClass + ' del-quiz" '
+            secTipDelete = tTip + '"Delete Quiz" '
+            secDeleteQuiz = secUrlDeleteClass + secTipDelete + secData
+            html += '''
+        <li class="collection-item light-blue-text text-darken-4">
+            <div class="row">
+                <div class="col s7 m8 l9 xl10">
+                    <h6 class="truncate">
+                        <i ''' + qCat + '''></i>
+                        <'''
+            html += qTitle + '>' + quiz['title'] + '</span>' + '''
+                    </h6>
+                    <div class = "truncate">
+                        '''
+            html += '<' + qAuthor + '>' + qAuthorText + '''</span>
+                    </div>
                 </div>
-                <div class="secondary-content light-blue-text text-darken-4">
+                <div class="col s5 m4 l3 xl2 '''
+            html += textClass + '''right-align">
                     <a ''' + secQuizSheet + '''>
                         <i class="far fa-file-alt fa-fw"></i>
                     </a>
                     <a ''' + secViewQuiz + '''>
                         <i class="fas fa-eye fa-fw"></i>
                     </a>'''
-        if ('user' in session):
-            html += '''
+            if ('user' in session):
+                html += '''
                     <a ''' + secCopyQuiz + '''href="#!">
                         <i class="fas fa-copy fa-fw"></i>
                     </a>'''
-        else:
-            html += '''
+            else:
+                html += '''
                     <span class="grey-text">
                         <i class="fas fa-copy fa-fw"></i>
                     </span>'''
-        if (('user' in session and quiz['author'] == session['user']) or
-                (user_role == 'Global Admin' or user_role == 'Content Admin')):
-            html += '''
+            if (('user' in session and quiz['author'] == session['user']) or
+                    (user_role == 'Global Admin' or
+                        user_role == 'Content Admin')):
+                html += '''
                     <a ''' + secEditQuiz + '''>
                         <i class="fas fa-edit fa-fw"></i>
                     </a>
                     <a ''' + secDeleteQuiz + '''href="#!">
                         <i class="fas fa-trash fa-fw"></i>
                     </a>'''
-        else:
-            html += '''
+            else:
+                html += '''
                     <span class="grey-text">
                         <i class="fas fa-edit fa-fw"></i>
                     </span>
                     <span class="grey-text">
                         <i class="fas fa-trash fa-fw"></i>
                     </span>'''
-        html += '''
+            html += '''
                 </div>
-            </li>
-        '''
-    html += '</ul>'
+            </div>
+        </li>'''
+    else:
+        html += '''
+        <li class="collection-item search-no-results '''
+        html += 'light-blue-text text-darken-4 ' + '''center-align">
+            <h5>
+                <i class="fas fa-info fa-fw"></i>
+                <span class="title">No Results.</span>
+            </h5>
+        </li>'''
+
+    html += '''
+    </ul>\n'''
 
     return html
 
