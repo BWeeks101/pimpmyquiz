@@ -1,3 +1,4 @@
+/*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global modalChangePasswordCollapsible, M, pWordValidation,
 inputHelperLabel, getRole, getUser, addRecordPositions, xHttpRequest,
 getCurrentRecord, getRecordPosition */
@@ -179,12 +180,7 @@ function modalPop(userId) {
     modalCreateListeners();
 }
 
-function getUserSearchResults(self) {
-    let value = self.parentElement.previousElementSibling.
-         firstElementChild.querySelector('input').value;
-    if (value === "" || value === undefined || value.length < 2) {
-        return;
-    }
+function getUserSearchResults(value) {
     let request = {
         'type':
             'userSearch',
@@ -230,23 +226,43 @@ function listenToUserSearchCollapsibleHeaders() {
 }
 
 function userSearchCreateListeners() {
-    $("#userSearch").on("focusout", () => inputHelperLabel("userSearch"));
+    const validateUserSearchInput = () => {
+        let value = $('#userSearch').val();
+        if (value === "" || value === undefined || value.length < 1) {
+            $('#userSearch').removeClass('valid');
+            $('#userSearch').addClass('invalid');
+            inputHelperLabel("userSearch");
+            return false;
+        }
+        $('#userSearch').removeClass('invalid');
+        $('#userSearch').addClass('valid');
+        inputHelperLabel("userSearch");
+        return value;
+    };
+
+    $("#userSearch").
+        on("focusout", () => validateUserSearchInput());
 
     $("#userSearch").on("keyup", (e) => {
-        if (e.key === "Enter") {
-            inputHelperLabel("userSearch");
-            getUserSearchResults($('#userSearch')[0].parentElement.
-                parentElement.nextElementSibling.firstElementChild);
+        let value = validateUserSearchInput();
+        if (value !== false && e.key === "Enter") {
+            getUserSearchResults(value);
         }
     });
 
     $("#searchButton").
-        on("click", () => getUserSearchResults($("#searchButton")[0]));
+        on("click", () => {
+            let value = validateUserSearchInput();
+            if (value !== false) {
+                getUserSearchResults(value);
+            }
+        });
 }
 
 $(function() {
     $('.collapsible').collapsible();
     $('select').formSelect();
+    $('.tooltipped').tooltip();
     $('.modal').modal();
     listenToUserRoleCollapsibleHeaders();
     listenToUserSearchCollapsibleHeaders();
