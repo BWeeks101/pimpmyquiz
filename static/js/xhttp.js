@@ -130,39 +130,67 @@ function updateRecordControls(elem, key) {
     }
 
     if (Number(currentPage) === 1) {
-        first.classList.add('grey-text');
-        first.classList.add('text-lighten-1');
-        prev.classList.add('grey-text');
-        prev.classList.add('text-lighten-1');
+        first.firstElementChild.classList.add('grey-text');
+        first.firstElementChild.classList.add('text-lighten-1');
+        first.firstElementChild.classList.remove('light-blue-text');
+        first.firstElementChild.classList.remove('text-darken-4');
+        prev.firstElementChild.classList.add('grey-text');
+        prev.firstElementChild.classList.add('text-lighten-1');
+        prev.firstElementChild.classList.remove('light-blue-text');
+        prev.firstElementChild.classList.remove('text-darken-4');
         if (totalPages > currentPage) {
-            next.classList.remove('grey-text');
-            next.classList.remove('text-lighten-1');
-            last.classList.remove('grey-text');
-            last.classList.remove('text-lighten-1');
+            next.firstElementChild.classList.add('light-blue-text');
+            next.firstElementChild.classList.add('text-darken-4');
+            next.firstElementChild.classList.remove('grey-text');
+            next.firstElementChild.classList.remove('text-lighten-1');
+            last.firstElementChild.classList.add('light-blue-text');
+            last.firstElementChild.classList.add('text-darken-4');
+            last.firstElementChild.classList.remove('grey-text');
+            last.firstElementChild.classList.remove('text-lighten-1');
         } else {
-            next.classList.add('grey-text');
-            next.classList.add('text-lighten-1');
-            last.classList.add('grey-text');
-            last.classList.add('text-lighten-1');
+            next.firstElementChild.classList.add('grey-text');
+            next.firstElementChild.classList.add('text-lighten-1');
+            next.firstElementChild.classList.remove('light-blue-text');
+            next.firstElementChild.classList.remove('text-darken-4');
+            last.firstElementChild.classList.add('grey-text');
+            last.firstElementChild.classList.add('text-lighten-1');
+            last.firstElementChild.classList.remove('light-blue-text');
+            last.firstElementChild.classList.remove('text-darken-4');
         }
     } else if (currentPage < totalPages) {
-        first.classList.remove('grey-text');
-        first.classList.remove('text-lighten-1');
-        prev.classList.remove('grey-text');
-        prev.classList.remove('text-lighten-1');
-        next.classList.remove('grey-text');
-        next.classList.remove('text-lighten-1');
-        last.classList.remove('grey-text');
-        last.classList.remove('text-lighten-1');
+        first.firstElementChild.classList.add('light-blue-text');
+        first.firstElementChild.classList.add('text-darken-4');
+        first.firstElementChild.classList.remove('grey-text');
+        first.firstElementChild.classList.remove('text-lighten-1');
+        prev.firstElementChild.classList.add('light-blue-text');
+        prev.firstElementChild.classList.add('text-darken-4');
+        prev.firstElementChild.classList.remove('grey-text');
+        prev.firstElementChild.classList.remove('text-lighten-1');
+        next.firstElementChild.classList.add('light-blue-text');
+        next.firstElementChild.classList.add('text-darken-4');
+        next.firstElementChild.classList.remove('grey-text');
+        next.firstElementChild.classList.remove('text-lighten-1');
+        last.firstElementChild.classList.add('light-blue-text');
+        last.firstElementChild.classList.add('text-darken-4');
+        last.firstElementChild.classList.remove('grey-text');
+        last.firstElementChild.classList.remove('text-lighten-1');
     } else if (currentPage === totalPages) {
-        first.classList.remove('grey-text');
-        first.classList.remove('text-lighten-1');
-        prev.classList.remove('grey-text');
-        prev.classList.remove('text-lighten-1');
-        next.classList.add('grey-text');
-        next.classList.add('text-lighten-1');
-        last.classList.add('grey-text');
-        last.classList.add('text-lighten-1');
+        first.firstElementChild.classList.add('light-blue-text');
+        first.firstElementChild.classList.add('text-darken-4');
+        first.firstElementChild.classList.remove('grey-text');
+        first.firstElementChild.classList.remove('text-lighten-1');
+        prev.firstElementChild.classList.add('light-blue-text');
+        prev.firstElementChild.classList.add('text-darken-4');
+        prev.firstElementChild.classList.remove('grey-text');
+        prev.firstElementChild.classList.remove('text-lighten-1');
+        next.firstElementChild.classList.add('grey-text');
+        next.firstElementChild.classList.add('text-lighten-1');
+        next.firstElementChild.classList.remove('light-blue-text');
+        next.firstElementChild.classList.remove('text-darken-4');
+        last.firstElementChild.classList.add('grey-text');
+        last.firstElementChild.classList.add('text-lighten-1');
+        last.firstElementChild.classList.remove('light-blue-text');
+        last.firstElementChild.classList.remove('text-darken-4');
     }
 }
 
