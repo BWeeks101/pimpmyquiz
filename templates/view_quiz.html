@@ -1,44 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-    <!-- Modal Structure -->
-    <div id="dupTitleModal" class="modal">
-        <div class="modal-content">
-            <!-- title and close button -->
-            <div class="modal-title-row row">
-                <div class="col s11">
-                    <h5>Duplicate Quiz Title</h5>
-                </div>
-                <div class="col s1 modal-close-button">
-                    <a class="modal-action modal-close light-blue-text text-darken-4" href="#!">&times</a>
-                </div>
-            </div>
-            <!-- quiz title -->
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="100" value="" required>
-                    <label for="quizTitle" data-error="Invalid Quiz Title" data-dup="Quiz Title already in use.  Please choose another." data-default="Quiz Title">Quiz Title</label>
-                </div>
-            </div>
-            <!-- save changes -->
-            <div class="row modal-action-container">
-                <button id="modalSubmitButton" data-quizId="" class="col s12 btn-large light-blue darken-4 text-shadow">
-                    Save Changes <i class="fas fa-user-check"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div id="viewQuiz" class="container">
-        <div class="row">
-            <div class="col s1"></div>
-            <div class="col s10">
-                <h3 id="quizOriginalTitle" class="light-blue-text text-darken-4 center-align">{{ viewQuiz.title }}</h3>
+        <div id="titleRow" class="row">
+            <div class="col s2"></div>
+            <div class="col s8 center-align">
+                <h3 id="quizOriginalTitle" class="light-blue-text text-darken-4" >{{ viewQuiz.title }}</h3>
             </div>
-            <div class="col s1">
+            <div class="col s2">
                 {% if 'user' in session %}
                     <h3 class="right-align">
-                        <a class="light-blue-text text-darken-4 copy-quiz" href="#!">
+                        <a class="light-blue-text text-darken-4 tooltipped copy-quiz" data-position="bottom" data-tooltip="Copy Quiz" href="#!">
                             <i class="fas fa-copy fa-fw"></i>
                         </a>
                     </h3>
@@ -154,6 +126,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/copyquiz.js') }}"></script>
     <script src="{{ url_for('static', filename='js/viewquiz.js') }}"></script>
