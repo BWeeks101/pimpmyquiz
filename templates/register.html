@@ -1,9 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
-
     <h3 class="center-align">Register</h3>
-    
     <div class="row">
         <form id="register" class="col s12 m8 offset-m2 formValidate" method="POST" action="{{ url_for('register') }}">
             <div class="card-panel">
@@ -49,38 +46,15 @@
                 </div>
             </div>
         </form>
-        
+
         <div class="row col s12">
             <p class="center-align">
                 Already Registered? <a href="{{ url_for('login') }}" class="light-blue-text text-darken-4">Log In</a>
             </p>
         </div>
     </div>
-
 {% endblock %}
 
 {% block scripts %}
-<script>
-    $("#pwd").on("focusout", function () {
-        pWordValidation("pwd", "cPwd");
-    });
-
-    $("#pwd").on("keyup", function () {
-        pWordValidation("pwd", "cPwd");
-    });
-
-    $("#cPwd").on("keyup", function () {
-        pWordValidation("pwd", "cPwd");
-    });
-
-    function regValidate(funcResult) {
-        if (funcResult === true) {
-            $("#pwd").off("focusout");
-            $("#pwd").off("keyup");
-            $("#cPwd").off("focusout");
-            return true;
-        }
-        return false;
-    }
-</script>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}
