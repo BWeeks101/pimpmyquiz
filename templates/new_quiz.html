@@ -1,46 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-    <!-- Modal Structure -->
-    <div id="changeConfModal" class="modal">
-        <div class="modal-content">
-            <!-- title and close button -->
-            <div class="modal-title-row row">
-                <div class="col s11">
-                    <h5 id="modalTitle"></h5>
-                </div>
-                <div class="col s1 modal-close-button">
-                    <a id="modalClose" class="modal-action modal-close light-blue-text text-darken-4" href="#!">&times</a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <h6 id="modalMessage"></h6>
-                </div>
-            </div>
-            <!-- save changes -->
-            <div class="row modal-action-container">
-                <div class="col s6"></div>
-                <div class="col s3">
-                    <button id="modalYesButton" class="col s12 btn-large light-blue darken-4 text-shadow">
-                        Yes <i class="fas fa-check"></i>
-                    </button>
-                </div>
-                <div class="col s3">
-                    <button id="modalNoButton" class="col s12 btn-large light-blue darken-4 text-shadow">
-                        No <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
+    <!-- Main Content -->
+    <div id="titleRow" class="row container">
+        <div class="col s2"></div>
+        <div class="col s8 center-align">
+            <h3 class="light-blue-text text-darken-4">Create a Quiz</h3>
+        </div>
+        <div class="col s2 right-align">
+            <h3>
+                <a id="cancelUrl" class="light-blue-text text-darken-4 tooltipped" data-position="bottom" data-tooltip="Cancel" href="{{ cancel_url }}">
+                    <i class="fas fa-times fa-fw"></i>
+                </a>
+            </h3>
         </div>
     </div>
-
-    <!-- Main Content -->
-    <h3 class="light-blue-text text-darken-4 center-align">Create a Quiz</h3>
     <div id="createQuiz" class="container">
         <form id="createQuizForm" method="post">
             <!-- Prevent Submission of Form on Enter Keypress -->
             <!-- https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/51507806#51507806 -->
             <button class="hidden" type="submit" disabled></button>
+            <input name="cancel_url" type="text" class="hidden" value={{ cancel_url }}>
             <!-- Form Content -->
             <div class="card">
                 <div class="card-content">
@@ -188,6 +167,7 @@
         </form>
     </div>
 {% endblock%}
+
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/newquizlisteners.js') }}"></script>
     <script src="{{ url_for('static', filename='js/newquiz.js') }}"></script>
