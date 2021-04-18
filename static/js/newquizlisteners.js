@@ -1,6 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel */
+removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel,
+popChangeConfModal */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -154,7 +155,7 @@ function stopListeningToImgPreview(elem) {
 function listenToImgPreview(elem) {
     stopListeningToImgPreview(elem);
     $(elem).on("error", () => imgPreviewError(elem,
-        "Unable to preview Image.  Please check the URL."));
+        `Unable to preview Image.<br>Please check the URL.`));
     $(elem).on("load", () => imgPreviewLoad(elem, $(elem).
             closest('.collapsible-body').
             width())
@@ -175,5 +176,17 @@ function listenToSubmitButton() {
         }
 
         $(quizForm).submit();
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToCancelUrl() {
+    $('#cancelUrl').on('click', (e) => {
+        e.preventDefault();
+        if ($('#editQuiz').length) {
+            popChangeConfModal('ce', e.currentTarget);
+            return;
+        }
+        popChangeConfModal('cn', e.currentTarget);
     });
 }
