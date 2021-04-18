@@ -613,7 +613,8 @@ function createCategoryArray(pyList) {
 function getCategory(catId) {
     let result = false;
     let record = categoryList.
-        find((category) => category.category.toLowerCase() === catId);
+        find((category) => category.
+            category.toLowerCase() === catId.toLowerCase());
 
     if (record) {
         result = {"category": record.category,
@@ -847,49 +848,54 @@ function imgPreviewLoad(elem, max) {
 function imgPreviewError(elem, errText) {
     $(elem).next().
         remove();
-    $(elem).removeClass('hidden');
-    $(elem).attr('alt', errText);
-    $(elem).attr('style', "padding: 10px; border: solid 1px black");
+    // $(elem).removeClass('hidden');
+    // $(elem).attr('alt', errText);
+    // $(elem).attr('style', "padding: 10px; border: solid 1px black");
+    $(elem).parent().
+        append(`<p>${errText}</p>`);
+    $(elem).next().
+        attr('style', "padding: 10px; border: solid 1px black");
 }
 
 let removeActionParams;
 
 // eslint-disable-next-line no-unused-vars
 function popChangeConfModal(type, elem) {
-    let title;
+    let title = 'Confirmation Required';
     let message;
     switch (type) {
     case 'mu':
-        title = 'Confirmation Required';
         message = 'If you disable multiple choice, all existing multiple ' +
-        'choice options for this question will be deleted.  Do you wish to ' +
-        'continue?';
+        'choice options for this question will be deleted.';
         break;
     case 'mc':
-        title = 'Confirmation Required';
         message = 'If you enable multiple choice, existing answer data for ' +
-        'this question will be deleted.  Do you wish to continue?';
+        'this question will be deleted.';
         break;
     case 'q':
-        title = 'Confirmation Required';
         message = 'Are you sure you wish to delete this question?';
         break;
     case 'r':
-        title = 'Confirmation Required';
         message = 'If you delete this round, all associated questions will ' +
-        'also be deleted.  Do you wish to continue?';
+        'also be deleted.';
         break;
     case 'd':
-        title = 'Confirmation Required';
         message = 'If you delete this quiz, all associated rounds and ' +
-        'questions will also be deleted.  Do you wish to continue?';
+        'questions will also be deleted.';
         break;
-    case 'c':
-        title = 'Confirmation Required';
-        message = 'All unsaved changes will be lost.  Do you wish to continue?';
+    case 'ce':
+        message = 'All unsaved changes will be lost.';
+        break;
+    case 'cn':
+        message = 'This quiz will not be created, and any content added to ' +
+        'this form will be lost.';
         break;
     default:
         return;
+    }
+
+    if (type !== 'q') {
+        message += '<br><br>Do you wish to continue?';
     }
     $('#modalTitle').html(title);
     $('#modalMessage').html(message);
@@ -917,7 +923,8 @@ function removeAction({type, elem}) {
     case 'd':
         deleteQuiz($(elem).attr('data-quizId'));
         break;
-    case 'c':
+    case 'ce':
+    case 'cn':
         window.location.href = $(elem).attr('href');
         break;
     default:
