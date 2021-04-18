@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global popChangeConfModal, setSelectValue, reinitSelectOnDisabled */
+/* global setSelectValue, reinitSelectOnDisabled */
 
 function listenToCollapsibleHeaders() {
     $('.collapsible-header').on('click', (e) => {
@@ -17,13 +17,6 @@ function listenToCollapsibleHeaders() {
                 $(imgUrl).trigger('focusout');
             }
         }
-    });
-}
-
-function listenToCancelEditUrl() {
-    $('#cancelEdit').on('click', (e) => {
-        e.preventDefault();
-        popChangeConfModal('c', e.currentTarget);
     });
 }
 
@@ -60,8 +53,6 @@ function setInitialSelectVals(initialVals) {
 }
 
 $(function () {
-    listenToCancelEditUrl();
     listenToCollapsibleHeaders();
-
     $('li.active li.active .img-url').trigger('focusout');
 });
