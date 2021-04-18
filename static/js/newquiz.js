@@ -4,7 +4,7 @@ listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
 stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
 listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue,
 listenToQuizTitle, listenToSubmitButton, listenToChangeConfModalButtons,
-popChangeConfModal, initChangeConfModal */
+popChangeConfModal, initChangeConfModal, listenToCancelUrl */
 
 function reinitSelectOnDisabled(elem) {
     $(elem).each((i, el) => {
@@ -309,6 +309,8 @@ $(function() {
     $('.collapsible').collapsible();
     $('select').formSelect();
     listenToChangeConfModalButtons();
+    listenToCancelUrl();
+    $('.tooltipped').tooltip();
     listenToCheckbox();
     listenToSelect();
     setSelectValue($('#quizCategory'), 'general knowledge');
