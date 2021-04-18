@@ -55,8 +55,8 @@ function listenToCopyQuiz() {
 }
 
 function resetQuizTitleInput() {
-    $('#quizTitle').attr('data-prev', '');
-    $('#quizTitle:hidden').
+    $('#modalQuizTitle').attr('data-prev', '');
+    $('#modalQuizTitle:hidden').
     val($('#quizOriginalTitle').html());
 }
 
@@ -64,6 +64,7 @@ $(function() {
     if ($('#dupTitleModal').length) {
         initDupTitleModal(resetQuizTitleInput);
         listenToCopyQuiz();
+        $('.tooltipped').tooltip();
     }
     $('.quiz-image').each((i, elem) => listenToQuizImg(elem));
 });
