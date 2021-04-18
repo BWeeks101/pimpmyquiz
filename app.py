@@ -1284,6 +1284,19 @@ def createQuiz(author_id):
     return quiz_id
 
 
+def generateCancelUrl(cancel_url):
+    if cancel_url is None:
+        cancel_url = request.referrer
+    if cancel_url is not None and cancel_url.find('quiz_search') > -1:
+        cancel_url = url_for('quiz_search')
+    elif cancel_url is not None and cancel_url.find('admin_users') > -1:
+        cancel_url = url_for('admin_users')
+    else:
+        cancel_url = url_for('my_quizzes')
+
+    return cancel_url
+
+
 # Copy Quiz for Current User
 @app.route("/copy_quiz")
 def copyQuiz():
@@ -1647,12 +1660,10 @@ def displayQuiz():
                                 )
 
                 flash("Quiz Saved")
-                cancel_edit = request.form.get('cancel_edit')
-                if cancel_edit is None:
-                    return redirect(request.referrer)
+                cancel_url = generateCancelUrl(request.form.get('cancel_url'))
 
                 return redirect(request.referrer +
-                                '&cancel_edit=' + cancel_edit)
+                                '&cancel_url=' + cancel_url)
 
             params['show_answers'] = True
 
@@ -1660,17 +1671,12 @@ def displayQuiz():
 
             category_data = getCategories()
 
-            cancel_edit = request.args.get('cancel_edit')
-            if cancel_edit is None:
-                cancel_edit = request.referrer
-            if cancel_edit is not None and cancel_edit.find('quiz_search') > 1:
-                cancel_edit = url_for('quiz_search')
-            else:
-                cancel_edit = url_for('my_quizzes')
+            cancel_url = generateCancelUrl(request.args.get('cancel_url'))
+
             return render_template("edit_quiz.html",
                                    quiz=quiz,
                                    quiz_categories=category_data,
-                                   cancel_edit=cancel_edit)
+                                   cancel_url=cancel_url)
 
         # If not authorised or author
         print(auth_state['auth'])
@@ -2074,10 +2080,18 @@ def new_quiz():
             quiz_id = createQuiz(auth_state['id'])
 
             flash('Quiz Created')
-            return redirect(url_for('edit_quiz', id=quiz_id))
+            cancel_url = generateCancelUrl(request.form.get('cancel_url'))
+            return redirect(url_for('edit_quiz',
+                                    id=quiz_id,
+                                    cancel_url=cancel_url))
 
         category_data = getCategories()
-        return render_template("new_quiz.html", quiz_categories=category_data)
+
+        cancel_url = generateCancelUrl(request.args.get('cancel_url'))
+
+        return render_template("new_quiz.html",
+                               quiz_categories=category_data,
+                               cancel_url=cancel_url)
 
     return redirect(url_for("login"))
 
