@@ -133,8 +133,8 @@ function initEmbeddedSearchResultControls() {
 }
 
 function resetQuizTitleInput() {
-    $('#quizTitle').attr('data-prev', '');
-    $('#quizTitle:hidden').val('');
+    $('#modalQuizTitle').attr('data-prev', '');
+    $('#modalQuizTitle:hidden').val('');
     $('#modalSubmitButton').attr('data-quizId', '');
     listenToCopyQuizLinks();
 }
