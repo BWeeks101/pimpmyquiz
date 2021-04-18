@@ -47,8 +47,8 @@ img.small {
 
     /* Images */
     img {
-        max-width: 340px;
-        max-height: 340px;
+        max-width: 274px;
+        max-height: 274px;
     }
 
     img.small {
@@ -205,8 +205,24 @@ img.small {
     /* modal */
     .modal {
         width: 95%;
+        min-width: 342px !important;
         max-height: 90%;
     }
+}
+
+.modal-action-container {
+    font-size: 0;
+}
+
+#modalYesButton,
+#modalNoButton {
+    width: 77px;
+    padding: 0 0.75rem;
+}
+
+#modalYesButton {
+    margin-right: 4px !important;
+    margin-left: calc(100% - 158px) !important;
 }
 
 .text-shadow {
@@ -677,6 +693,10 @@ form .user-search .search-radio-row {
     margin-top: 42px;
 }
 
+#titleRow>.col {
+    padding: 0;
+}
+
 /* Fix #quizTitle label to width of parent div.input-field elem */
 /* Prevents errors with select boxes at small resolutions */
 #quizTitle ~ label {
@@ -729,4 +749,11 @@ form .user-search .search-radio-row {
        page-break-after: avoid;
    }
 
+}
+
+/* Disable Transition/Transform on custom MaterializeCSS Select Box */
+/* Works around MaterializeCSS issue #6464 */
+.select-wrapper * {
+    transition: none !important;
+    transform: none !important;
 }
