@@ -310,7 +310,6 @@ $(function() {
     $('select').formSelect();
     listenToChangeConfModalButtons();
     listenToCancelUrl();
-    $('.tooltipped').tooltip();
     listenToCheckbox();
     listenToSelect();
     setSelectValue($('#quizCategory'), 'general knowledge');
