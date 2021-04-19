@@ -275,7 +275,6 @@ function userSearchCreateListeners() {
 $(function() {
     $('.collapsible').collapsible();
     $('select').formSelect();
-    $('.tooltipped').tooltip();
     $('.modal').modal();
     listenToUserRoleCollapsibleHeaders();
     listenToUserSearchCollapsibleHeaders();
