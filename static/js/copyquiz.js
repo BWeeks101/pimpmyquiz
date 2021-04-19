@@ -6,7 +6,7 @@
 function copyQuiz() {
     let url = '/copy_quiz?id=' +
     $('#modalSubmitButton').attr('data-quizId') +
-    '&title=' + $('#quizTitle').val();
+    '&title=' + $('#modalQuizTitle').val();
     window.location.href = url;
 }
 
