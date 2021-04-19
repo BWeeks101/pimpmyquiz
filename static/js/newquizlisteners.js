@@ -1,7 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
 removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel,
-popChangeConfModal */
+popChangeConfModal, closeToolTip */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -51,11 +51,13 @@ function stopListeningToRControls() {
 function listenToRControls() {
     $('.rcontrols-remove').on("click", (e) => {
         e.stopPropagation();
+        closeToolTip(e.currentTarget);
         removeRound(e.currentTarget);
     });
 
     $('.rcontrols-add').on("click", (e) => {
         e.stopPropagation();
+        closeToolTip(e.currentTarget);
         addRound(e.currentTarget);
     });
 }
@@ -70,11 +72,13 @@ function stopListeningToQControls() {
 function listenToQControls() {
     $('.qcontrols-remove').on("click", (e) => {
         e.stopPropagation();
+        closeToolTip(e.currentTarget);
         removeQ(e.currentTarget);
     });
 
     $('.qcontrols-add').on("click", (e) => {
         e.stopPropagation();
+        closeToolTip(e.currentTarget);
         addQ(e.currentTarget);
     });
 }
@@ -90,9 +94,15 @@ function stopListeningToMultiControls() {
 // eslint-disable-next-line no-unused-vars
 function listenToMultiControls() {
     $('a.multi-control-remove').
-        on("click", (e) => removeMulti(e.currentTarget));
+        on("click", (e) => {
+            closeToolTip(e.currentTarget);
+            removeMulti(e.currentTarget);
+        });
     $('a.multi-control-add').
-        on("click", (e) => addMulti(e.currentTarget));
+        on("click", (e) => {
+            closeToolTip(e.currentTarget);
+            addMulti(e.currentTarget);
+        });
 }
 
 // eslint-disable-next-line no-unused-vars
