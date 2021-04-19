@@ -703,26 +703,32 @@ function quizTitleValidate(invalid, valid) {
         return;
     }
     titleValidationInProgress = true;
+
+    let elemId = '#quizTitle';
+    if ($('.quiz-search').length) {
+        elemId = '#modalQuizTitle';
+    }
+
     const setQuizTitleLabel = (dataAttr) => {
 
-        if (!$('#quizTitle ~ label').attr(`data-${dataAttr}`)) {
+        if (!$(`${elemId} ~ label`).attr(`data-${dataAttr}`)) {
             console.log(`Error: data attr (data-${dataAttr}) does not exist`);
             return;
         }
 
         const setValidationClass = (valid) => {
             if (!valid) {
-                $('#quizTitle').removeClass("valid");
-                $('#quizTitle').addClass("invalid");
+                $(elemId).removeClass("valid");
+                $(elemId).addClass("invalid");
                 return;
             }
-            $('#quizTitle').removeClass("invalid");
-            $('#quizTitle').addClass("valid");
+            $(elemId).removeClass("invalid");
+            $(elemId).addClass("valid");
         };
 
         const updLabelText = () => {
-            $('#quizTitle ~ label').
-                html($('#quizTitle ~ label').
+            $(`${elemId} ~ label`).
+                html($(`${elemId} ~ label`).
                     data(dataAttr));
         };
 
@@ -752,7 +758,7 @@ function quizTitleValidate(invalid, valid) {
         }
     };
 
-    let quizTitle = $('#quizTitle').val().
+    let quizTitle = $(elemId).val().
         trim();
     if (quizTitle.length < 5 || quizTitle.length > 100) {
         setQuizTitleLabel('error');
@@ -770,8 +776,8 @@ function quizTitleValidate(invalid, valid) {
             quizTitle
         }
     };
-    if ($('#quizTitle').attr('data-id')) {
-        request.params.id = $('#quizTitle').attr('data-id');
+    if ($(elemId).attr('data-id')) {
+        request.params.id = $(elemId).attr('data-id');
     }
     let xhttp = xHttpRequest(request);
     xhttp.onreadystatechange = () => {
@@ -797,7 +803,7 @@ function quizTitleValidate(invalid, valid) {
 
 // eslint-disable-next-line no-unused-vars
 function listenToQuizTitle() {
-    $('#quizTitle').on("focusout keyup input", (e) => {
+    $('#quizTitle, #modalQuizTitle').on("focusout keyup input", (e) => {
         if ((e.type === 'keyup' && e.key !== 'Enter') || (e.type === 'input')) {
             setTimeout(function() {
                 quizTitleValidate();
@@ -974,7 +980,22 @@ function listenToChangeConfModalButtons() {
     });
 }
 
+function closeToolTip(elem) {
+    let instance = M.Tooltip.getInstance(elem);
+    if (instance !== undefined) {
+        instance.close();
+    }
+}
+
+function listenToATags() {
+    $('a').on('click', (e) => {
+        closeToolTip(e.currentTarget);
+    });
+}
+
 //document ready
 $(function() {
     $('.sidenav').sidenav({edge: "right"});
+    listenToATags();
+    $('.tooltipped').tooltip();
 });
