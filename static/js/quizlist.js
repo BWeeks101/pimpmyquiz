@@ -1,26 +1,28 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global copyQuizListener, addRecordPositions, inputHelperLabel, xHttpRequest,
 setSelectValue, initDupTitleModal, popChangeConfModal, initChangeConfModal,
-listenToChangeConfModalButtons, observeResults */
+listenToChangeConfModalButtons, observeResults, closeToolTip */
 
 // eslint-disable-next-line no-unused-vars
 function deleteQuiz(quizId) {
     open(`/delete_quiz?&id=${quizId}`, '_self');
 }
 
-function stopListeningToDelLinks() {
-    $('.del-quiz').off('click');
+function stopListeningToResultsATags() {
+    $('.results-data a').off('click');
 }
 
-function stopListeningToCopyQuizLinks() {
-    $('.copy-quiz').off('click');
+function listenToResultsATags() {
+    stopListeningToResultsATags();
+    $('.results-data a').on('click', (e) => {
+        closeToolTip(e.currentTarget);
+    });
 }
 
 function listenToCopyQuizLinks() {
-    stopListeningToCopyQuizLinks();
     $('.copy-quiz').on("click", (e) => {
         let self = e.currentTarget;
-        $('#quizTitle').val($(self).closest('li').
+        $('#modalQuizTitle').val($(self).closest('li').
             find('.quiz-title').
             html());
 
@@ -32,7 +34,6 @@ function listenToCopyQuizLinks() {
 }
 
 function listenToDelLinks() {
-    stopListeningToDelLinks();
     $('.del-quiz').on('click', (e) => {
         e.stopPropagation();
         popChangeConfModal('d', e.currentTarget);
@@ -76,7 +77,7 @@ function quizSearchCreateListeners() {
                 nextAll('.search-action-container').
                 children('button[data-type="global"]').
                 attr('data-type');
-            stopListeningToDelLinks();
+            stopListeningToResultsATags();
             if (isGlobal) {
                 getQuizSearchResults(true);
             } else {
@@ -87,7 +88,7 @@ function quizSearchCreateListeners() {
 
     $("#searchButton").on("click", (e) => {
         let isGlobal = $(e.currentTarget).attr('data-type');
-        stopListeningToDelLinks();
+        stopListeningToResultsATags();
         if (isGlobal) {
             getQuizSearchResults(true);
         } else {
@@ -127,12 +128,13 @@ function getInitialQuizList() {
 }
 
 function initEmbeddedSearchResultControls() {
+    listenToResultsATags();
     listenToCopyQuizLinks();
     listenToDelLinks();
-    $('.tooltipped').tooltip();
+    $('.results-data .tooltipped').tooltip();
 }
 
-function resetQuizTitleInput() {
+function resetModalQuizTitleInput() {
     $('#modalQuizTitle').attr('data-prev', '');
     $('#modalQuizTitle:hidden').val('');
     $('#modalSubmitButton').attr('data-quizId', '');
@@ -144,7 +146,7 @@ $(function() {
     getInitialQuizList();
     quizSearchCreateListeners();
     listenToSelect();
-    initDupTitleModal(resetQuizTitleInput);
+    initDupTitleModal(resetModalQuizTitleInput);
     initChangeConfModal();
     listenToChangeConfModalButtons();
     observeResults($('#quizSearchResults')[0],
