@@ -692,8 +692,10 @@ def buildQuizHtml(quiz_data, user_role):
             baseClass = 'class="' + textClass + 'tooltipped'
             secUrlClass = baseClass + '" '
             secTipQuiz = tTip + '"Quiz Sheet" '
-            secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '"'
-            secQuizSheet = secUrlClass + secTipQuiz + secHrefQuiz
+            secHrefQuiz = 'href="/quiz_sheet?&id=' + quiz['id'] + '" '
+            secTargetQuiz = 'target="_blank"'
+            secQuizSheet = secUrlClass + secTipQuiz
+            secQuizSheet += secHrefQuiz + secTargetQuiz
             secTipView = tTip + '"View Quiz" '
             secHrefView = 'href="/view_quiz?&id=' + quiz['id'] + '"'
             secViewQuiz = secUrlClass + secTipView + secHrefView
