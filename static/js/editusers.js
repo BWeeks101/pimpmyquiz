@@ -1,12 +1,12 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global modalChangePasswordCollapsible, M, pWordValidation,
-inputHelperLabel, getRole, getUser, addRecordPositions, xHttpRequest,
-getCurrentRecord, getRecordPosition, observeResults */
+setInputLabel, getRole, getUser, addRecordPositions, xHttpRequest,
+getCurrentRecord, getRecordPosition, observeResults, closeToolTip,
+modalPwdHelperCollapsible */
 
 function modalPWordValidation(checkBox, pWordInput, pWordConfInput) {
-    checkBox = "#" + checkBox;
     let result = false;
-    if ($(checkBox).is(":checked")) {
+    if ($(`#${checkBox}`).is(":checked")) {
         result = pWordValidation(pWordInput, pWordConfInput);
     }
     return result;
@@ -22,30 +22,49 @@ function modalUserLockedToggleIcon () {
             addClass("fa-unlock light-blue-text");
 }
 
-function modalChangePasswordToggle () {
-    let changePasswordCollapsible = M.Collapsible.
-            getInstance(modalChangePasswordCollapsible);
-    if ($("#modalChangePasswordInput").is(":checked")) {
-        $("#modalUserPwd").prop("disabled", false);
-        $("#modalUserCpwd").prop("disabled", false);
-        changePasswordCollapsible.open();
-        return;
-    }
-    $("#modalUserPwd").prop("disabled", true);
-    $("#modalUserCpwd").prop("disabled", true);
-    changePasswordCollapsible.close();
+function modalChangePasswordExpand() {
+    $("#modalUserPwd").prop("disabled", false);
+    $("#modalUserCpwd").prop("disabled", false);
+    M.Collapsible.
+            getInstance(modalChangePasswordCollapsible).
+                open();
+    setTimeout(() => {
+        $('#editUserModal')[0].scrollTo({
+            top: $('#editUserModal')[0].scrollHeight,
+            behavior: 'smooth'
+        });
+    }, 300);
 }
 
-function modalStopListeners() {
-    $("#modalUserId").off("focusout");
-    $("#modalUserEmail").off("focusout");
-    $(".select-wrapper ul li.optgroup span div.subopt").off("click");
-    $("#modalUserLockedInput").off("change");
-    $("#modalChangePasswordInput").off("change");
-    $("#modalUserPwd").off("focusout");
-    $("#modalUserPwd").off("keyup");
-    $("#modalUserCpwd").off("keyup");
-    $("#modalSubmitButton").off("click");
+function modalChangePasswordCollapse() {
+    if ($("#modalChangePasswordInput").is(":checked")) {
+        $("#modalChangePasswordInput").prop('checked', '');
+    }
+    M.Collapsible.
+            getInstance(modalChangePasswordCollapsible).
+                close();
+    $("#modalUserPwd").prop("disabled", true).
+        val('').
+            removeClass('valid').
+                removeClass('invalid');
+    setInputLabel("modalUserPwd");
+    $("#modalUserCpwd").prop("disabled", true).
+        val('').
+            removeClass('valid').
+                removeClass('invalid');
+    setInputLabel("modalUserCpwd");
+    M.updateTextFields();
+    M.Collapsible.
+        getInstance(modalPwdHelperCollapsible).
+            close();
+}
+
+function modalChangePasswordToggle () {
+    if ($("#modalChangePasswordInput").is(":checked")) {
+        modalChangePasswordExpand();
+        return;
+    }
+    modalChangePasswordCollapse();
 }
 
 function modalValidate() {
@@ -53,7 +72,6 @@ function modalValidate() {
                                      "modalUserPwd",
                                      "modalUserCpwd");
     if (valid === true) {
-        modalStopListeners();
         return true;
     }
 
@@ -75,7 +93,6 @@ function modalValidate() {
     }
 
     if (match === false) {
-        modalStopListeners();
         return true;
     }
 
@@ -98,38 +115,21 @@ function modalClearUserRoleIcon() {
 }
 
 function modalCreateListeners() {
-    $("#modalUserId").on("focusout", () => inputHelperLabel("modalUserId"));
-
-    $("#modalUserEmail").
-        on("focusout", () => inputHelperLabel("modalUserEmail"));
-
     //modal user role select box
     $(".select-wrapper ul li.optgroup span div.subopt").on("click", (e) => {
         modalClearUserRoleIcon();
-        e.currentTarget.parentElement.parentElement.
-            nextElementSibling.firstElementChild.click();
+        $(e.currentTarget).parent().
+            parent().
+                next().
+                    find(':first-child').
+                        click();
         modalSetUserRoleIcon();
     });
 
     $("#modalUserLockedInput").on("change", () => modalUserLockedToggleIcon());
 
     $("#modalChangePasswordInput").
-    on("change", () => modalChangePasswordToggle());
-
-    $("#modalUserPwd").on("focusout", () => {
-        pWordValidation("modalUserPwd", "modalUserCpwd");
-        inputHelperLabel("modalUserPwd");
-    });
-
-    $("#modalUserPwd").on("keyup", () => {
-        pWordValidation("modalUserPwd", "modalUserCpwd");
-        inputHelperLabel("modalUserPwd");
-    });
-
-    $("#modalUserCpwd").on("keyup", () => {
-        pWordValidation("modalUserPwd", "modalUserCpwd");
-        inputHelperLabel("modalUserCpwd");
-    });
+        on("change", () => modalChangePasswordToggle());
 
     $('#modalSubmitButton').on("click", (e) => {
         e.preventDefault();
@@ -176,11 +176,14 @@ function popEditUserModal(userId) {
     $('#modalUserId').val(user.user_id);
     $('#modalUserId ~ label').addClass("active");
     modalSetInitialUserRoleSelectValue(user.role);
-
-    modalCreateListeners();
+    modalChangePasswordCollapse();
 }
 
-function getUserSearchResults(value) {
+function getUserSearchResults() {
+    let value = $('#userSearch').val();
+    if (value === "" || value === undefined || value.length < 1) {
+        value = '*';
+    }
     let request = {
         'type':
             'userSearch',
@@ -200,11 +203,14 @@ function listenToUserRoleCollapsibleHeaders() {
     $(".collapsible-user-roles .collapsible-header[data-role]").
         on("click", (e) => {
             let self = e.currentTarget;
-            let selector = ".collapsible .results-data";
-            let target = self.nextElementSibling.querySelector(selector);
+            let target = $(self).next().
+                find('.collapsible .results-data')[0];
+            $(target).find('.modal-trigger').
+                off('click');
             let key;
-            if (!self.parentElement.classList.contains("active")) {
-                key = {'role': self.getAttribute("data-role")};
+            if (!$(self).parent().
+                    hasClass('active')) {
+                key = {'role': $(self).attr('data-role')};
                 getCurrentRecord(target, key);
             }
         });
@@ -213,12 +219,15 @@ function listenToUserRoleCollapsibleHeaders() {
 function listenToUserSearchCollapsibleHeaders() {
     $(".collapsible-search .collapsible-header").on("click", (e) => {
         let self = e.currentTarget;
-        let selector = ".collapsible .results-data";
-        let target = self.nextElementSibling.querySelector(selector);
+        let target = $(self).next().
+                find('.collapsible .results-data')[0];
+        $(target).find('.modal-trigger').
+                off('click');
         let key = {'userSearch': getRecordPosition({'userSearch': ''}).
                         userSearch};
         if (key.userSearch) {
-            if (!self.parentElement.classList.contains("active")) {
+            if (!$(self).parent().
+                    hasClass('active')) {
                 getCurrentRecord(target, key);
             }
         }
@@ -229,6 +238,13 @@ function initResultObservers() {
     const observerAction = (elem) => {
         $(elem).find('.tooltipped').
             tooltip();
+
+        $(elem).find('.modal-trigger').
+            off('click').
+            on('click', (e) => {
+                closeToolTip(e.currentTarget);
+                popEditUserModal($(e.currentTarget).attr('data-user'));
+            });
     };
 
     $('.results-data').each((i, elem) => {
@@ -239,43 +255,21 @@ function initResultObservers() {
 }
 
 function userSearchCreateListeners() {
-    const validateUserSearchInput = () => {
-        let value = $('#userSearch').val();
-        if (value === "" || value === undefined || value.length < 1) {
-            $('#userSearch').removeClass('valid');
-            $('#userSearch').addClass('invalid');
-            inputHelperLabel("userSearch");
-            return false;
-        }
-        $('#userSearch').removeClass('invalid');
-        $('#userSearch').addClass('valid');
-        inputHelperLabel("userSearch");
-        return value;
-    };
-
-    $("#userSearch").
-        on("focusout", () => validateUserSearchInput());
-
     $("#userSearch").on("keyup", (e) => {
-        let value = validateUserSearchInput();
-        if (value !== false && e.key === "Enter") {
-            getUserSearchResults(value);
+        if (e.key === "Enter") {
+            getUserSearchResults();
         }
     });
 
-    $("#searchButton").
-        on("click", () => {
-            let value = validateUserSearchInput();
-            if (value !== false) {
-                getUserSearchResults(value);
-            }
-        });
+    $("#searchButton").on("click", () => {
+        getUserSearchResults();
+    });
 }
 
 $(function() {
-    $('.collapsible').collapsible();
     $('select').formSelect();
     $('.modal').modal();
+    modalCreateListeners();
     listenToUserRoleCollapsibleHeaders();
     listenToUserSearchCollapsibleHeaders();
     userSearchCreateListeners();
