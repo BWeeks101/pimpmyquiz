@@ -133,6 +133,7 @@
     <script>
         $(function() {
           loadImg({{ viewQuiz.rounds | tojson }});
+          $('#modalSubmitButton').attr('data-quizId', '{{ viewQuiz._id }}');
         });
     </script>
 {% endblock %}
