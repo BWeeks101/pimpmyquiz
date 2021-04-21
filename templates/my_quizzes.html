@@ -7,8 +7,8 @@
         <div class="row">
             <div class="input-field col s12">
                 <i class="fas fa-search prefix light-blue-text text-darken-4"></i>
-                <input id="quizSearch" name="quizSearch" type="text" minlength="1" value="" class="validate">
-                <label class="truncate" for="quizSearch" data-error="Please Enter at least 1 Character." data-default="Search My Quizzes">Search My Quizzes</label>
+                <input id="quizSearch" name="quizSearch" type="text" minlength="1" value="">
+                <label class="truncate" for="quizSearch" data-error="Please Enter Search Criteria." data-default="Search My Quizzes">Search My Quizzes</label>
             </div>
         </div>
         <div class="row">
@@ -37,13 +37,13 @@
     </div>
     <div id="quizCollection" class="container">
         <div class="results-control hidden">
-            <a href="#" class="results-control-first"><i class="fas fa-angle-double-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="First"></i></a>
-            <a href="#" class="results-control-prev"><i class="fas fa-angle-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Previous"></i></a>
+            <a href="#" class="results-control-first tooltipped" data-position="bottom" data-tooltip="First"><i class="fas fa-angle-double-left fa-fw light-blue-text text-darken-4"></i></a>
+            <a href="#" class="results-control-prev tooltipped" data-position="bottom" data-tooltip="Previous"><i class="fas fa-angle-left fa-fw light-blue-text text-darken-4"></i></a>
             <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
             <span class="light-blue-text text-darken-4">of</span>
             <span class="totalPages light-blue-text text-darken-4"></span>
-            <a href="#" class="results-control-next"><i class="fas fa-angle-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Next"></i></a>
-            <a href="#" class="results-control-last"><i class="fas fa-angle-double-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Last"></i></a>
+            <a href="#" class="results-control-next tooltipped" data-position="bottom" data-tooltip="Next"><i class="fas fa-angle-right fa-fw light-blue-text text-darken-4"></i></a>
+            <a href="#" class="results-control-last tooltipped" data-position="bottom" data-tooltip="Last"><i class="fas fa-angle-double-right fa-fw light-blue-text text-darken-4"></i></a>
         </div>
         <div id="quizSearchResults" class="results-data">
             <!--returned records go here-->
