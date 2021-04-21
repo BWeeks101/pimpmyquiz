@@ -15,6 +15,16 @@
                 </div>
                 <!-- username -->
                 <div class="row">
+                    <ul id="modalUIdHelperCollapsible" class="collapsible helper-collapsible col s12">
+                        <li>
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    A valid Username is 5-15 characters in length, consisting of numbers, lower/upper case letters.
+                                </blockquote>
+                            </div>
+                        </li>
+                    </ul>
                     <div class="input-field col s12">
                         <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
                         <input id="modalUserId" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" value="" required>
@@ -24,6 +34,16 @@
                 </div>
                 <!-- email -->
                 <div class="row">
+                    <ul id="modalEmailHelperCollapsible" class="collapsible helper-collapsible col s12">
+                        <li>
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    Please enter a valid email address.
+                                </blockquote>
+                            </div>
+                        </li>
+                    </ul>
                     <div class="input-field col s12">
                         <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
                         <input id="modalUserEmail" name="email" type="email" class="validate" value="" required>
@@ -72,16 +92,24 @@
                         <div class="collapsible-header"></div>
                         <div class="collapsible-body">
                             <!-- password -->
-                            <div id="modalUserPwdRow" class="row">
-                                <div class="input-field col s12">
+                            <div class="row password-container">
+                                <ul id="modalPwdHelperCollapsible" class="collapsible helper-collapsible col s12">
+                                    <li>
+                                        <div class="collapsible-header"></div>
+                                        <div class="collapsible-body">
+                                            <blockquote class="black-text">
+                                                A valid password is 5-15 characters in length, consisting of numbers, lower/upper case letters.
+                                            </blockquote>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="input-field password col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
                                     <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" disabled="true" required>
                                     <label for="modalUserPwd" data-error="Invalid Password." data-default="Password">Password</label>
                                 </div>
-                            </div>
-                            <!-- password confirmation -->
-                            <div id="modalUserCpwdRow" class="row">
-                                <div class="input-field col s12">
+                                <!-- password confirmation -->
+                                <div class="input-field compare-password col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
                                     <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
                                     <label for="modalUserCpwd" data-error="" data-default="Password Confirmation">Password Confirmation</label>
@@ -114,8 +142,8 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <i class="fas fa-user prefix light-blue-text text-darken-4"></i>
-                                    <input id="userSearch" name="userSearch" type="text" minlength="1" value="" class="">
-                                    <label class="truncate" for="userSearch" data-error="Please Enter Search Criteria" data-default="User Search">User Search</label>
+                                    <input id="userSearch" name="userSearch" type="text" minlength="1" value="">
+                                    <label class="truncate" for="userSearch" data-error="Please Enter Search Criteria." data-default="User Search">User Search</label>
                                 </div>
                             </div>
                             <!-- search button -->
@@ -126,13 +154,13 @@
                             </div>
                             <ul class="collapsible">
                                 <div class="results-control hidden">
-                                    <a href="#" class="results-control-first"><i class="fas fa-angle-double-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="First"></i></a>
-                                    <a href="#" class="results-control-prev"><i class="fas fa-angle-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Previous"></i></a>
+                                    <a href="#" class="results-control-first tooltipped" data-position="bottom" data-tooltip="First"><i class="fas fa-angle-double-left fa-fw light-blue-text text-darken-4"></i></a>
+                                    <a href="#" class="results-control-prev tooltipped" data-position="bottom" data-tooltip="Previous"><i class="fas fa-angle-left fa-fw light-blue-text text-darken-4"></i></a>
                                     <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
                                     <span class="light-blue-text text-darken-4">of</span>
                                     <span class="totalPages light-blue-text text-darken-4"></span>
-                                    <a href="#" class="results-control-next"><i class="fas fa-angle-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Next"></i></a>
-                                    <a href="#" class="results-control-last"><i class="fas fa-angle-double-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Last"></i></a>
+                                    <a href="#" class="results-control-next tooltipped" data-position="bottom" data-tooltip="Next"><i class="fas fa-angle-right fa-fw light-blue-text text-darken-4"></i></a>
+                                    <a href="#" class="results-control-last tooltipped" data-position="bottom" data-tooltip="Last"><i class="fas fa-angle-double-right fa-fw light-blue-text text-darken-4"></i></a>
                                 </div>
                                 <div id="userSearchResults" class="results-data">
                                     <!--returned records go here-->
@@ -170,13 +198,13 @@
                                         <div class="collapsible-body">
                                             <ul class="collapsible">
                                                 <div class="results-control hidden">
-                                                    <a href="#" class="results-control-first"><i class="fas fa-angle-double-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="First"></i></a>
-                                                    <a href="#" class="results-control-prev"><i class="fas fa-angle-left fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Previous"></i></a>
+                                                    <a href="#" class="results-control-first tooltipped" data-position="bottom" data-tooltip="First"><i class="fas fa-angle-double-left fa-fw light-blue-text text-darken-4"></i></a>
+                                                    <a href="#" class="results-control-prev tooltipped" data-position="bottom" data-tooltip="Previous"><i class="fas fa-angle-left fa-fw light-blue-text text-darken-4"></i></a>
                                                     <input class="pageNumber browser-default" name="pageNumber" type="text" minlength="1" maxlength="4" pattern="^[0-9]{1,4}$" value="1">
                                                     <span class="light-blue-text text-darken-4">of</span>
                                                     <span class="totalPages light-blue-text text-darken-4"></span>
-                                                    <a href="#" class="results-control-next"><i class="fas fa-angle-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Next"></i></a>
-                                                    <a href="#" class="results-control-last"><i class="fas fa-angle-double-right fa-fw tooltipped light-blue-text text-darken-4" data-position="bottom" data-tooltip="Last"></i></a>
+                                                    <a href="#" class="results-control-next tooltipped" data-position="bottom" data-tooltip="Next"><i class="fas fa-angle-right fa-fw light-blue-text text-darken-4"></i></a>
+                                                    <a href="#" class="results-control-last tooltipped" data-position="bottom" data-tooltip="Last"><i class="fas fa-angle-double-right fa-fw light-blue-text text-darken-4"></i></a>
                                                 </div>
                                                 <div class="results-data">
                                                     <!--returned records go here-->
