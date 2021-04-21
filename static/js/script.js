@@ -16,34 +16,33 @@ removeQAction, removeRoundAction, deleteQuiz */
 /* DO: */
 /*      assign the 'required' attribute to the password confirmation input */
 /* Call on: */
-/*      password input focusout */
-/*      password input keyup */
-/*      password confirmation input keyup */
+/*      password input elem input event */
+/*      password confirmation input elem input event */
 /*      form submission */
 /* Requires: */
 /*      pWordInput: Element Id of Password Input Element */
 /*      pWordConfInput: Element Id of Password Confirmation Input Element */
-/*      NB: pWordConfInput requires an immediate next sibling label element */
+/*      NB: pWordConfInput requires a label element */
 // eslint-disable-next-line no-unused-vars
 function pWordValidation(pWordInput, pWordConfInput) {
     pWordInput = "#" + pWordInput;
+    let pWordConfLabel = `label[for="${pWordConfInput}"]`;
     pWordConfInput = "#" + pWordConfInput;
-    let pWordConfHelper = pWordConfInput + "~ label";
-    let hlptxt = "Passwords do not match.";
+    let labelText = "Passwords do not match.";
     if (($(pWordInput).val() !== $(pWordConfInput).val()) ||
-        $(pWordInput).hasClass("invalid") ||
-        $(pWordInput).val().length === 0) {
+            $(pWordInput).hasClass("invalid") ||
+                $(pWordInput).val().length === 0) {
         $(pWordConfInput).removeClass("valid").
-        addClass("invalid");
+            addClass("invalid");
         if ($(pWordInput).hasClass("invalid") ||
-            $(pWordInput).val().length === 0) {
-            hlptxt = "Invalid Password.";
+                $(pWordInput).val().length === 0) {
+            labelText = "Invalid Password.";
         }
-        $(pWordConfHelper).attr("data-error", hlptxt);
+        $(pWordConfLabel).attr("data-error", labelText);
         return false;
     }
     $(pWordConfInput).removeClass("invalid").
-    addClass("valid");
+        addClass("valid");
     return true;
 }
 
@@ -391,6 +390,19 @@ function returnHtml(params) {
                         <span class="title col xl12 hide-on-large-and-down">
                             Choose a Category and Provide a Title for this Round
                         </span>
+                        <ul id="roundTitleHelperCollapsibleXl_${rId}" ` +
+                            `class="collapsible helper-collapsible col ` +
+                            `hide-on-large-and-down">
+                            <li>
+                                <div class="collapsible-header"></div>
+                                <div class="collapsible-body">
+                                    <blockquote class="black-text">
+                                        Round titles must be 5-100 ` +
+                                        `characters in length.
+                                    </blockquote>
+                                </div>
+                            </li>
+                        </ul>
                         <!-- Round Category -->
                         <span class="title col s12 hide-on-extra-large-only">
                             Choose a Category for this Round
@@ -424,15 +436,31 @@ function returnHtml(params) {
                         <span class="title col s12 hide-on-extra-large-only">
                             Provide a Title for this Round
                         </span>
-                        <div class="input-field col s12 xl7 ">
-                            <input id="roundTitle_${rId}" ` +
-                                `name="round_title_${rId}" type="text" ` +
-                                `minlength="5" maxlength="100" ` +
-                                `class="validate" ` +
-                                `value="Round ${rId}" required>
-                            <label for="roundTitle_${rId}" ` +
-                                `data-error="Invalid Round Title" ` +
-                                `data-default="Round Title">Round Title</label>
+                        <div class="col s12 xl7">
+                            <ul id="roundTitleHelperCollapsible_${rId}" ` +
+                            `class="collapsible helper-collapsible ` +
+                            `hide-on-extra-large-only">
+                                <li>
+                                    <div class="collapsible-header"></div>
+                                    <div class="collapsible-body">
+                                        <blockquote class="black-text">
+                                            Quiz titles must be 5-100 ` +
+                                            `characters in length.
+                                        </blockquote>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="input-field">
+                                <input id="roundTitle_${rId}" ` +
+                                    `name="round_title_${rId}" type="text" ` +
+                                    `minlength="5" maxlength="100" ` +
+                                    `class="validate" ` +
+                                    `value="Round ${rId}" required>
+                                <label for="roundTitle_${rId}" ` +
+                                    `data-error="Invalid Round Title" ` +
+                                    `data-default="Round Title">Round Title` +
+                                    `</label>
+                            </div>
                         </div>
                         <span class="title col s12">
                             Create Questions for this Round
@@ -652,13 +680,12 @@ function addObserver(elem, func) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function inputHelperLabel (elem) {
-    elem = "#" + elem;
-    let label = `${elem} ~ label`;
-    let labelText = $(label).data("default");
+function setInputLabel(elemId) {
+    let label = `label[for="${elemId}"]`;
+    let labelText = $(label).attr("data-default");
     let labelColor = '';
-    if ($(elem).hasClass('invalid')) {
-        labelText = $(label).data("error");
+    if ($(`#${elemId}`).hasClass('invalid')) {
+        labelText = $(label).attr("data-error");
         labelColor = "#F44336";
     }
     $(label).html(labelText).
@@ -695,19 +722,73 @@ function setSelectValue(elem, value) {
     });
 }
 
-let titleValidationInProgress = false;
+let validationInProgress = {};
 
-// eslint-disable-next-line no-unused-vars
-function quizTitleValidate(invalid, valid) {
-    if (titleValidationInProgress) {
+function getInputHelper(elem) {
+    let helper;
+    let helperXl;
+    let collapsible = false;
+    let exists = $(elem).closest('.input-field').
+        prev();
+    let existsXl;
+    if ($('#createQuiz').length || $('#editQuiz').length) {
+        if ($(exists).length) {
+            helper = $(exists)[0];
+            existsXl = $(elem).closest('.row').
+                find('.helper-collapsible');
+            if ($(existsXl).length) {
+                helperXl = $(existsXl)[0];
+                collapsible = [
+                    M.Collapsible.getInstance(helper),
+                    M.Collapsible.getInstance(helperXl)
+                ];
+                return collapsible;
+            }
+            collapsible = M.Collapsible.getInstance(helper);
+            return collapsible;
+        }
+        exists = $(elem).closest('.row').
+                find('.helper-collapsible');
+    }
+    if ($(exists).length) {
+        helper = $(exists)[0];
+        collapsible = M.Collapsible.getInstance(helper);
+    }
+    return collapsible;
+}
+
+function openInputHelper(helperInstance) {
+    if (Array.isArray(helperInstance)) {
+        helperInstance.forEach((helper) => helper.open());
         return;
     }
-    titleValidationInProgress = true;
+    helperInstance.open();
+}
 
+function closeInputHelper(helperInstance) {
+    if (Array.isArray(helperInstance)) {
+        helperInstance.forEach((helper) => helper.close());
+        return;
+    }
+    helperInstance.close();
+}
+
+function getQuizTitleId() {
     let elemId = '#quizTitle';
-    if ($('.quiz-search').length) {
+    if ($('.quiz-search').length || $('#viewQuiz').length) {
         elemId = '#modalQuizTitle';
     }
+
+    return elemId;
+}
+
+function quizTitleValidate(invalid, valid) {
+    let elemId = getQuizTitleId();
+
+    if (validationInProgress[elemId]) {
+        return;
+    }
+    validationInProgress[elemId] = true;
 
     const setQuizTitleLabel = (dataAttr) => {
 
@@ -718,18 +799,32 @@ function quizTitleValidate(invalid, valid) {
 
         const setValidationClass = (valid) => {
             if (!valid) {
-                $(elemId).removeClass("valid");
-                $(elemId).addClass("invalid");
+                $(elemId).removeClass("valid").
+                    addClass("invalid");
                 return;
             }
-            $(elemId).removeClass("invalid");
-            $(elemId).addClass("valid");
+            $(elemId).removeClass("invalid").
+                addClass("valid");
         };
 
         const updLabelText = () => {
             $(`${elemId} ~ label`).
                 html($(`${elemId} ~ label`).
                     data(dataAttr));
+            let helperCollapsible = getInputHelper($(elemId));
+            if (helperCollapsible) {
+                if (dataAttr === 'error') {
+                    openInputHelper(helperCollapsible);
+                    setTimeout(() => {
+                        $('body')[0].scrollTo({
+                            top: $('body')[0].scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    }, 300);
+                    return;
+                }
+                closeInputHelper(helperCollapsible);
+            }
         };
 
         const enableSubmitButton = (enabled) => {
@@ -765,7 +860,7 @@ function quizTitleValidate(invalid, valid) {
         if (invalid) {
             invalid(quizTitle);
         }
-        titleValidationInProgress = false;
+        validationInProgress[elemId] = false;
         return false;
     }
 
@@ -787,7 +882,7 @@ function quizTitleValidate(invalid, valid) {
                 if (invalid) {
                     invalid(quizTitle);
                 }
-                titleValidationInProgress = false;
+                validationInProgress[elemId] = false;
                 return false;
             }
 
@@ -795,7 +890,7 @@ function quizTitleValidate(invalid, valid) {
             if (valid) {
                 valid(quizTitle);
             }
-            titleValidationInProgress = false;
+            validationInProgress[elemId] = false;
             return true;
         }
     };
@@ -993,9 +1088,95 @@ function listenToATags() {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
+function passwordComparison(compareElem, noTimeout = false) {
+    if (!$(compareElem).hasClass('invalid') &&
+            !$(compareElem).hasClass('valid') &&
+                $(compareElem).val() === '') {
+        return;
+    }
+    let compareId = $(compareElem).attr('id');
+    if (validationInProgress[compareId] === true) {
+        return;
+    }
+    validationInProgress[compareId] = true;
+
+    const comparePassword = () => {
+        let passwordId = $(compareElem).closest('.password-container').
+                find('.input-field.password>input[type="password"]').
+                attr('id');
+        pWordValidation(passwordId, compareId);
+        setInputLabel(compareId);
+        validationInProgress[compareId] = false;
+    };
+
+    if (noTimeout === true) {
+        comparePassword();
+        return;
+    }
+
+    setTimeout(() => {
+        comparePassword();
+    }, 1000);
+}
+
+// eslint-disable-next-line no-unused-vars
+function inputValidation(elem) {
+    let id = $(elem).attr('id');
+    if (validationInProgress[id] === true) {
+        return;
+    }
+    validationInProgress[id] = true;
+    setTimeout(() => {
+        let helperCollapsible = getInputHelper(elem);
+        if ($(elem).is(':valid')) {
+            $(elem).removeClass('invalid').
+                addClass('valid');
+            if (helperCollapsible) {
+                closeInputHelper(helperCollapsible);
+            }
+        } else if ($(elem).is(':invalid')) {
+            $(elem).removeClass('valid').
+                addClass('invalid');
+            if (helperCollapsible) {
+                openInputHelper(helperCollapsible);
+                setTimeout(() => {
+                    $('body')[0].scrollTo({
+                        top: $('body')[0].scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 300);
+            }
+        }
+
+        setInputLabel(id);
+        let compareElem;
+        if ($(elem).attr('type') === 'password') {
+            compareElem = $(elem).closest('.password-container').
+                find('.input-field.compare-password>input[type="password"]');
+            if (compareElem.length) {
+                passwordComparison(compareElem, true);
+            }
+        }
+        validationInProgress[id] = false;
+    }, 1000);
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToInputs() {
+    let inputSelector = ".input-field:not(.compare-password)>" +
+        "input:not(#quizTitle, #modalQuizTitle)";
+    $(inputSelector).on("input", (e) => inputValidation(e.currentTarget));
+
+    $('.input-field.compare-password>input[type="password"]').
+        on("input", (e) => passwordComparison(e.currentTarget));
+}
+
 //document ready
 $(function() {
     $('.sidenav').sidenav({edge: "right"});
     listenToATags();
     $('.tooltipped').tooltip();
+    $('.collapsible').collapsible();
+    listenToInputs();
 });
