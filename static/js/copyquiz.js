@@ -1,12 +1,12 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 // eslint-disable-next-line no-unused-vars
-/* global titleValidationInProgress:writable */
-/* global M, quizTitleValidate, listenToQuizTitle */
+/* global validationInProgress:writable */
+/* global M, quizTitleValidate, getQuizTitleId, listenToQuizTitle */
 
 function copyQuiz() {
     let url = '/copy_quiz?id=' +
-    $('#modalSubmitButton').attr('data-quizId') +
-    '&title=' + $('#modalQuizTitle').val();
+        $('#modalSubmitButton').attr('data-quizId') +
+            '&title=' + $('#modalQuizTitle').val();
     window.location.href = url;
 }
 
@@ -30,7 +30,7 @@ function copyQuizListener() {
 
 function listenToModalSaveButton() {
     $('#modalSubmitButton').on("click", () => {
-        titleValidationInProgress = false;
+        validationInProgress[getQuizTitleId()] = false;
 
         const valid = () => {
             copyQuiz();
