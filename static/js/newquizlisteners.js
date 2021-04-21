@@ -1,6 +1,6 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreview, imgPreviewError, imgPreviewLoad, inputHelperLabel,
+removeQ, imgPreview, imgPreviewError, imgPreviewLoad, setInputLabel,
 popChangeConfModal, closeToolTip */
 
 // eslint-disable-next-line no-unused-vars
@@ -131,7 +131,7 @@ function listenToImgInputs() {
                 children('input').
                 removeClass('invalid');
         }
-        inputHelperLabel($(elem).attr('id'));
+        setInputLabel($(elem).attr('id'));
     };
 
     const updImgPreview = (elem) => {
