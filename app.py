@@ -602,8 +602,10 @@ def buildUserHtml(user_data):
             editClass += 'modal-trigger tooltipped" '
             editHref = 'href="#editUserModal" '
             editTip = tTipAlt + '"Edit User" '
-            editOnClick = 'onclick="popEditUserModal(\'' + userId + '\')"'
-            editLink = editClass + editHref + editTip + editOnClick
+            # editOnClick = 'onclick="popEditUserModal(\'' + userId + '\')"'
+            editDataUser = 'data-user="' + userId + '"'
+            # editLink = editClass + editHref + editTip + editOnClick
+            editLink = editClass + editHref + editTip + editDataUser
             lockIconClass = 'class="red-text text-darken-4 fas fa-lock fa-fw"'
             lockIcon = lockIconClass + '></i'
             unlockIconClass = 'class="fas fa-unlock fa-fw"'
@@ -1311,6 +1313,12 @@ def copyQuiz():
         print(auth_state['auth'])
         print(auth_state['reason'])
 
+        if (request.args.get('id') == '' or request.args.get('id') is None or
+                request.args.get('id') == 'undefined'):
+            flash("Quiz Copy Failed")
+            flash("No Original Quiz Id")
+            return redirect(request.referrer)
+
         quiz_id = ObjectId(request.args.get('id'))
         author_id = auth_state['id']
 
@@ -1321,11 +1329,19 @@ def copyQuiz():
             'author_id': 0,
             'date': 0
         })
+        if quiz is None:
+            flash("Quiz Copy Failed")
+            flash("No Quiz Matching Original Id")
+            return redirect(request.referrer)
+
         quiz['copy_of'] = quiz['_id']
         quiz.pop('_id')
         quiz['author_id'] = author_id
         quiz['date'] = datetime.datetime.now()
         quiz['title'] = request.args.get('title')
+        if (quiz['title'] == '' or quiz['title'] is None or
+                quiz['title'] == 'undefined'):
+            quiz['title'] = 'Quiz Title'
         validate_title = validateQuizTitle(quiz['title'])
         if validate_title is False:
             quiz['title'] = quiz['title'] + ' - ' + str(quiz['date'])
