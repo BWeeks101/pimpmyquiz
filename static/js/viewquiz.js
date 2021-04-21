@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global imgPreviewError, imgPreviewLoad, copyQuizListener,
+/* global imgPreviewError, imgPreviewLoad, copyQuizListener, inputValidation,
 initDupTitleModal */
 
 function stopListeningToQuizImg(elem) {
@@ -70,11 +70,13 @@ function listenToCopyQuiz() {
 function resetModalQuizTitleInput() {
     $('#modalQuizTitle').attr('data-prev', '');
     $('#modalQuizTitle:hidden').
-    val($('#quizOriginalTitle').html());
+        val($('#quizOriginalTitle').html());
+    inputValidation($('#modalQuizTitle'));
 }
 
 $(function() {
-    if ($('#dupTitleModal').length) {
+    if ($('#viewQuiz').length) {
+        resetModalQuizTitleInput();
         initDupTitleModal(resetModalQuizTitleInput);
         listenToCopyQuiz();
     }
