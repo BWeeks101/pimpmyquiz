@@ -4,7 +4,7 @@ listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
 stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
 listenToRControls, listenToImgInputs, listenToImgPreview, setSelectValue,
 listenToQuizTitle, listenToSubmitButton, listenToChangeConfModalButtons,
-popChangeConfModal, initChangeConfModal, listenToCancelUrl */
+popChangeConfModal, initChangeConfModal, listenToCancelUrl, inputValidation */
 
 function reinitSelectOnDisabled(elem) {
     $(elem).each((i, el) => {
@@ -210,6 +210,8 @@ function addRound(elem) {
     $('#roundCount').val(rCount);
     M.updateTextFields();
     $('.collapsible').collapsible();
+    $(`#roundTitle_${rId}`).
+        on("input", (e) => inputValidation(e.currentTarget));
     listenToRControls();
     listenToQControls();
     listenToCheckbox();
@@ -267,6 +269,7 @@ function removeRoundAction(elem) {
     stopObserver(select);
     stopListeningToQControls();
     stopListeningToCheckbox();
+    $(`#roundTitle_${rId}`).off('input');
     $(target).remove();
     $('#roundCount').val(rCount);
     $(rControlsTarget).append(rControlsHtml);
