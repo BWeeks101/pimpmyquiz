@@ -1,16 +1,14 @@
 /* global pWordValidation */
 
-// eslint-disable-next-line no-unused-vars
-function regValidate(funcResult) {
-    if (funcResult === true) {
-        $("#pwd, cPwd").off("input");
-        return true;
-    }
-    return false;
+function listenToRegisterFormSubmission() {
+    $('#register').submit((e) => {
+        e.preventDefault();
+        if (pWordValidation('pwd', 'cPwd') === true) {
+            $('#register')[0].submit();
+        }
+    });
 }
 
-$(function() {
-    $("#pwd, #cPwd").on("input", function () {
-        pWordValidation("pwd", "cPwd");
-    });
+$(function () {
+    listenToRegisterFormSubmission();
 });
