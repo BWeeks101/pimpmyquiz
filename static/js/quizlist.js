@@ -1,19 +1,14 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global copyQuizListener, addRecordPositions, inputHelperLabel, xHttpRequest,
-setSelectValue, initDupTitleModal, popChangeConfModal, initChangeConfModal,
-listenToChangeConfModalButtons, observeResults, closeToolTip */
+/* global copyQuizListener, addRecordPositions, xHttpRequest, setSelectValue,
+initDupTitleModal, popChangeConfModal, initChangeConfModal,
+listenToChangeConfModalButtons, observeResults, closeToolTip, getInputHelper */
 
 // eslint-disable-next-line no-unused-vars
 function deleteQuiz(quizId) {
     open(`/delete_quiz?&id=${quizId}`, '_self');
 }
 
-function stopListeningToResultsATags() {
-    $('.results-data a').off('click');
-}
-
 function listenToResultsATags() {
-    stopListeningToResultsATags();
     $('.results-data a').on('click', (e) => {
         closeToolTip(e.currentTarget);
     });
@@ -66,18 +61,14 @@ function getQuizSearchResults(isGlobal) {
 }
 
 function quizSearchCreateListeners() {
-    $("#quizSearch").on("focusout", () => inputHelperLabel("quizSearch"));
-
     $("#quizSearch").on("keyup", (e) => {
         let isGlobal;
         if (e.key === "Enter") {
-            inputHelperLabel("quizSearch");
             isGlobal = $(e.currentTarget).parent().
                 parent().
                 nextAll('.search-action-container').
                 children('button[data-type="global"]').
                 attr('data-type');
-            stopListeningToResultsATags();
             if (isGlobal) {
                 getQuizSearchResults(true);
             } else {
@@ -88,7 +79,6 @@ function quizSearchCreateListeners() {
 
     $("#searchButton").on("click", (e) => {
         let isGlobal = $(e.currentTarget).attr('data-type');
-        stopListeningToResultsATags();
         if (isGlobal) {
             getQuizSearchResults(true);
         } else {
@@ -137,6 +127,7 @@ function initEmbeddedSearchResultControls() {
 function resetModalQuizTitleInput() {
     $('#modalQuizTitle').attr('data-prev', '');
     $('#modalQuizTitle:hidden').val('');
+    getInputHelper($('#modalQuizTitle')).close();
     $('#modalSubmitButton').attr('data-quizId', '');
     listenToCopyQuizLinks();
 }
