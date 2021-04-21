@@ -1,10 +1,22 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global getRole, createUserArray, returnHtml, addObserver, getObserver */
+/* global getRole, createUserArray, returnHtml, addObserver, getObserver, M */
 
 let recordPositions = [];
 let userSearchPositions = {};
 let quizSearchPositions = {};
 let userList;
+
+function stopListeningToResultsATags(resultsDataElem) {
+    $(resultsDataElem).find('a').
+        off('click');
+}
+
+function destroyResultsDataTooltips(resultsDataElem) {
+    $(resultsDataElem).find('.tooltipped').
+        each((i, elem) => {
+            M.Tooltip.getInstance(elem).destroy();
+        });
+}
 
 function addRecordPositions(obj) {
     let record;
@@ -284,6 +296,10 @@ function xHttpRenderPreloader(elem) {
 /*                              params: key/value pairs for each property */
 function xHttpRequest(requestObj, elem) {
     if (elem) {
+        if ($(elem).hasClass('results-data')) {
+            stopListeningToResultsATags($(elem));
+            destroyResultsDataTooltips($(elem));
+        }
         xHttpRenderPreloader(elem);
     }
     let xhttp = new XMLHttpRequest();
@@ -579,10 +595,18 @@ function listenToRecordControls() {
 
 // eslint-disable-next-line no-unused-vars
 function observeResults(elem, callback) {
-    addObserver(elem, callback);
+    const preloaderCheck = () => {
+        if ($(elem).children('.preloader-container').length) {
+            return;
+        }
+        callback();
+    };
+    addObserver(elem, preloaderCheck);
     let observer = getObserver(elem);
     observer.observe(elem, {childList: true});
 }
 
-listenToRecordControls();
-listenToPageNumberInputs();
+$(function() {
+    listenToRecordControls();
+    listenToPageNumberInputs();
+});
