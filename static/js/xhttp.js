@@ -14,7 +14,10 @@ function stopListeningToResultsATags(resultsDataElem) {
 function destroyResultsDataTooltips(resultsDataElem) {
     $(resultsDataElem).find('.tooltipped').
         each((i, elem) => {
-            M.Tooltip.getInstance(elem).destroy();
+            let instance = M.Tooltip.getInstance(elem);
+            if (instance) {
+                instance.destroy();
+            }
         });
 }
 
