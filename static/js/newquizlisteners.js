@@ -1,7 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global setSelectValue, addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreview, imgPreviewError, imgPreviewLoad, setInputLabel,
-popChangeConfModal, closeToolTip */
+removeQ, imgPreviewError, imgPreviewLoad, popChangeConfModal, closeToolTip,
+inputValidation, quizFormValidation, M, validateCorrectCheckboxes */
 
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
@@ -106,55 +106,74 @@ function listenToMultiControls() {
 }
 
 // eslint-disable-next-line no-unused-vars
-function stopListeningToImgInputs() {
-    $('input.img-url').off("focusout");
-    $('input.img-url').off("keyup");
+function stopListeningToQuizInputs(container) {
+    $(container).
+        find('input:not(.img-url, [type="checkbox"])').
+            off('input');
 }
 
 // eslint-disable-next-line no-unused-vars
-function listenToImgInputs() {
-    stopListeningToImgInputs();
-    const checkImgUrl = (elem) => {
-        if ($(elem).val().length === 0) {
-            $(elem).removeClass("invalid");
-            $(elem).parent().
-                prev().
-                children('input').
-                prop('required', true);
-        } else {
-            $(elem).parent().
-                prev().
-                children('input').
-                prop('required', false);
-            $(elem).parent().
-                prev().
-                children('input').
-                removeClass('invalid');
-        }
-        setInputLabel($(elem).attr('id'));
-    };
+function listenToQuizInputs(container) {
+    // $(container).
+    //     find('input:not(.img-url, [type="checkbox"])').
+    //         on('input', (e) => inputValidation(e.currentTarget, false));
 
-    const updImgPreview = (elem) => {
-        checkImgUrl(elem);
-        imgPreview($(elem).val(), $(elem).
-            closest('.input-field').
-            next());
-    };
+    $(container).
+        find('input:not([type="checkbox"])').
+            on('input', (e) => inputValidation(e.currentTarget, false));
+}
 
-    $('input.img-url').
-        on("focusout", (e) => {
-            updImgPreview(e.currentTarget);
-        });
-
-    $('input.img-url').
-        on("keyup", (e) => {
-            if (e.key === 'Enter' ||
-                    e.key === 'Delete' ||
-                    e.key === 'Backspace') {
-                updImgPreview(e.currentTarget);
+// eslint-disable-next-line no-unused-vars
+function stopListeningToQuizInputHelpers(container) {
+    $(container).find('.collapsible').
+        each((i, elem) => {
+            let instance = M.Collapsible.getInstance(elem);
+            if (instance) {
+                instance.destroy();
             }
         });
 }
+
+// eslint-disable-next-line no-unused-vars
+function listenToQuizInputHelpers(container) {
+    $(container).find('.collapsible.helper-collapsible').
+        collapsible();
+}
+
+// eslint-disable-next-line no-unused-vars
+// function stopListeningToImgInputs() {
+//     // $('input.img-url').off("focusout");
+//     // $('input.img-url').off("keyup");
+//     $('input.img-url').off("input");
+// }
+
+// eslint-disable-next-line no-unused-vars
+// function listenToImgInputs() {
+//     $('input.img-url').
+//         on("input", (e) => inputValidation(e.currentTarget, false));
+
+//     // const updImgPreview = (elem) => {
+//     //     checkImgUrl(elem);
+//     //     imgPreview($(elem).val(), $(elem).
+//     //         closest('.input-field').
+//     //         next());
+//     // };
+
+//     // $('input.img-url').
+//     //     on("focusout", (e) => {
+//     //         updImgPreview(e.currentTarget);
+//     //     });
+
+//     // $('input.img-url').
+//     //     on("keyup", (e) => {
+//     //         if (e.key === 'Enter' ||
+//     //                 e.key === 'Delete' ||
+//     //                 e.key === 'Backspace') {
+//     //             // updImgPreview(e.currentTarget);
+//     //             inputValidation(e.currentTarget, true);
+//     //         }
+//     //     });
+// }
 
 function stopListeningToImgPreview(elem) {
     $(elem).off("error");
@@ -176,16 +195,7 @@ function listenToImgPreview(elem) {
 function listenToSubmitButton() {
     $('#submitButton').on("click", (e) => {
         e.preventDefault();
-        if ($('#quizTitle').hasClass("invalid")) {
-            return;
-        }
-
-        let quizForm = $('#createQuizForm')[0];
-        if ($('#quizTitle').attr('data-id')) {
-            quizForm = $('#editQuizForm')[0];
-        }
-
-        $(quizForm).submit();
+        quizFormValidation();
     });
 }
 
@@ -198,5 +208,37 @@ function listenToCancelUrl() {
             return;
         }
         popChangeConfModal('cn', e.currentTarget);
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function stopListeningToCorrectCheckboxes(container) {
+    $(container).
+        find('.correct[type="checkbox"]').
+            off('change');
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToCorrectCheckboxes(container) {
+    $(container).
+        find('.correct[type="checkbox"]').
+            on('change', (e) => validateCorrectCheckboxes(e.currentTarget));
+}
+
+// eslint-disable-next-line no-unused-vars
+function stopListeningToCheckbox() {
+    $('input[type="checkbox"].quizMulti').
+        off("change");
+}
+
+// eslint-disable-next-line no-unused-vars
+function listenToCheckbox() {
+    $('input[type="checkbox"].quizMulti').on('change', (e) => {
+        let self = e.currentTarget;
+        if (!$(self).prop('checked')) {
+            popChangeConfModal('mu', self);
+            return;
+        }
+        popChangeConfModal('mc', self);
     });
 }
