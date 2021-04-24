@@ -2,7 +2,8 @@
 // eslint-disable-next-line no-unused-vars
 /* global observerList */
 /* global roleList, userList, categoryList, xHttpRequest, M, checkBoxMulti,
-removeQAction, removeRoundAction, deleteQuiz, checkImgUrl, imgPreview */
+removeQAction, removeRoundAction, deleteQuiz, checkImgUrl, imgPreview,
+removeMultiAction */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -1213,11 +1214,15 @@ function popChangeConfModal(type, elem) {
         message = 'This quiz will not be created, and any content added to ' +
         'this form will be lost.';
         break;
+    case 'm':
+        message = 'Are you sure you wish to delete this multiple choice ' +
+        'option?';
+        break;
     default:
         return;
     }
 
-    if (type !== 'q') {
+    if (type !== 'q' && type !== 'm') {
         message += '<br><br>Do you wish to continue?';
     }
     $('#modalTitle').html(title);
@@ -1249,6 +1254,9 @@ function removeAction({type, elem}) {
     case 'ce':
     case 'cn':
         window.location.href = $(elem).attr('href');
+        break;
+    case 'm':
+        removeMultiAction(elem);
         break;
     default:
     }
