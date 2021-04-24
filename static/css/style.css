@@ -79,6 +79,11 @@ blockquote {
     margin-top: calc(1rem + 20px);
 }
 
+#createQuiz .card-content,
+#editQuiz .card-content {
+    padding: 1rem 2rem !important;
+}
+
 @media only screen and (max-width: 1200px) {
     .hide-on-large-and-down {
         display: none !important;
