@@ -217,7 +217,9 @@ function removeQAction(elem) {
         attr('data-question')) - 1;
     let target = $(elem).closest('li');
     let prevQ = $(target).prev();
-    let qControlsTarget = $('.collapsible-header', prevQ);
+    let qControlsTarget = $(`#question_${rId}_${qId}`).
+        closest('.collapsible-body').
+            prev();
     let request = 'qControl';
     let qControlsHtml = returnHtml({request, qId});
 
