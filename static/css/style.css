@@ -23,6 +23,18 @@ img.small {
     max-height: 300px;
 }
 
+.checkbox-container>label.valid {
+    border-bottom: 1px solid #4CAF50;
+    -webkit-box-shadow: 0 1px 0 0 #4CAF50;
+    box-shadow: 0 1px 0 0 #4CAF50;
+}
+
+.checkbox-container>label.invalid {
+    border-bottom: 1px solid #F44336;
+    -webkit-box-shadow: 0 1px 0 0 #F44336;
+    box-shadow: 0 1px 0 0 #F44336;
+}
+
 .helper-collapsible,
 .helper-collapsible>li>.collapsible-header,
 .helper-collapsible>li>.collapsible-body {
@@ -53,6 +65,10 @@ img.small {
     margin-left: 0 !important;
     width: 100% !important;
     float: left !important;
+}
+
+.question-title ~ .collapsible-body .helper-collapsible {
+    padding: 0 .75rem !important;
 }
 
 blockquote {
@@ -634,8 +650,10 @@ form .user-search .search-radio-row {
 
 #createQuiz .row div.title.col,
 #createQuiz .row div.answers-container.col,
+#createQuiz .row div.multi-container.col,
 #editQuiz .row div.title.col,
-#editQuiz .row div.answers-container.col {
+#editQuiz .row div.answers-container.col,
+#editQuiz .row div.multi-container.col {
     padding: 0;
 }
 
@@ -654,11 +672,11 @@ form .user-search .search-radio-row {
     margin-bottom: 0;
 }
 
-#createQuiz .round-title,
-#createQuiz .question-title,
+#createQuiz .collapsible-header.round-title,
+#createQuiz .collapsible-header.question-title,
 #createQuiz .collapsible-body .title,
-#editQuiz .round-title,
-#editQuiz .question-title,
+#editQuiz .collapsible-header.round-title,
+#editQuiz .collapsible-header.question-title,
 #editQuiz .collapsible-body .title {
 	font-size: 24px;
 	font-weight: 300;
