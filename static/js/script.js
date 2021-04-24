@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 /* global observerList */
 /* global roleList, userList, categoryList, xHttpRequest, M, checkBoxMulti,
-removeQAction, removeRoundAction, deleteQuiz */
+removeQAction, removeRoundAction, deleteQuiz, checkImgUrl, imgPreview */
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -92,43 +92,165 @@ function returnHtml(params) {
         let controlHtml = buildMultiControlHtml(mId, init);
 
         let answerHtml = `
-        <div class="input-field multi-input col s10">
-            <span class="prefix center-align" data-question="${qId}"` +
-                `data-multi="${mId}">
-                ${controlHtml}` +
-            `</span>
-            <input id="answer_${rId}_${qId}_${mId}" ` +
-                `name="answer_${rId}_${qId}_${mId}" ` +
-                `type="text" minlength="1" maxlength="255" ` +
-                `class="validate" value="" required>
-            <label for="answer_${rId}_${qId}_${mId}" ` +
-                `data-error="Invalid Answer" ` +
-                `data-default="Answer ${rId}-${qId}-${mId}">` +
-                `Answer ${rId}-${qId}-${mId}</label>
-        </div>
-        <div class="input-field col s2 checkbox-container ` +
-            `inline-input center-align">
-            <label class="center-align full-width">
-                <input id="correct_${rId}_${qId}_${mId}" ` +
-                    `name="correct_${rId}_${qId}_${mId}" ` +
-                    `type="checkbox"/>
-                <span></span>
-            </label>
-        </div>
-        <!-- Optional Image URL -->
-        <div class="input-field multi-input col s12">
-            <span class="prefix light-blue-text text-darken-4 ` +
-                `center-align"></span>
-            <input id="a_img_${rId}_${qId}_${mId}" ` +
-                `name="a_img_${rId}_${qId}_${mId}" ` +
-                `type="url" class="img-url validate" value="">
-            <label for="a_img_${rId}_${qId}_${mId}" data-error="Invalid URL" ` +
-                `data-default="Optional Image URL">` +
-                `Optional Image URL</label>
-        </div>
-        <div class="image-preview col s12 center-align"></div>`;
+        <div class="multi-container col s12">
+            <ul id="answerHelperCollapsible_${rId}_${qId}_${mId}" ` +
+                    `class="collapsible helper-collapsible col s12">
+                <li>
+                    <div class="collapsible-header"></div>
+                    <div class="collapsible-body">
+                        <blockquote class="black-text">
+                            An answer must be between 1-255 characters ` +
+                                `in length.
+                        </blockquote>
+                    </div>
+                </li>
+                <li class="paired">
+                    <div class="collapsible-header"></div>
+                    <div class="collapsible-body">
+                        <blockquote class="black-text">
+                            Please provide an answer, and/or a valid link ` +
+                            `to an image hosted online.<br>
+                            An answer must be between 1-255 characters in ` +
+                            `length.
+                        </blockquote>
+                    </div>
+                </li>
+            </ul>
+            <div class="input-field multi-input col s10">
+                <span class="prefix center-align" data-question="${qId}"` +
+                    `data-multi="${mId}">
+                    ${controlHtml}` +
+                `</span>
+                <input id="answer_${rId}_${qId}_${mId}" ` +
+                    `name="answer_${rId}_${qId}_${mId}" ` +
+                    `type="text" minlength="1" maxlength="255" ` +
+                    `class="option" value="" required>
+                <label for="answer_${rId}_${qId}_${mId}" ` +
+                    `data-error="Invalid Answer" ` +
+                    `data-default="Answer ${rId}-${qId}-${mId}">` +
+                    `Answer ${rId}-${qId}-${mId}</label>
+            </div>
+            <div class="input-field col s2 checkbox-container ` +
+                `inline-input center-align">
+                <label class="center-align full-width">
+                    <input id="correct_${rId}_${qId}_${mId}" ` +
+                        `name="correct_${rId}_${qId}_${mId}" ` +
+                        `class="correct"` +
+                        `type="checkbox"/>
+                    <span></span>
+                </label>
+            </div>
+            <!-- Optional Image URL -->
+            <ul id="aImgHelperCollapsible_${rId}_${qId}_${mId}" ` +
+                    `class="collapsible helper-collapsible col s12">
+                <li>
+                    <div class="collapsible-header"></div>
+                    <div class="collapsible-body">
+                        <blockquote class="black-text">
+                            Please provide a valid link to an image hosted ` +
+                                `online
+                        </blockquote>
+                    </div>
+                </li>
+            </ul>
+            <div class="input-field multi-input col s12">
+                <span class="prefix light-blue-text text-darken-4 ` +
+                    `center-align"></span>
+                <input id="a_img_${rId}_${qId}_${mId}" ` +
+                    `name="a_img_${rId}_${qId}_${mId}" ` +
+                    `type="url" class="img-url" value="">
+                <label for="a_img_${rId}_${qId}_${mId}" ` +
+                    `data-error="Invalid URL" ` +
+                    `data-default="Optional Image URL">` +
+                    `Optional Image URL</label>
+            </div>
+            <div class="image-preview col s12 center-align"></div>
+        </div>`;
 
         return answerHtml;
+    };
+
+    const buildAHtml = (rId, qId) => {
+        let err = '';
+        if (isNaN(rId)) {
+            err = 'Error: Missing/invalid rId';
+        }
+        if (isNaN(qId)) {
+            if (err.length > 0) {
+                err += `\n`;
+            }
+            err += 'Error: Missing/invalid qId';
+        }
+        if (err.length > 0) {
+            return err;
+        }
+
+        let aHtml = `
+                    <ul id="answerHelperCollapsible_${rId}_${qId}" ` +
+                            `class="collapsible helper-collapsible col s12">
+                        <li>
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    An answer must be between 1-255 ` +
+                                        `characters in length.
+                                </blockquote>
+                            </div>
+                        </li>
+                        <li class="paired">
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    Please provide an answer, and/or a ` +
+                                    `valid link to an image hosted ` +
+                                    `online.<br>
+                                    An answer must be between 1-255 ` +
+                                    `characters in length.
+                                </blockquote>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="input-field col s12">
+                        <span class="prefix" data-question="${qId}" ` +
+                            `data-multi="0"></span>
+                        <input id="answer_${rId}_${qId}" ` +
+                            `name="answer_${rId}_${qId}" ` +
+                            `type="text" minlength="1" maxlength="255" ` +
+                            `class="answer" value="" required>
+                        <label for="answer_${rId}_${qId}" ` +
+                                `data-error="Invalid Answer" ` +
+                                `data-default="Answer ${qId}">` +
+                                `Answer ${qId}</label>
+                    </div>
+                    <!-- Optional Image URL -->
+                    <ul id="aImgHelperCollapsible_${rId}_${qId}" ` +
+                            `class="collapsible helper-collapsible col s12">
+                        <li>
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    Please provide a valid link to an ` +
+                                        `image hosted online
+                                </blockquote>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="input-field col s12">
+                        <span class="prefix light-blue-text ` +
+                            `text-darken-4 ` +
+                            `center-align"></span>
+                        <input id="a_img_${rId}_${qId}" ` +
+                            `name="a_img_${rId}_${qId}" type="url" ` +
+                            `class="img-url" value="">
+                        <label for="a_img_${rId}_${qId}" ` +
+                            `data-error="Invalid URL" ` +
+                            `data-default="Optional Image URL"> ` +
+                            `Optional Image URL</label>
+                    </div>
+                    <div class="image-preview col s12 center-align"></div>
+                `;
+
+        return aHtml;
     };
 
     const toggleMultiHtml = (rId, qId, checked) => {
@@ -173,29 +295,8 @@ function returnHtml(params) {
 
         }
         htmlTitle = `<span class="col s12">What is the Answer?</span>`;
-        htmlContent = `
-        <div class="input-field col s12">
-            <span class="prefix" data-question="${qId}" ` +
-                `data-multi="0"></span>
-            <input id="answer_${rId}_${qId}" name="answer_${rId}_${qId}" ` +
-                `type="text" minlength="1" maxlength="255" ` +
-                `class="validate" value="" required>
-            <label for="answer_${rId}_${qId}" ` +
-                `data-error="Invalid Answer" ` +
-                `data-default="Answer ${rId}_${qId}">Answer ${rId}_${qId}` +
-                `</label>
-        </div>
-        <!-- Optional Image URL -->
-        <div class="input-field col s12">
-            <span class="prefix light-blue-text text-darken-4 ` +
-                `center-align"></span>
-            <input id="a_img_${rId}_${qId}" name="a_img_${rId}_${qId}" ` +
-                `type="url" class="img-url validate" value="">
-            <label for="a_img_${rId}_${qId}" data-error="Invalid URL" ` +
-                `data-default="Optional Image URL">` +
-                `Optional Image URL</label>
-        </div>
-        <div class="image-preview col s12 center-align"></div>`;
+
+        htmlContent = buildAHtml(rId, qId);
 
         return {htmlTitle, htmlContent, 'multiCount': mId};
     };
@@ -242,6 +343,8 @@ function returnHtml(params) {
         }
         let qControlHtml = buildQControlHtml(qId);
 
+        let aHtml = buildAHtml(rId, qId);
+
         let qHtml = `
         <li>
             <div class="collapsible-header question-title" ` +
@@ -258,25 +361,60 @@ function returnHtml(params) {
             <div class="collapsible-body">
                 <div class="row">
                     <!-- Question ${qId} -->
+                    <ul id="questionHelperCollapsible_${rId}_${qId}" ` +
+                        `class="collapsible helper-collapsible col s12">
+                        <li>
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    A question must be between 2-255 ` +
+                                        `characters in length.
+                                </blockquote>
+                            </div>
+                        </li>
+                        <li class="paired">
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    Please provide a question, and/or a ` +
+                                    `valid link to an image hosted online.<br>
+                                    A question must be between 2-255 ` +
+                                    `characters in length.
+                                </blockquote>
+                            </div>
+                        </li>
+                    </ul>
                     <div class="input-field col s12">
                         <span class="prefix light-blue-text text-darken-4 ` +
                             `center-align"></span>
                         <input id="question_${rId}_${qId}" ` +
                             `name="question_${rId}_${qId}" ` +
-                            `type="text" minlength="5" maxlength="255" ` +
-                            `class="validate" value="" required>
+                            `type="text" minlength="2" maxlength="255" ` +
+                            `class="question" value="" required>
                         <label for="question_${rId}_${qId}" ` +
                             `data-error="Invalid Question" ` +
                             `data-default="Question ${qId}">` +
                             `Question ${qId}</label>
                     </div>
                     <!-- Optional Image URL -->
+                    <ul id="qImgHelperCollapsible_${rId}_${qId}" ` +
+                            `class="collapsible helper-collapsible col s12">
+                        <li>
+                            <div class="collapsible-header"></div>
+                            <div class="collapsible-body">
+                                <blockquote class="black-text">
+                                    Please provide a valid link to an ` +
+                                        `image hosted online
+                                </blockquote>
+                            </div>
+                        </li>
+                    </ul>
                     <div class="input-field col s12">
                         <span class="prefix light-blue-text text-darken-4 ` +
                             `center-align"></span>
                         <input id="q_img_${rId}_${qId}" ` +
                             `name="q_img_${rId}_${qId}" ` +
-                            `type="url" class="img-url validate" value="">
+                            `type="url" class="img-url" value="">
                         <label for="q_img_${rId}_${qId}" ` +
                             `data-error="Invalid URL" ` +
                             `data-default="Optional Image URL">` +
@@ -304,34 +442,9 @@ function returnHtml(params) {
                     <input id="multiCount_${rId}_${qId}" ` +
                         `name="multiCount_${rId}_${qId}" type="text" ` +
                         `class="hidden" value="1">
-                    <div class="answers-container col s12">
-                        <div class="input-field col s12">
-                            <span class="prefix" data-question="${qId}" ` +
-                                `data-multi="0"></span>
-                            <input id="answer_${rId}_${qId}" ` +
-                                `name="answer_${rId}_${qId}" ` +
-                                `type="text" minlength="1" maxlength="255" ` +
-                                `class="validate" value="" required>
-                            <label for="answer_${rId}_${qId}" ` +
-                                    `data-error="Invalid Answer" ` +
-                                    `data-default="Answer ${qId}">` +
-                                    `Answer ${qId}</label>
-                        </div>
-                        <!-- Optional Image URL -->
-                        <div class="input-field col s12">
-                            <span class="prefix light-blue-text ` +
-                                `text-darken-4 ` +
-                                `center-align"></span>
-                            <input id="a_img_${rId}_${qId}" ` +
-                                `name="a_img_${rId}_${qId}" type="url" ` +
-                                `class="img-url validate" value="">
-                            <label for="a_img_${rId}_${qId}" ` +
-                                `data-error="Invalid URL" ` +
-                                `data-default="Optional Image URL"> ` +
-                                `Optional Image URL</label>
-                        </div>
-                        <div class="image-preview col s12 center-align"></div>
-                    </div>
+                    <div class="answers-container col s12">` +
+                        aHtml +
+                    `</div>
                 </div>
             </div>
         </li>`;
@@ -454,7 +567,7 @@ function returnHtml(params) {
                                 <input id="roundTitle_${rId}" ` +
                                     `name="round_title_${rId}" type="text" ` +
                                     `minlength="5" maxlength="100" ` +
-                                    `class="validate" ` +
+                                    `class="round-title" ` +
                                     `value="Round ${rId}" required>
                                 <label for="roundTitle_${rId}" ` +
                                     `data-error="Invalid Round Title" ` +
@@ -722,20 +835,65 @@ function setSelectValue(elem, value) {
     });
 }
 
-let validationInProgress = {};
+let validationTrackers = {};
+
+function createValidationTrackerObj(elemId) {
+    if (!validationTrackers[elemId]) {
+        validationTrackers[elemId] = {
+            'inProgress': false,
+            'interval': 0,
+            'counter': 0
+        };
+    }
+}
+
+function isValidationInProgress(elemId) {
+    if (validationTrackers[elemId] &&
+            validationTrackers[elemId].inProgress === true) {
+        validationTrackers[elemId].counter = 0;
+        return true;
+    }
+    createValidationTrackerObj(elemId);
+    return false;
+}
+
+function setValidationInProgress(elemId) {
+    createValidationTrackerObj(elemId);
+    validationTrackers[elemId].inProgress = true;
+}
+
+function setValidationComplete(elemId) {
+    createValidationTrackerObj(elemId);
+    validationTrackers[elemId].inProgress = false;
+}
+
+function startValidationInputMonitor(elemId, callback) {
+    const monitorValidationInput = () => {
+        if (validationTrackers[elemId].counter < 4) {
+            validationTrackers[elemId].counter += 1;
+            return;
+        }
+        clearInterval(validationTrackers[elemId].interval);
+        validationTrackers[elemId].counter = 0;
+        callback();
+    };
+
+    validationTrackers[elemId].interval = setInterval(
+        monitorValidationInput, 250);
+}
 
 function getInputHelper(elem) {
     let helper;
     let helperXl;
     let collapsible = false;
     let exists = $(elem).closest('.input-field').
-        prev();
+        prev('.helper-collapsible');
     let existsXl;
     if ($('#createQuiz').length || $('#editQuiz').length) {
         if ($(exists).length) {
             helper = $(exists)[0];
             existsXl = $(elem).closest('.row').
-                find('.helper-collapsible');
+                find('.helper-collapsible.hide-on-large-and-down');
             if ($(existsXl).length) {
                 helperXl = $(existsXl)[0];
                 collapsible = [
@@ -747,8 +905,8 @@ function getInputHelper(elem) {
             collapsible = M.Collapsible.getInstance(helper);
             return collapsible;
         }
-        exists = $(elem).closest('.row').
-                find('.helper-collapsible');
+        // exists = $(elem).closest('.row').
+        //         find('.helper-collapsible');
     }
     if ($(exists).length) {
         helper = $(exists)[0];
@@ -757,20 +915,20 @@ function getInputHelper(elem) {
     return collapsible;
 }
 
-function openInputHelper(helperInstance) {
+function openInputHelper(helperInstance, i = 0) {
     if (Array.isArray(helperInstance)) {
-        helperInstance.forEach((helper) => helper.open());
+        helperInstance.forEach((helper) => helper.open(i));
         return;
     }
-    helperInstance.open();
+    helperInstance.open(i);
 }
 
-function closeInputHelper(helperInstance) {
+function closeInputHelper(helperInstance, i = 0) {
     if (Array.isArray(helperInstance)) {
-        helperInstance.forEach((helper) => helper.close());
+        helperInstance.forEach((helper) => helper.close(i));
         return;
     }
-    helperInstance.close();
+    helperInstance.close(i);
 }
 
 function getQuizTitleId() {
@@ -782,167 +940,231 @@ function getQuizTitleId() {
     return elemId;
 }
 
-function quizTitleValidate(invalid, valid) {
+function quizTitleValidate(invalid, valid, override) {
     let elemId = getQuizTitleId();
 
-    if (validationInProgress[elemId]) {
+    // if (validationInProgress[elemId] && override !== true) {
+    //     return;
+    // }
+    // if (override !== true) {
+    //     validationInProgress[elemId] = true;
+    // }
+
+    if (isValidationInProgress(elemId) === true && override !== true) {
         return;
     }
-    validationInProgress[elemId] = true;
 
-    const setQuizTitleLabel = (dataAttr) => {
+    if (override !== true) {
+        setValidationInProgress(elemId);
+    }
 
-        if (!$(`${elemId} ~ label`).attr(`data-${dataAttr}`)) {
-            console.log(`Error: data attr (data-${dataAttr}) does not exist`);
-            return;
-        }
+    const validate = () => {
+        const setQuizTitleLabel = (dataAttr) => {
 
-        const setValidationClass = (valid) => {
-            if (!valid) {
-                $(elemId).removeClass("valid").
-                    addClass("invalid");
+            if (!$(`${elemId} ~ label`).attr(`data-${dataAttr}`)) {
+                console.log(`Error: data attr (${dataAttr}) does not exist`);
                 return;
             }
-            $(elemId).removeClass("invalid").
-                addClass("valid");
-        };
 
-        const updLabelText = () => {
-            $(`${elemId} ~ label`).
-                html($(`${elemId} ~ label`).
-                    data(dataAttr));
-            let helperCollapsible = getInputHelper($(elemId));
-            if (helperCollapsible) {
-                if (dataAttr === 'error') {
-                    openInputHelper(helperCollapsible);
-                    setTimeout(() => {
-                        $('body')[0].scrollTo({
-                            top: $('body')[0].scrollHeight,
-                            behavior: 'smooth'
-                        });
-                    }, 300);
+            const setValidationClass = (valid) => {
+                if (!valid) {
+                    $(elemId).removeClass("valid").
+                        addClass("invalid");
                     return;
                 }
-                closeInputHelper(helperCollapsible);
+                $(elemId).removeClass("invalid").
+                    addClass("valid");
+            };
+
+            const updLabelText = () => {
+                $(`${elemId} ~ label`).
+                    html($(`${elemId} ~ label`).
+                        data(dataAttr));
+                let helperCollapsible = getInputHelper($(elemId));
+                if (helperCollapsible) {
+                    if (dataAttr === 'error') {
+                        openInputHelper(helperCollapsible);
+                        setTimeout(() => {
+                            $('body')[0].scrollTo({
+                                top: $('body')[0].scrollHeight,
+                                behavior: 'smooth'
+                            });
+                        }, 300);
+                        return;
+                    }
+                    closeInputHelper(helperCollapsible);
+                }
+            };
+
+            const enableSubmitButton = (enabled) => {
+                if ($('#modalSubmitButton').length) {
+                    if (!enabled) {
+                        $('#modalSubmitButton').attr('disabled', true);
+                        return;
+                    }
+                    $('#modalSubmitButton').attr('disabled', false);
+                }
+            };
+
+            switch (dataAttr) {
+            case 'error':
+            case 'dup':
+                setValidationClass(false);
+                updLabelText();
+                enableSubmitButton(false);
+                break;
+            case 'default':
+                setValidationClass(true);
+                updLabelText();
+                enableSubmitButton(true);
+                break;
+            default:
             }
         };
 
-        const enableSubmitButton = (enabled) => {
-            if ($('#modalSubmitButton').length) {
-                if (!enabled) {
-                    $('#modalSubmitButton').attr('disabled', true);
-                    return;
-                }
-                $('#modalSubmitButton').attr('disabled', false);
+        let quizTitle = $(elemId).val().
+            trim();
+        if (quizTitle.length < 5 || quizTitle.length > 100) {
+            setQuizTitleLabel('error');
+            if (invalid) {
+                invalid(quizTitle);
+            }
+            if (override !== true) {
+                // validationInProgress[elemId] = false;
+                setValidationComplete(elemId);
+            }
+            return false;
+        }
+
+        let request = {
+            'type':
+                'validate_quiz_title',
+            'params': {
+                quizTitle
             }
         };
-
-        switch (dataAttr) {
-        case 'error':
-        case 'dup':
-            setValidationClass(false);
-            updLabelText();
-            enableSubmitButton(false);
-            break;
-        case 'default':
-            setValidationClass(true);
-            updLabelText();
-            enableSubmitButton(true);
-            break;
-        default:
+        if ($(elemId).attr('data-id')) {
+            request.params.id = $(elemId).attr('data-id');
         }
-    };
-
-    let quizTitle = $(elemId).val().
-        trim();
-    if (quizTitle.length < 5 || quizTitle.length > 100) {
-        setQuizTitleLabel('error');
-        if (invalid) {
-            invalid(quizTitle);
-        }
-        validationInProgress[elemId] = false;
-        return false;
-    }
-
-    let request = {
-        'type':
-            'validate_quiz_title',
-        'params': {
-            quizTitle
-        }
-    };
-    if ($(elemId).attr('data-id')) {
-        request.params.id = $(elemId).attr('data-id');
-    }
-    let xhttp = xHttpRequest(request);
-    xhttp.onreadystatechange = () => {
-        if (xhttp.readyState === 4 && xhttp.status === 200) {
-            if (xhttp.responseText === 'false') {
-                setQuizTitleLabel('dup');
-                if (invalid) {
-                    invalid(quizTitle);
+        let xhttp = xHttpRequest(request);
+        xhttp.onreadystatechange = () => {
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                if (xhttp.responseText === 'false') {
+                    setQuizTitleLabel('dup');
+                    if (invalid) {
+                        invalid(quizTitle);
+                    }
+                    if (override !== true) {
+                        // validationInProgress[elemId] = false;
+                        setValidationComplete(elemId);
+                    }
+                    return false;
                 }
-                validationInProgress[elemId] = false;
-                return false;
-            }
 
-            setQuizTitleLabel('default');
-            if (valid) {
-                valid(quizTitle);
+                setQuizTitleLabel('default');
+                if (valid) {
+                    valid(quizTitle);
+                }
+                if (override !== true) {
+                    // validationInProgress[elemId] = false;
+                    setValidationComplete(elemId);
+                }
+                return true;
             }
-            validationInProgress[elemId] = false;
-            return true;
-        }
+        };
     };
+
+    startValidationInputMonitor(elemId, validate);
 }
 
 // eslint-disable-next-line no-unused-vars
 function listenToQuizTitle() {
-    $('#quizTitle, #modalQuizTitle').on("focusout keyup input", (e) => {
-        if ((e.type === 'keyup' && e.key !== 'Enter') || (e.type === 'input')) {
-            setTimeout(function() {
-                quizTitleValidate();
-            }, 1000);
-            return;
-        }
+    $('#quizTitle, #modalQuizTitle').on("input", () => {
+        // if ((e.type === 'keyup' && e.key !== 'Enter') ||
+        //         (e.type === 'input')) {
+        //     setTimeout(function() {
+        //         quizTitleValidate();
+        //     }, 1000);
+        //     return;
+        // }
         quizTitleValidate();
     });
 }
 
 // eslint-disable-next-line no-unused-vars
 function imgPreviewLoad(elem, max) {
-    let img = {
-        'height': $(elem).height(),
-        'width': $(elem).width()
+    let style;
+
+    const setElemStyleRule = (cssRules, i) => {
+        if (i === undefined) {
+            i = 0;
+        }
+        if (cssRules[i].selectorText === `#${$(elem).attr('id')}`) {
+            cssRules[i].style = style;
+            return;
+        }
+        if (i < Object.keys(cssRules).length - 1) {
+            i += 1;
+            return setElemStyleRule(cssRules, i);
+        }
     };
 
-    if (max === undefined || max > parseInt($(elem).css('max-width'))) {
-        max = parseInt($(elem).css('max-width'));
+    const setElemStyle = (i) => {
+        if (i === undefined) {
+            i = 0;
+        }
+        if (document.styleSheets[i].href === null &&
+                document.styleSheets[i].cssRules[0].
+                    conditionText === 'print') {
+            setElemStyleRule(document.styleSheets[i].cssRules[0].cssRules);
+            return;
+        }
+        if (i < Object.keys(document.styleSheets).length - 1) {
+            i += 1;
+            return setElemStyle(i);
+        }
+    };
+
+    $(elem).removeClass('hidden');
+    let img = {
+        'height': $(elem).height(),
+        'width': $(elem).width(),
+        'parentWidth': $(elem).parent().
+            width(),
+        'cssMaxWidth': parseInt($(elem).css('max-width'))
+    };
+
+    if (max === undefined || max > img.parentWidth) {
+        max = img.parentWidth;
+    }
+
+    if (max > img.cssMaxWidth) {
+        max = img.cssMaxWidth;
     }
     let val;
     let maxPrint = 50;
     let printVal;
-    let style;
     if (img.width === img.height) {
         val = max;
         printVal = maxPrint;
+        style = `height: ${printVal}mm !important;`;
         $(elem).height(val);
     } else if (img.width > img.height) {
         val = (max / 100) * ((img.height / img.width) * 100);
         printVal = (maxPrint / 100) * ((img.height / img.width) * 100);
-        style = `@media print {height: ${printVal}mm}`;
+        style = `height: ${printVal}mm !important;`;
         $(elem).height(val);
-
     } else {
         val = (max / 100) * ((img.width / img.height) * 100);
         printVal = (maxPrint / 100) * ((img.width / img.height) * 100);
-        style = `@media print {width: ${printVal}mm}`;
+        style = `width: ${printVal}mm !important;`;
         $(elem).width(val);
     }
-    $(elem).attr('style', style);
+    if ($('#quizSheet').length) {
+        setElemStyle();
+    }
     $(elem).next().
         remove();
-    $(elem).removeClass('hidden');
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -1096,10 +1318,17 @@ function passwordComparison(compareElem, noTimeout = false) {
         return;
     }
     let compareId = $(compareElem).attr('id');
-    if (validationInProgress[compareId] === true) {
+
+    // if (validationInProgress[compareId] === true) {
+    //     return;
+    // }
+    // validationInProgress[compareId] = true;
+
+    if (isValidationInProgress(compareId) === true) {
         return;
     }
-    validationInProgress[compareId] = true;
+
+    setValidationInProgress(compareId);
 
     const comparePassword = () => {
         let passwordId = $(compareElem).closest('.password-container').
@@ -1107,7 +1336,8 @@ function passwordComparison(compareElem, noTimeout = false) {
                 attr('id');
         pWordValidation(passwordId, compareId);
         setInputLabel(compareId);
-        validationInProgress[compareId] = false;
+        // validationInProgress[compareId] = false;
+        setValidationComplete(compareId);
     };
 
     if (noTimeout === true) {
@@ -1115,23 +1345,46 @@ function passwordComparison(compareElem, noTimeout = false) {
         return;
     }
 
-    setTimeout(() => {
-        comparePassword();
-    }, 1000);
+    // setTimeout(() => {
+    //     comparePassword();
+    // }, 1000);
+
+    startValidationInputMonitor(compareId, comparePassword);
 }
 
 // eslint-disable-next-line no-unused-vars
-function inputValidation(elem) {
-    let id = $(elem).attr('id');
-    if (validationInProgress[id] === true) {
+function inputValidation(elem, noTimeout = false) {
+    let paired = false;
+    if ($(elem).hasClass('question') ||
+            $(elem).hasClass('img-url') ||
+                $(elem).hasClass('answer') ||
+                    $(elem).hasClass('option')) {
+        paired = true;
+    }
+    let elemId = $(elem).attr('id');
+    // if (validationInProgress[id] === true) {
+    //     return;
+    // }
+    // validationInProgress[id] = true;
+
+    if (isValidationInProgress(elemId) === true) {
         return;
     }
-    validationInProgress[id] = true;
-    setTimeout(() => {
-        let helperCollapsible = getInputHelper(elem);
+
+    setValidationInProgress(elemId);
+
+    const validate = () => {
+        let helperCollapsible;
+        if (paired === false) {
+            helperCollapsible = getInputHelper(elem);
+        }
         if ($(elem).is(':valid')) {
             $(elem).removeClass('invalid').
-                addClass('valid');
+                removeClass('valid');
+            if ($(elem).val().
+                    trim().length > 0) {
+                $(elem).addClass('valid');
+            }
             if (helperCollapsible) {
                 closeInputHelper(helperCollapsible);
             }
@@ -1149,17 +1402,47 @@ function inputValidation(elem) {
             }
         }
 
-        setInputLabel(id);
+        setInputLabel(elemId);
         let compareElem;
+        let imgInput;
         if ($(elem).attr('type') === 'password') {
             compareElem = $(elem).closest('.password-container').
                 find('.input-field.compare-password>input[type="password"]');
             if (compareElem.length) {
                 passwordComparison(compareElem, true);
             }
+        } else if ($(elem).hasClass('img-url')) {
+            checkImgUrl(elem);
+            imgPreview($(elem).val(),
+                $(elem).closest('.input-field').
+                    next());
+        } else if (!$(elem).hasClass('img-url')) {
+            imgInput = $(elem).parent().
+                    next().
+                        next();
+            if ($(elem).hasClass('option')) {
+                imgInput = $(imgInput).next();
+            }
+            imgInput = $(imgInput).children('input.img-url');
+
+            if ($(imgInput).length) {
+                checkImgUrl(imgInput, true);
+            }
         }
-        validationInProgress[id] = false;
-    }, 1000);
+        // validationInProgress[id] = false;
+        setValidationComplete(elemId);
+    };
+
+    if (noTimeout === true) {
+        validate();
+        return;
+    }
+
+    // setTimeout(() => {
+    //     validate();
+    // }, 1000);
+
+    startValidationInputMonitor(elemId, validate);
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -1172,11 +1455,17 @@ function listenToInputs() {
         on("input", (e) => passwordComparison(e.currentTarget));
 }
 
+// eslint-disable-next-line no-unused-vars
+function initFormValidationModal() {
+    $('#formValidationModal').modal();
+}
+
 //document ready
 $(function() {
     $('.sidenav').sidenav({edge: "right"});
     listenToATags();
     $('.tooltipped').tooltip();
-    $('.collapsible').collapsible();
+    $('.collapsible.helper-collapsible').collapsible();
+    $('.collapsible.expandable').collapsible({accordion: false});
     listenToInputs();
 });
