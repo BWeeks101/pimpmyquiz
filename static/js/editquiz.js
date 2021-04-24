@@ -2,7 +2,7 @@
 /* global setSelectValue, reinitSelectOnDisabled */
 
 function listenToCollapsibleHeaders() {
-    $('.collapsible-header').on('click', (e) => {
+    $('.collapsible-header:not[.helper-collapsible]').on('click', (e) => {
         let self = $(e.currentTarget);
         let imgUrl;
         let img;
