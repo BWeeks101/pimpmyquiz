@@ -62,7 +62,7 @@
                                 </li>
                             </ul>
                             <div class="input-field">
-                                <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="100" class="validate" value="New Quiz" required>
+                                <input id="quizTitle" name="quiz_title" type="text" minlength="5" maxlength="100" class="quiz-title" value="New Quiz" required>
                                 <label for="quizTitle" data-error="Invalid Quiz Title" data-dup="Quiz Title already in use.  Please choose another." data-default="Quiz Title">Quiz Title</label>
                             </div>
                         </div>
@@ -124,7 +124,7 @@
                                                 </li>
                                             </ul>
                                             <div class="input-field">
-                                                <input id="roundTitle_1" name="round_title_1" type="text" minlength="5" maxlength="100" class="validate" value="Round 1" required>
+                                                <input id="roundTitle_1" name="round_title_1" type="text" minlength="5" maxlength="100" class="round-title" value="Round 1" required>
                                                 <label for="roundTitle_1" data-error="Invalid Round Title" data-default="Round Title">Round Title</label>
                                             </div>
                                         </div>
@@ -148,15 +148,44 @@
                                                     <div class="collapsible-body">
                                                         <div class="row">
                                                             <!-- Question One -->
+                                                            <ul id="questionHelperCollapsible_1_1" class="collapsible helper-collapsible col s12">
+                                                                <li>
+                                                                    <div class="collapsible-header"></div>
+                                                                    <div class="collapsible-body">
+                                                                        <blockquote class="black-text">
+                                                                            A question must be between 2-255 characters in length.
+                                                                        </blockquote>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="paired">
+                                                                    <div class="collapsible-header"></div>
+                                                                    <div class="collapsible-body">
+                                                                        <blockquote class="black-text">
+                                                                            Please provide a question, and/or a valid link to an image hosted online.<br>
+                                                                            A question must be between 2-255 characters in length.
+                                                                        </blockquote>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
                                                             <div class="input-field col s12">
                                                                 <span class="prefix light-blue-text text-darken-4 center-align"></span>
-                                                                <input id="question_1_1" name="question_1_1" type="text" minlength="5" maxlength="255" class="validate" value="" required>
+                                                                <input id="question_1_1" name="question_1_1" type="text" minlength="2" maxlength="255" class="question" value="" required>
                                                                 <label for="question_1_1" data-error="Invalid Question" data-default="Question 1">Question 1</label>
                                                             </div>
                                                             <!-- Optional Image URL -->
+                                                            <ul id="qImgHelperCollapsible_1_1" class="collapsible helper-collapsible col s12">
+                                                                <li>
+                                                                    <div class="collapsible-header"></div>
+                                                                    <div class="collapsible-body">
+                                                                        <blockquote class="black-text">
+                                                                            Please provide a valid link to an image hosted online
+                                                                        </blockquote>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
                                                             <div class="input-field col s12">
                                                                 <span class="prefix light-blue-text text-darken-4 center-align"></span>
-                                                                <input id="q_img_1_1" name="q_img_1_1" type="url" class="img-url validate" value="">
+                                                                <input id="q_img_1_1" name="q_img_1_1" type="url" class="img-url" value="">
                                                                 <label for="q_img_1_1" data-error="Invalid URL" data-default="Optional Image URL">Optional Image URL</label>
                                                             </div>
                                                             <div class="image-preview col s12 center-align">
@@ -174,15 +203,44 @@
                                                             <div class="title col s12"><span class="col s12">What is the Answer?</span></div>
                                                             <input id="multiCount_1_1" name="multiCount_1_1" type="text" class="hidden" value="1">
                                                             <div class="answers-container col s12">
+                                                                <ul id="answerHelperCollapsible_1_1" class="collapsible helper-collapsible col s12">
+                                                                    <li>
+                                                                        <div class="collapsible-header"></div>
+                                                                        <div class="collapsible-body">
+                                                                            <blockquote class="black-text">
+                                                                                An answer must be between 1-255 characters in length.
+                                                                            </blockquote>
+                                                                        </div>
+                                                                    </li>
+                                                                    <li class="paired">
+                                                                        <div class="collapsible-header"></div>
+                                                                        <div class="collapsible-body">
+                                                                            <blockquote class="black-text">
+                                                                                Please provide an answer, and/or a valid link to an image hosted online.<br>
+                                                                                An answer must be between 1-255 characters in length.
+                                                                            </blockquote>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
                                                                 <div class="input-field col s12">
                                                                     <span class="prefix" data-question="1" data-multi="0"></span>
-                                                                    <input id="answer_1_1" name="answer_1_1" type="text" minlength="1" maxlength="255" class="validate" value="" required>
+                                                                    <input id="answer_1_1" name="answer_1_1" type="text" minlength="1" maxlength="255" class="answer" value="" required>
                                                                     <label for="answer_1_1" data-error="Invalid Answer" data-default="Answer 1">Answer 1</label>
                                                                 </div>
                                                                 <!-- Optional Image URL -->
+                                                                <ul id="aImgHelperCollapsible_1_1" class="collapsible helper-collapsible col s12">
+                                                                    <li>
+                                                                        <div class="collapsible-header"></div>
+                                                                        <div class="collapsible-body">
+                                                                            <blockquote class="black-text">
+                                                                                Please provide a valid link to an image hosted online
+                                                                            </blockquote>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
                                                                 <div class="input-field col s12">
                                                                     <span class="prefix light-blue-text text-darken-4 center-align"></span>
-                                                                    <input id="a_img_1_1" name="a_img_1_1" type="url" class="img-url validate" value="">
+                                                                    <input id="a_img_1_1" name="a_img_1_1" type="url" class="img-url" value="">
                                                                     <label for="a_img_1_1" data-error="Invalid URL" data-default="Optional Image URL">Optional Image URL</label>
                                                                 </div>
                                                                 <div class="image-preview col s12 center-align">
