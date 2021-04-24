@@ -262,6 +262,12 @@ blockquote {
         font-size: 1rem;
     }
 
+    .question-title ~ .collapsible-body .helper-collapsible {
+        padding: 0 !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
     /* modal */
     .modal {
         width: 95%;
