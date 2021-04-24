@@ -9,6 +9,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
     <title>Pimp My Quiz!</title>
+    <style>
+        @media print {
+            {% for round in viewQuiz.rounds %}
+                {% for question in round.questions %}
+                    {% if question.question_img_url != '' %}
+                        #img_q_{{ round.round_num }}_{{ question.question_num }} {
+
+                        }
+                    {% endif %}
+                    {% if question.multiple_choice == True %}
+                        {% for option in question.multiple_choice_options %}
+                            {% if option.answer_img_url != '' %}
+                                #img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }} {
+
+                                }
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        }
+    </style>
 </head>
 <body>
     <main id="quizSheet" class="container">
