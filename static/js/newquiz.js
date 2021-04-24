@@ -80,6 +80,11 @@ function addMulti(elem) {
 
 // eslint-disable-next-line no-unused-vars
 function removeMulti(elem) {
+    popChangeConfModal('m', elem);
+}
+
+// eslint-disable-next-line no-unused-vars
+function removeMultiAction(elem) {
     let rId = parseInt($(elem).closest('.collapsible').
         closest('.collapsible-body').
             prev().
