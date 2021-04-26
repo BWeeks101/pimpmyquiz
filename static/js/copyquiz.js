@@ -1,6 +1,4 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-// eslint-disable-next-line no-unused-vars
-/* global validationInProgress:writable */
 /* global M, quizTitleValidate, listenToQuizTitle */
 
 function copyQuiz() {
