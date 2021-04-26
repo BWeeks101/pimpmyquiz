@@ -796,22 +796,26 @@ function quizFormValidation() {
             return true;
         }
 
-        if ($(elem).attr('minlength') &&
+        if (!$(elem).attr('required') &&
                 $(elem).val().
-                    trim().length < $(elem).attr('minlength')) {
-            $(elem).removeClass('valid').
-                addClass('invalid');
-            inputValidation(elem, true);
-            return true;
-        }
+                    trim().length > 0) {
+            if ($(elem).attr('minlength') &&
+                    $(elem).val().
+                        trim().length < $(elem).attr('minlength')) {
+                $(elem).removeClass('valid').
+                    addClass('invalid');
+                inputValidation(elem, true);
+                return true;
+            }
 
-        if ($(elem).attr('maxlength') &&
-                $(elem).val().
-                    trim().length > $(elem).attr('maxlength')) {
-            $(elem).removeClass('valid').
-                addClass('invalid');
-            inputValidation(elem, true);
-            return true;
+            if ($(elem).attr('maxlength') &&
+                    $(elem).val().
+                        trim().length > $(elem).attr('maxlength')) {
+                $(elem).removeClass('valid').
+                    addClass('invalid');
+                inputValidation(elem, true);
+                return true;
+            }
         }
 
         return false;
