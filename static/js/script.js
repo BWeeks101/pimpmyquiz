@@ -5,6 +5,10 @@
 removeQAction, removeRoundAction, deleteQuiz, checkImgUrl, imgPreview,
 removeMultiAction */
 
+/* Common Global Variables */
+let observerList = [];
+let validationTrackers = {};
+
 /* ============================================ */
 /* Password Confirmation Code Modified From */
 /* https://jsfiddle.net/SirusDoma/ayf832td/ */
@@ -766,8 +770,6 @@ function getCategory(catId) {
     return result;
 }
 
-let observerList = [];
-
 function getObserver(elem) {
     let observer = observerList.find((obj) => obj.elem === elem);
     if (observer !== undefined) {
@@ -835,8 +837,6 @@ function setSelectValue(elem, value) {
         setSelectIcon(selectIcon, value);
     });
 }
-
-let validationTrackers = {};
 
 function createValidationTrackerObj(elemId) {
     if (!validationTrackers[elemId]) {
@@ -1475,5 +1475,6 @@ $(function() {
     $('.tooltipped').tooltip();
     $('.collapsible.helper-collapsible').collapsible();
     $('.collapsible.expandable').collapsible({accordion: false});
+    $('.collapsible:not(.expandable, .helper-collapsible)').collapsible();
     listenToInputs();
 });
