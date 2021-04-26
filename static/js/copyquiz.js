@@ -1,7 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 // eslint-disable-next-line no-unused-vars
 /* global validationInProgress:writable */
-/* global M, quizTitleValidate, getQuizTitleId, listenToQuizTitle */
+/* global M, quizTitleValidate, listenToQuizTitle */
 
 function copyQuiz() {
     let url = '/copy_quiz?id=' +
@@ -30,13 +30,11 @@ function copyQuizListener() {
 
 function listenToModalSaveButton() {
     $('#modalSubmitButton').on("click", () => {
-        validationInProgress[getQuizTitleId()] = false;
-
         const valid = () => {
             copyQuiz();
         };
 
-        quizTitleValidate('', valid);
+        quizTitleValidate('', valid, true);
     });
 }
 
