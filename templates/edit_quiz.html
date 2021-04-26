@@ -213,7 +213,7 @@
                                                                     <div class="image-preview col s12 center-align">
                                                                     </div>
                                                                     <!-- Multiple Choice? -->
-                                                                    <span class="title col s12">Is this a multiple choice Question?</span>
+                                                                    <span class="title col s12">Is this a multiple choice Question?</h1>
                                                                     <div class="input-field col s12 checkbox-container">
                                                                         <i class="prefix light-blue-text text-darken-4"></i>
                                                                         <label id="quizMulti_{{ round.round_num }}_{{ question.question_num }}">
@@ -298,7 +298,13 @@
                                                                                 </ul>
                                                                                 <div class="input-field multi-input col s10">
                                                                                     <span class="prefix center-align" data-question="{{ question.question_num }}" data-multi="{{ option.option_num }}">
-
+                                                                                        {% if option.option_num == question.multiple_choice_options|length %}
+                                                                                            {% if option.option_num < 3 %}
+                                                                                                <a href="#!" class="multi-control-add light-blue-text text-darken-4">+</a>
+                                                                                            {% else %}
+                                                                                                <a href="#!" class="multi-control-remove light-blue-text text-darken-4">-</a><a href="#!" class="multi-control-add light-blue-text text-darken-4">+</a>
+                                                                                            {% endif %}
+                                                                                        {% endif %}
                                                                                     </span>
                                                                                     <input id="answer_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" name="answer_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" type="text" minlength="1" maxlength="255" class="option" value="{{ option.answer_text }}" required>
                                                                                     <label for="answer_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" data-error="Invalid Answer" data-default="Answer {{ round.round_num }}-{{ question.question_num }}-{{ option.option_num }}">Answer {{ round.round_num }}-{{ question.question_num }}-{{ option.option_num }}</label>
