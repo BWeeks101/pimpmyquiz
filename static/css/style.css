@@ -13,6 +13,14 @@ nav .nav-title {
     padding: 0 0 0 15px !important;
 }
 
+nav ul a:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.sidenav li > a:hover {
+	background-color: rgba(0,0,0,0.1);
+}
+
 img {
     max-width: 600px;
     max-height: 600px;
@@ -278,6 +286,10 @@ blockquote {
         width: 95%;
         min-width: 342px !important;
         max-height: 90%;
+    }
+
+    .modal .modal-content {
+        padding: 1rem !important;
     }
 }
 
