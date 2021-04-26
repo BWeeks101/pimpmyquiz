@@ -305,7 +305,7 @@
                                                                                 </div>
                                                                                 <div class="input-field col s2 checkbox-container inline-input center-align">
                                                                                     <label class="center-align full-width">
-                                                                                        <input id="correct_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" name="correct_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" type="checkbox" {% if option.correct == True %}checked{% endif %}/>
+                                                                                        <input id="correct_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" name="correct_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" type="checkbox" class="correct" {% if option.correct == True %}checked{% endif %}/>
                                                                                         <span></span>
                                                                                     </label>
                                                                                 </div>
