@@ -941,7 +941,7 @@ function getQuizTitleId() {
     return elemId;
 }
 
-function quizTitleValidate(invalid, valid, override) {
+function quizTitleValidate(invalid, valid, override = false) {
     let elemId = getQuizTitleId();
 
     // if (validationInProgress[elemId] && override !== true) {
