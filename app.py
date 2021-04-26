@@ -1183,6 +1183,7 @@ def createQuestion(rId, qId, question_data):
             })
 
         question_data['multi_count'] = len(multi_array)
+        question_data['multiple_choice'] = multiple_choice
         question_data['multiple_choice_options'] = multi_array
 
     mongo.db.questions.insert_one(question_data)
@@ -1686,6 +1687,7 @@ def displayQuiz():
             params['show_answers'] = True
 
             quiz = buildViewQuizDataSet(params)
+            print(quiz)
 
             category_data = getCategories()
 
