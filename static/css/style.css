@@ -249,14 +249,14 @@ form .user-search .input-field {
 
 .collapsible-header.round-title,
 .collapsible-header.question-title,
-.collapsible-body .title {
+.collapsible-body :not(h6 span).title {
 	font-size: 24px;
 	font-weight: 300;
     line-height: 32px;
     margin-bottom: 1rem;
 }
 
-.collapsible-body .title {
+.collapsible-body :not(h6 span).title {
     display: block;
 }
 
