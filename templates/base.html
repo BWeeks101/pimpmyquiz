@@ -15,10 +15,10 @@
 <body>
     <header>
         <!-- top navbar -->
-         <nav class="text-shadow light-blue darken-1">
+         <nav class="text-shadow light-blue darken-4">
             <div class="nav-wrapper">
             <a href="#" class="nav-title">Pimp My Quiz!</a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="fas fa-bars"></i></a>
+            <a href="#" data-target="sideNav" class="sidenav-trigger right"><i class="fas fa-bars"></i></a>
             <ul class="right hide-on-med-and-down">
                 {% if not session.user %}
                     <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
@@ -40,7 +40,7 @@
         </nav>
 
         <!-- mobile sidenav -->
-        <ul class="sidenav" id="mobile-demo">
+        <ul class="sidenav" id="sideNav">
             <li><h4 class="center-align light-blue-text text-darken-4">Pimp My Quiz!</h4></li>
             {% if not session.user %}
                 <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
