@@ -107,8 +107,21 @@ img {
 }
 
 img.small {
-    max-width: 300px;
-    max-height: 300px;
+    max-width: 298px;
+    max-height: 298px;
+}
+
+#quizSheet .image-preview {
+    max-width: 298px;
+    max-height: 298px;
+    width: 298px;
+    height: 298px;
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* MaterializeCSS Modal Style Overrides */
@@ -585,13 +598,25 @@ div.col.image-preview {
 
     /* Images */
     img {
-        max-width: 274px;
-        max-height: 274px;
+        max-width: 540px;
+        max-height: 540px;
+    }
+
+    .image-preview>img {
+        max-width: 480px;
+        max-height: 480px;
     }
 
     img.small {
-        max-width: 150px;
-        max-height: 150px;
+        max-width: 260px;
+        max-height: 260px;
+    }
+
+    #quizSheet .image-preview {
+        max-width: 260px;
+        max-height: 260px;
+        width: 260px;
+        height: 260px;
     }
 
     /* admin_users.html */
@@ -739,6 +764,56 @@ div.col.image-preview {
     }
 }
 
+@media only screen and (max-width: 600px) {
+     /* Images */
+     img {
+        max-width: 405px;
+        max-height: 405px;
+    }
+
+    .image-preview>img {
+        max-width: 345px;
+        max-height: 345px;
+    }
+
+    img.small {
+        max-width: 190px;
+        max-height: 190px;
+    }
+
+    #quizSheet .image-preview {
+        max-width: 190px;
+        max-height: 190px;
+        width: 190px;
+        height: 190px;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    /* Images */
+    img {
+       max-width: 340px;
+       max-height: 340px;
+    }
+
+    .image-preview>img {
+        max-width: 280px;
+        max-height: 280px;
+    }
+
+    img.small {
+        max-width: 150px;
+        max-height: 150px;
+    }
+
+    #quizSheet .image-preview {
+        max-width: 150px;
+        max-height: 150px;
+        width: 150px;
+        height: 150px;
+    }
+}
+
 /* Quiz Sheet Print Media Query */
 @media print {
     @page {
@@ -752,34 +827,45 @@ div.col.image-preview {
         max-width: 210mm !important;
         width: 150mm !important;
         padding: initial !important;
-   }
+    }
 
-   .quiz-container.container {
-       max-width: 210mm !important;
-       width: 150mm !important;
-       margin: initial !important;
-   }
+    .quiz-container.container {
+        max-width: 210mm !important;
+        width: 150mm !important;
+        margin: initial !important;
+    }
 
-   #quizSheet>h3 {
-       margin-top: 0;
-   }
+    #quizSheet>h3 {
+        margin-top: 0;
+    }
 
-   /* Images */
-   #quizSheet img {
-       max-width: 50mm;
-       max-height: 50mm;
-   }
+    /* Images */
+    #quizSheet img {
+        max-width: 100mm !important;
+        max-height: 100mm !important;
+    }
 
-   .page-break-before-always {
-       page-break-before: always;
-   }
+    #quizSheet img.small {
+        max-width: 50mm !important;
+        max-height: 50mm !important;
+    }
 
-   .page-break-inside-avoid {
-       page-break-inside: avoid;
-   }
+    #quizSheet .image-preview {
+        max-width: 50mm !important;
+        max-height: 50mm !important;
+        width: 50mm !important;
+        height: 50mm !important;
+    }
 
-   .page-break-after-avoid {
-       page-break-after: avoid;
-   }
+    .page-break-before-always {
+        page-break-before: always;
+    }
 
+    .page-break-inside-avoid {
+        page-break-inside: avoid;
+    }
+
+    .page-break-after-avoid {
+        page-break-after: avoid;
+    }
 }
