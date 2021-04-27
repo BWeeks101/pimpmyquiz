@@ -1094,77 +1094,8 @@ function listenToQuizTitle() {
 }
 
 // eslint-disable-next-line no-unused-vars
-function imgPreviewLoad(elem, max) {
-    let style;
-
-    const setElemStyleRule = (cssRules, i) => {
-        if (i === undefined) {
-            i = 0;
-        }
-        if (cssRules[i].selectorText === `#${$(elem).attr('id')}`) {
-            cssRules[i].style = style;
-            return;
-        }
-        if (i < Object.keys(cssRules).length - 1) {
-            i += 1;
-            return setElemStyleRule(cssRules, i);
-        }
-    };
-
-    const setElemStyle = (i) => {
-        if (i === undefined) {
-            i = 0;
-        }
-        if (document.styleSheets[i].href === null &&
-                document.styleSheets[i].cssRules[0].
-                    conditionText === 'print') {
-            setElemStyleRule(document.styleSheets[i].cssRules[0].cssRules);
-            return;
-        }
-        if (i < Object.keys(document.styleSheets).length - 1) {
-            i += 1;
-            return setElemStyle(i);
-        }
-    };
-
+function imgPreviewLoad(elem) {
     $(elem).removeClass('hidden');
-    let img = {
-        'height': $(elem).height(),
-        'width': $(elem).width(),
-        'parentWidth': $(elem).parent().
-            width(),
-        'cssMaxWidth': parseInt($(elem).css('max-width'))
-    };
-
-    if (max === undefined || max > img.parentWidth) {
-        max = img.parentWidth;
-    }
-
-    if (max > img.cssMaxWidth) {
-        max = img.cssMaxWidth;
-    }
-    let val;
-    let maxPrint = 50;
-    let printVal;
-    if (img.width === img.height) {
-        val = max;
-        printVal = maxPrint;
-        style = `height: ${printVal}mm !important;`;
-        $(elem).height(val);
-    } else if (img.width > img.height) {
-        val = (max / 100) * ((img.height / img.width) * 100);
-        printVal = (maxPrint / 100) * ((img.height / img.width) * 100);
-        style = `height: ${printVal}mm !important;`;
-        $(elem).height(val);
-    } else {
-        val = (max / 100) * ((img.width / img.height) * 100);
-        printVal = (maxPrint / 100) * ((img.width / img.height) * 100);
-        style = `width: ${printVal}mm !important;`;
-        $(elem).width(val);
-    }
-    if ($('#quizSheet').length) {
-        setElemStyle();
-    }
     $(elem).next().
         remove();
 }
