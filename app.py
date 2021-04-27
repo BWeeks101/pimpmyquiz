@@ -1112,6 +1112,8 @@ def buildViewQuizDataSet(params):
             }).sort('question_num'))
         round['_id'] = str(round['_id'])
         isPictureRound = True
+        if len(round['questions']) < 2:
+            isPictureRound = False
         for question in round['questions']:
             question['_id'] = str(question['_id'])
             if isPictureRound is True:
@@ -1119,6 +1121,7 @@ def buildViewQuizDataSet(params):
                         len(question['question_text']) > 0 or
                         question['multiple_choice'] is True):
                     isPictureRound = False
+
         round['isPictureRound'] = isPictureRound
 
     return quiz
