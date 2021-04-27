@@ -8,6 +8,7 @@ removeMultiAction */
 /* Common Global Variables */
 let observerList = [];
 let validationTrackers = {};
+let removeActionParams;
 
 /* ============================================ */
 /* Password Confirmation Code Modified From */
@@ -1181,8 +1182,6 @@ function imgPreviewError(elem, errText) {
         attr('style', "padding: 10px; border: solid 1px black");
 }
 
-let removeActionParams;
-
 // eslint-disable-next-line no-unused-vars
 function popChangeConfModal(type, elem) {
     let title = 'Confirmation Required';
@@ -1266,6 +1265,17 @@ function removeAction({type, elem}) {
 function initChangeConfModal() {
     const resetModal = () => {
         // eslint-disable-next-line no-unused-vars
+        if (!removeActionParams.exec) {
+            switch (removeActionParams.type) {
+            case 'mu':
+                $(removeActionParams.elem).prop('checked', true);
+                break;
+            case 'mc':
+                $(removeActionParams.elem).prop('checked', false);
+                break;
+            default:
+            }
+        }
         removeActionParams = "";
         $('#modalTitle').html("");
         $('#modalMessage').html("");
@@ -1286,6 +1296,7 @@ function listenToChangeConfModalButtons() {
     };
 
     $('#modalYesButton').on("click", () => {
+        removeActionParams.exec = true;
         modalClose();
         removeAction(removeActionParams);
     });
@@ -1293,15 +1304,6 @@ function listenToChangeConfModalButtons() {
 
     $('#modalNoButton').on("click", () => {
         modalClose();
-        switch (removeActionParams.type) {
-        case 'mu':
-            $(removeActionParams.elem).prop('checked', true);
-            break;
-        case 'mc':
-            $(removeActionParams.elem).prop('checked', false);
-            break;
-        default:
-        }
     });
 }
 
