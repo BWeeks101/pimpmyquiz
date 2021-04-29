@@ -1,3 +1,4 @@
+/* Min Supported Screen Width */
 body {
     min-width: 360px
 }
@@ -344,6 +345,10 @@ left: 3.5px;
 transform: translateX(-3.5px) rotate(40deg);
 }
 
+.card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2.checkbox-container label {
+    height: 3rem;
+}
+
 /* MaterializeCSS Spinner Style Overrides */
 .spinner-layer {
     border-color: #01579b;
@@ -474,45 +479,57 @@ blockquote {
     margin-top: calc(1rem + 20px);}
 
 
-/* Custom Classes */
-.text-shadow {
-    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-}
-
-.flashes h4 {
-    line-height: 2;
-}
-
+/* MaterializeCSS .btn-small style override */
 .btn-small {
     margin: 5px;
 }
 
+/* Additional Helper Classes */
 .btn-full-width {
     width: 100%;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
 .hidden {
     display: none;
 }
 
-/* MaterializeCSS .card-content padding adjustment */
+.divider {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.quiz-container .divider {
+    margin-top: 42px;
+}
+
+/* Flash Message Styling */
+.flashes h4 {
+    line-height: 2;
+}
+
+/* MaterializeCSS Card Style Overrides */
 .card-content {
     padding: 1rem 2rem !important;
 }
 
-form .user-search .search-radio-row {
-    margin: 0;
+.card .card-content .card-title {
+    margin-bottom: 1rem;
 }
 
+/* form .user-search .search-radio-row {
+    margin: 0;
+} */
+
+/* new_quiz.html, edit_quiz.html */
 .row div.title.col,
 .row div.answers-container.col,
 .row div.multi-container.col {
     padding: 0;
-}
-
-
-.card .card-content .card-title {
-    margin-bottom: 1rem;
 }
 
 .round-row {
@@ -524,15 +541,11 @@ div.col.image-preview {
     padding-left: 3.75rem;
 }
 
-.card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2.checkbox-container label {
-    height: 3rem;
-}
-
-
 .multi-control-remove {
     margin-right: 5px;
 }
 
+/* my_quizzes.html, quiz_search.html */
 .quiz-search .row .input-field {
     margin-bottom: 0;
 }
@@ -545,16 +558,6 @@ div.col.image-preview {
     max-width: 640px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.divider {
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.quiz-container .divider {
-    margin-top: 42px;
 }
 
 #titleRow>.col {
@@ -752,7 +755,7 @@ div.col.image-preview {
         width: 100% !important;
     }
 
-    /* modal */
+    /* modals */
     .modal {
         width: 95%;
         min-width: 342px !important;
@@ -857,6 +860,7 @@ div.col.image-preview {
         height: 50mm !important;
     }
 
+    /* page break classes */
     .page-break-before-always {
         page-break-before: always;
     }
