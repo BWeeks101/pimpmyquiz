@@ -825,12 +825,11 @@ function clearSelectIcon(elem, value) {
 
 // eslint-disable-next-line no-unused-vars
 function setSelectValue(elem, value) {
-    elem.each((i, el) => {
+    $(elem).each((i, el) => {
         let selectContainer = el.closest('.select-container');
         let selectIcon = $('i.prefix', selectContainer);
         clearSelectIcon(selectIcon, $(el).val());
-        let selector = `.select-wrapper `;
-        selector += 'ul li.optgroup-option';
+        let selector = '.select-wrapper ul li.optgroup-option';
         Object.keys($(selector, selectContainer)).
             map((key) => $(selector, selectContainer)[key]).
                 find((obj) => obj.innerText.toLowerCase() === value).
@@ -999,12 +998,12 @@ function quizTitleValidate(invalid, valid, override = false) {
             };
 
             const enableSubmitButton = (enabled) => {
-                if ($('#modalSubmitButton').length) {
+                if ($('#modalCopyQuizButton').length) {
                     if (!enabled) {
-                        $('#modalSubmitButton').attr('disabled', true);
+                        $('#modalCopyQuizButton').attr('disabled', true);
                         return;
                     }
-                    $('#modalSubmitButton').attr('disabled', false);
+                    $('#modalCopyQuizButton').attr('disabled', false);
                 }
             };
 
