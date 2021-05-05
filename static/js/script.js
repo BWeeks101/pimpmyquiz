@@ -838,6 +838,54 @@ function setSelectValue(elem, value) {
     });
 }
 
+// eslint-disable-next-line no-unused-vars
+function listenToSelect() {
+    // Define the .subopt element selector
+    let selector = ".select-container .select-wrapper ";
+    selector += "ul li.optgroup span div.subopt";
+
+    // Define the click listener
+    $(selector).on("click", (e) => {
+        // Get the original select element
+        let selectContainer = $(e.currentTarget).closest('.select-container');
+        let select = $('.select-wrapper select', selectContainer);
+
+        // Get the innerText value of the clicked element
+        let value = e.currentTarget.innerText.trim().toLowerCase();
+
+        // Set the value of the select element to match the clicked element
+        setSelectValue(select, value);
+
+        /* If the select element is a #quizCategory select and */
+        /* .round-category select elems exist */
+        if (select.attr('id') === 'quizCategory' &&
+            $('.round-category').length) {
+
+            /* Set the value of each .round-category select element to match */
+            /* the value of the #quizCategory select element */
+            setSelectValue($('.round-category'), value);
+
+            /* If the value is 'general knowledge' then remove the disabled  */
+            /* attribute from each .round-category select element */
+            if (value === 'general knowledge') {
+                // (i declaration required by jQuery .each)
+                $('.round-category').each((i, el) => {
+                    // Use Attr for disabled instead of Prop.
+                    // MaterializeCSS relies on the presence of the Attr.
+                    $(el).removeAttr('disabled');
+                });
+
+            } else { // Otherwise...
+                // Add the disabled attribute to each .round-category element
+                // (i declaration required by jQuery .each)
+                $('.round-category').each((i, el) => {
+                    $(el).attr('disabled', true);
+                });
+            }
+        }
+    });
+}
+
 function createValidationTrackerObj(elemId) {
     if (!validationTrackers[elemId]) {
         validationTrackers[elemId] = {
@@ -1117,33 +1165,33 @@ function popChangeConfModal(type, elem) {
     let title = 'Confirmation Required';
     let message;
     switch (type) {
-    case 'mu':
+    case 'sa': // Single answer
         message = 'If you disable multiple choice, all existing multiple ' +
         'choice options for this question will be deleted.';
         break;
-    case 'mc':
+    case 'mc': // Multiple Choice
         message = 'If you enable multiple choice, existing answer data for ' +
         'this question will be deleted.';
         break;
-    case 'q':
+    case 'rq': // Remove question
         message = 'Are you sure you wish to delete this question?';
         break;
-    case 'r':
+    case 'rr': // Remove round
         message = 'If you delete this round, all associated questions will ' +
         'also be deleted.';
         break;
-    case 'd':
+    case 'dq': // Delete quiz
         message = 'If you delete this quiz, all associated rounds and ' +
         'questions will also be deleted.';
         break;
-    case 'ce':
+    case 'ce': // Cancel edit
         message = 'All unsaved changes will be lost.';
         break;
-    case 'cn':
+    case 'cn': // Cancel new
         message = 'This quiz will not be created, and any content added to ' +
         'this form will be lost.';
         break;
-    case 'm':
+    case 'rm': // Remove multiple choice option
         message = 'Are you sure you wish to delete this multiple choice ' +
         'option?';
         break;
@@ -1167,24 +1215,24 @@ function popChangeConfModal(type, elem) {
 // eslint-disable-next-line no-unused-vars
 function removeAction({type, elem}) {
     switch (type) {
-    case 'mu':
-    case 'mc':
+    case 'sa': // Single answer
+    case 'mc': // Multiple choice
         checkBoxMulti(elem);
         break;
-    case 'q':
+    case 'rq': // Remove question
         removeQAction(elem);
         break;
-    case 'r':
+    case 'rr': // Remove round
         removeRoundAction(elem);
         break;
-    case 'd':
+    case 'dq': // Delete quiz
         deleteQuiz($(elem).attr('data-quizId'));
         break;
-    case 'ce':
-    case 'cn':
+    case 'ce': // Cancel edit
+    case 'cn': // Cancel new
         window.location.href = $(elem).attr('href');
         break;
-    case 'm':
+    case 'rm': // Remove multiple choice option
         removeMultiAction(elem);
         break;
     default:
@@ -1398,6 +1446,37 @@ function listenToInputs() {
 // eslint-disable-next-line no-unused-vars
 function initFormValidationModal() {
     $('#formValidationModal').modal();
+}
+
+/* Reset #modalQuizTitle input */
+// eslint-disable-next-line no-unused-vars
+function resetModalQuizTitleInput() {
+    // Remove the data-prev value from #modalQuizTitle
+    $('#modalQuizTitle').attr('data-prev', '');
+
+    if ($('#viewQuiz').length) {
+        // Set the value of #modalQuizTitle to #quizOriginalTitle html
+        $('#modalQuizTitle:hidden').
+            val($('#quizOriginalTitle').html());
+
+        // Call inputValidation() to reset #modalQuizTitle input helpers
+        // inputValidation($('#modalQuizTitle'));
+
+        // Call quizTitleValidate() to reset #modalQuizTitle input helper
+        quizTitleValidate();
+        return;
+    }
+
+    // Remove the #modalQuizTitle input value
+    $('#modalQuizTitle:hidden').val('');
+
+    // Close the #modalQuizTitle input helper
+    getInputHelper($('#modalQuizTitle')).close();
+
+    // Remove the data-quizId attribute value from #modalCopyQuizButton
+    $('#modalCopyQuizButton').attr('data-quizId', '');
+
+    // listenToCopyQuizLinks();
 }
 
 //document ready
