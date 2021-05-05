@@ -131,7 +131,10 @@ function addMulti(elem) {
 /*  elem: a.multi-control-remove Element (Object or jQuery Object) */
 // eslint-disable-next-line no-unused-vars
 function removeMulti(elem) {
-    popChangeConfModal('m', elem);
+
+    /* Call the change confirmation modal with a type of 'rm' */
+    /* (Remove multiple choice option) */
+    popChangeConfModal('rm', elem);
 }
 
 /* Remove a multiple choice option */
@@ -326,7 +329,8 @@ function addQ(elem) {
 /*  elem: .qcontrols-remove Element (Object or jQuery Object) */
 // eslint-disable-next-line no-unused-vars
 function removeQ(elem) {
-    popChangeConfModal('q', elem);
+    // Call the change confirmation modal with a type of 'rq' (Remove Question)
+    popChangeConfModal('rq', elem);
 }
 
 /* Remove a question */
@@ -500,7 +504,8 @@ function addRound(elem) {
 /*  elem: .rcontrols-remove Element (Object or jQuery Object) */
 // eslint-disable-next-line no-unused-vars
 function removeRound(elem) {
-    popChangeConfModal('r', elem);
+    // Call the change confirmation modal with a type of 'rr' (Remove Round)
+    popChangeConfModal('rr', elem);
 }
 
 /* Remove a question */
