@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global addObserver, getObserver, stopObserver, stopListeningToSelect,
+/* global addObserver, stopObserver, stopListeningToSelect,
 listenToSelect, returnHtml, stopListeningToMultiControls, listenToMultiControls,
 stopListeningToQControls, listenToQControls, stopListeningToRControls, M,
 listenToRControls, listenToImgPreview, setSelectValue,
@@ -16,6 +16,7 @@ openInputHelper, initFormValidationModal */
 /* Requires: */
 /*  elem: Select Element (Object or jQuery Object) */
 function reinitSelectOnDisabled(elem) {
+    // (i declaration required by jQuery .each)
     $(elem).each((i, el) => {
         // observer callback function
         const observerFunc = () => {
@@ -24,12 +25,9 @@ function reinitSelectOnDisabled(elem) {
             listenToSelect();
         };
 
-        // create the observer
-        addObserver(el, observerFunc);
-
-        // start the observer
-        let observer = getObserver(el);
-        observer.observe(el, {attributeFilter: ['disabled']});
+        // Create and start the observer
+        addObserver(el, observerFunc).
+            observe(el, {attributeFilter: ['disabled']});
     });
 }
 
