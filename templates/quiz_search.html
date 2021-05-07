@@ -56,7 +56,6 @@
     <script src="{{ url_for('static', filename='js/quizlist.js') }}"></script>
     <script>
         // Convert mongoDB data to JS global array for use in this template
-        let categoryList = createCategoryArray({{ categories | tojson }});
-        categoryList.unshift({'category': 'All', 'category_icon': 'fa-asterisk'})
+        createCategoryArray({{ categories | tojson }});
     </script>
 {% endblock %}
