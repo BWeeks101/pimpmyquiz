@@ -1,11 +1,10 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global getRole, createUserArray, returnHtml, addObserver, getObserver, M */
+/* global getRole, createUserArray, returnHtml, addObserver, M */
 
 // Declare globals required for xHttp requests and data handling
 let recordPositions = [];
 let userSearchPositions = {};
 let quizSearchPositions = {};
-let userList;
 
 /* Remove click listeners from a elements within results data */
 /* Requires: */
@@ -411,7 +410,7 @@ function xHttpRenderResult(elem, result) {
         updateRecordControls(elem, {'userSearch': result.request.userSearch});
         // Populate the userList global with result.user_data
         // eslint-disable-next-line no-unused-vars
-        userList = createUserArray(result.user_data);
+        createUserArray(result.user_data);
     } else if (result.type === "getUsers") { // User role members
         // Add record position
         addRecordPositions(result.request);
@@ -421,7 +420,7 @@ function xHttpRenderResult(elem, result) {
         refreshRecordControls();
         // Populate the userList global with result.user_data
         // eslint-disable-next-line no-unused-vars
-        userList = createUserArray(result.user_data);
+        createUserArray(result.user_data);
     }
 
     // Set the target container innerHTML to result.html
@@ -919,12 +918,8 @@ function observeResults(elem, callback) {
         callback();
     };
 
-    // Create the observer
-    addObserver(elem, preloaderCheck);
-
-    // Start the observer
-    let observer = getObserver(elem);
-    observer.observe(elem, {childList: true});
+    // Create and start the observer
+    addObserver(elem, preloaderCheck).observe(elem, {childList: true});
 }
 
 /* Document Ready Function */
