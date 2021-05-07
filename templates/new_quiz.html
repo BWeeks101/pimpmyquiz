@@ -275,6 +275,6 @@
     <script src="{{ url_for('static', filename='js/newquiz.js') }}"></script>
     <script>
         // Convert mongoDB data to JS global array for use in this template
-        let categoryList = createCategoryArray({{ quiz_categories | tojson }});
+        createCategoryArray({{ quiz_categories | tojson }});
     </script>
 {% endblock %}
