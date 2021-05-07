@@ -220,8 +220,18 @@ def admin_users():
         # POST Method
         if request.method == "POST":
             # Edit User Form Submission
+            original_user_id = request.form.get("orig_user_id").lower()
+            new_user_id = request.form.get("user_id").lower()
+
+            # check if new username exists in db
+            user_validated = validateUserId(new_user_id, original_user_id)
+
+            if not user_validated:
+                flash("New Username already exists - User not updated")
+                return redirect(url_for("admin_users"))
+
             existing_user = mongo.db.users.find_one(
-                {"user_id": request.form.get("orig_user_id").lower()},
+                {"user_id": original_user_id},
                 {"_id": 1})
 
             update_user = {
@@ -1784,6 +1794,39 @@ def validate_quiz_title():
         validate_title = 'true'
 
     return validate_title
+
+
+def validateUserId(new_user_id, original_user_id):
+    # If the user Id values do not match...
+    if new_user_id != original_user_id:
+        # check if new_user_id is already in use
+        exists = mongo.db.users.find_one({"user_id": new_user_id})
+
+        # If new_user_id is in use...
+        if exists:
+            return False  # return false
+        else:
+            return True  # Otherwise return true
+    else:
+        return True  # Otherwise the user Id values match, so return true
+
+
+@app.route("/validate_user_id")
+def validate_user_id():
+    original_user_id = request.args.get('orig_user_id')
+    if original_user_id:
+        original_user_id = original_user_id.lower()
+
+    new_user_id = request.args.get('user_id').lower()
+
+    validate_user_id = validateUserId(new_user_id, original_user_id)
+    # Convert python boolean to js boolean
+    if validate_user_id is False:
+        validate_user_id = 'false'
+    else:
+        validate_user_id = 'true'
+
+    return validate_user_id
 
 
 # User Search
