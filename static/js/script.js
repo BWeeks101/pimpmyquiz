@@ -1824,6 +1824,204 @@ function closeToolTip(elem) {
     }
 }
 
+/* Determine the element id to use to reference the user id element on a page */
+function getUserId() {
+    // Declare elemId as '#user_id' by default
+    let elemId = '#user_id';
+
+    // If we are on a quiz search page, or viewing a quiz..
+    if (!$('#register').length) {
+        // Set elemId to '#modalUserId'
+        elemId = '#modalUserId';
+    }
+
+    return elemId; // return the elemId
+}
+
+/* Validate a user id input element */
+/* Optional Parameters: */
+/*  invalid: callback function to execute if user id input is invalid */
+/*  valid: callback function to execute if user id input is valid */
+/*  override: Boolean. Ignore in progress validation and validate again */
+/*            immediately. (Default: false) */
+function userIdValidate(invalid, valid, override = false) {
+    let elemId = getUserId();
+
+    // If validation is in progress and override is false, return
+    if (isValidationInProgress(elemId) === true && override !== true) {
+        return;
+    }
+
+    // If override is false, set validation in progress
+    if (override !== true) {
+        setValidationInProgress(elemId);
+    }
+
+    /* Validate the input element */
+    const validate = () => {
+
+        /* Set the user Id label text and class */
+        /* Requires: */
+        /*  dataAttr: data attribute to utilise to populate label text */
+        const setUserIdLabel = (dataAttr) => {
+
+            // If the data attribute is not present, return an error
+            if (!$(`${elemId} ~ label`).attr(`data-${dataAttr}`)) {
+                console.log(`Error: data attr (${dataAttr}) does not exist`);
+                return;
+            }
+
+            /* Set the validation class */
+            /* Requires: */
+            /*  valid: Boolean. Reflects whether quiz title is valid */
+            const setValidationClass = (valid) => {
+                // If not valid...
+                if (!valid) {
+                    $(elemId).removeClass("valid"). // remove the valid class
+                        addClass("invalid"); // add the invalid class
+                    return; // return
+                }
+
+                // Otherwise..
+                $(elemId).removeClass("invalid"). // remove the invalid class
+                    addClass("valid"); // add the valid class
+            };
+
+            /* Update the label text */
+            const updLabelText = () => {
+                // Set the label text to the data attribute
+                $(`${elemId} ~ label`).
+                    html($(`${elemId} ~ label`).
+                        data(dataAttr));
+
+                // Get the helper collapsible instance
+                let helperCollapsible = getInputHelper($(elemId));
+
+                // If an instance is returned...
+                if (helperCollapsible) {
+                    // If the specified data attribute was 'error'...
+                    if (dataAttr === 'error') {
+                        // Open the helper collapsible
+                        openInputHelper(helperCollapsible);
+                        return; // return
+                    }
+
+                    // Otherwise close the helper
+                    closeInputHelper(helperCollapsible);
+                }
+            };
+
+            // Check the dataAttr variable and take appropriate action
+            switch (dataAttr) {
+            case 'error': // data-error
+            case 'dup': // data-dup
+                setValidationClass(false); // Add invalid class
+                updLabelText(); // update the label text
+                break;
+            case 'default': // data-default
+                setValidationClass(true); // Add valid class
+                updLabelText(); // update the label text
+                break;
+            default:
+            }
+        };
+
+        /* Get the user_id value */
+        let userId = $(elemId).val().
+            trim();
+
+        // If the userId length is < 5 or > 15...
+        if (userId.length < 5 || userId.length > 15) {
+            // Call setUserIdLabel() for 'error'
+            setUserIdLabel('error');
+
+            // If the invalid callback function was provided, call it
+            if (invalid) {
+                invalid(userId);
+            }
+
+            // If override is false, set validation complete
+            if (override !== true) {
+                setValidationComplete(elemId);
+            }
+
+            return false; // User Id is invalid, so return false
+        }
+
+        // Create xHttp request object to validate the user id value
+        let request = {
+            'type':
+                'validate_user_id',
+            'params': {
+                'user_id': userId
+            }
+        };
+
+        /* If the modalOrigUserId element is present, add the orig_user_id */
+        /* parameter to the xHttp request */
+        if ($('#modalOrigUserId').length) {
+            // eslint-disable-next-line camelcase
+            request.params.orig_user_id = $('#modalOrigUserId').val().
+                trim();
+        }
+
+        // Call xHttpRequest() to validate the user id value
+        let xhttp = xHttpRequest(request);
+
+        // On ready state change...
+        xhttp.onreadystatechange = () => {
+            // If the ready state is 4 or 200...
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                // If the responseText is 'false'...
+                if (xhttp.responseText === 'false') {
+                    // Call setUserIdLabel() for 'dup' (title already exists)
+                    setUserIdLabel('dup');
+
+                    // If the invalid callback function was provided, call it
+                    if (invalid) {
+                        invalid(userId);
+                    }
+
+                    // If override is false, set validation complete
+                    if (override !== true) {
+                        setValidationComplete(elemId);
+                    }
+
+                    return false; // user id is invalid, so return false
+                }
+
+                /* Otherwise responseText is not 'false' so call */
+                /* setUserIdLabel() for 'default' */
+                setUserIdLabel('default');
+
+                // If the valid callback function was provided, call it
+                if (valid) {
+                    valid(userId);
+                }
+
+                // If override is false, set validation complete
+                if (override !== true) {
+                    setValidationComplete(elemId);
+                }
+
+                return true; // user id is valid, so return true
+            }
+        };
+    };
+
+    // Start an input monitor for this element, with validate as the callback
+    startValidationInputMonitor(elemId, validate);
+}
+
+/* Add input listener to user id elements */
+// eslint-disable-next-line no-unused-vars
+function listenToUserId() {
+    // On input, call userIdValidate()
+    $('#user_id, #modalUserId').on("input", () => {
+        userIdValidate();
+    });
+}
+
 /* Add click listener to a elements to close tooltip */
 function listenToATags() {
     $('a').on('click', (e) => {
@@ -2014,7 +2212,7 @@ function listenToInputs() {
     /* Define input element selector, avoiding .compare-password and quiz */
     /* title inputs */
     let inputSelector = ".input-field:not(.compare-password)>" +
-        "input:not(#quizTitle, #modalQuizTitle)";
+        "input:not(#quizTitle, #modalQuizTitle, #user_id, #modalUserId)";
 
     // Add input listener to call inputValidation()
     $(inputSelector).on("input", (e) => inputValidation(e.currentTarget));
