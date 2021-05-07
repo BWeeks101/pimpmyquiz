@@ -30,11 +30,11 @@ function destroyResultsDataTooltips(resultsDataElem) {
 
 /* Record the total pages and current page of results for a given result set */
 /* Requires: */
-/* obj: An object containing the record properties. */
-/*      All records will contain: */
+/*  obj: An object containing the record properties. */
+/*       All records will contain: */
 /*          totalPages: Total number of record pages */
 /*          currentPage: The currently displayed page of results */
-/*      Records will also contain one of the following properties: */
+/*       Records will also contain one of the following properties: */
 /*          role: User Account Role Members */
 /*          userSearch: Username search string */
 /*          quizSearch: Quiz title search string */
@@ -500,8 +500,9 @@ function xHttpRequest(requestObj, elem) {
     // Send the xHttp request
     xhttp.send();
 
-    // If the request type is 'validate_quiz_title'...
-    if (requestObj.type === 'validate_quiz_title') {
+    // If the request type is 'validate_quiz_title' or 'validate_user_id'...
+    if (requestObj.type === 'validate_quiz_title' ||
+            requestObj.type === 'validate_user_id') {
         return xhttp; // Return the xHttp object
     }
 }
