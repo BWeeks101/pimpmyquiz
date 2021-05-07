@@ -3,6 +3,9 @@
     <h3 class="center-align">Register</h3>
     <div class="row">
         <form id="register" class="col s12 m8 offset-m2 formValidate" method="POST" action="{{ url_for('register') }}">
+            <!-- Prevent Submission of Form on Enter Keypress -->
+            <!-- https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/51507806#51507806 -->
+            <button class="hidden" type="submit" disabled></button>
             <div class="card-panel">
                 <!-- email -->
                 <div class="row">
@@ -18,7 +21,7 @@
                     </ul>
                     <div class="input-field col s12">
                         <i class="fas fa-envelope prefix light-blue-text text-darken-4"></i>
-                        <input id="email" name="email" type="email" class="validate" required>
+                        <input id="email" name="email" type="email" required>
                         <label for="email" data-error="Invalid Email Address." data-default="Email Address">Email Address</label>
                     </div>
                 </div>
@@ -36,8 +39,8 @@
                     </ul>
                     <div class="input-field col s12">
                         <i class="fas fa-user-plus prefix light-blue-text text-darken-4"></i>
-                        <input id="user_id" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" required>
-                        <label for="user_id" data-error="Invalid Username." data-default="Username">Username</label>
+                        <input id="user_id" name="user_id" type="text" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
+                        <label for="user_id" data-error="Invalid Username." data-dup="Username already in use.  Please choose another." data-default="Username">Username</label>
                     </div>
                 </div>
                 <!-- password -->
@@ -54,7 +57,7 @@
                     </ul>
                     <div class="input-field password col s12">
                         <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                        <input id="pwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" class="validate" required>
+                        <input id="pwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" required>
                         <label for="pwd" data-error="Invalid Password." data-default="Password">Password</label>
                     </div>
                     <!-- password confirmation -->
