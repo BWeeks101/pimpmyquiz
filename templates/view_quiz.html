@@ -148,8 +148,13 @@
             // Load images
             loadImg({{ viewQuiz.rounds | tojson }});
 
-            // Set data-quizId attribute on modalCopyQuizButton
-            $('#modalCopyQuizButton').attr('data-quizId', '{{ viewQuiz._id }}');
+            {% if 'user' in session %}
+                // Initialise listeners and MaterializeCSS modal for quiz copy functionality
+                initQuizCopy()
+
+                // Set data-quizId attribute on modalCopyQuizButton
+                $('#modalCopyQuizButton').attr('data-quizId', '{{ viewQuiz._id }}');
+            {% endif %}
         });
     </script>
 {% endblock %}
