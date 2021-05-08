@@ -27,14 +27,13 @@
         <div class="quiz-container">
             <!-- rounds -->
             {% for round in viewQuiz.rounds %}
+                <!-- round header text -->
+                <h5 class="light-blue-text text-darken-4 center-align">Round {{ round.round_num }}</h5>
                 <h5 class="light-blue-text text-darken-4 center-align">
-                    Round {{ round.round_num }}
-                    <p>
-                        {% if viewQuiz.category.lower() == 'general knowledge' %}
-                            <i class="fas {{ round.category_icon.class }} fa-fw"></i>
-                        {% endif %}
-                        {{ round.title }}
-                    </p>
+                    {% if viewQuiz.category.lower() == 'general knowledge' %}
+                        <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                    {% endif %}
+                    {{ round.title }}
                 </h5>
                 <!-- Questions -->
                 {% for question in round.questions %}
@@ -45,7 +44,7 @@
                     {% if question.question_img_url != '' %}
                         <div class="center-align">
                             <!-- image -->
-                            <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" src="">
+                            <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
                             <!-- preloader -->
                             <div class="preloader-container">
                                 <div class="preloader-wrapper big active">
@@ -71,7 +70,7 @@
                         </h6>
                         {% if question.answer_img_url != '' %}
                             <div class="center-align">
-                                <img id="img_a_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" src="">
+                                <img id="img_a_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                 <div class="preloader-container">
                                     <div class="preloader-wrapper big active">
                                         <div class="spinner-layer">
@@ -103,7 +102,7 @@
                             {% if option.answer_img_url != '' %}
                                 <div class="center-align">
                                     <!-- image -->
-                                    <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" src="">
+                                    <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" alt="Image for Multiple Choice Option {{ option.option_num }} for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                     <!-- preloader -->
                                     <div class="preloader-container">
                                         <div class="preloader-wrapper big active">
