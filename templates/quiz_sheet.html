@@ -28,19 +28,14 @@
             <!-- rounds -->
             {% for round in viewQuiz.rounds %}
                 <div class="round-container">
+                    <!-- round header text -->
                     {% if loop.length > 1 or round.isPictureRound %}
-                        {% if round.round_num == 1%}
-                            <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
-                        {% else %}
-                            <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
-                        {% endif %}
-                            Round {{ round.round_num }}
-                            <p>
-                                {% if viewQuiz.category.lower() == 'general knowledge' %}
-                                    <i class="fas {{ round.category_icon.class }} fa-fw"></i>
-                                {% endif %}
-                                {{ round.title }}
-                            </p>
+                        <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">Round {{ round.round_num }}</h5>
+                        <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
+                            {% if viewQuiz.category.lower() == 'general knowledge' %}
+                                <i class="fas {{ round.category_icon.class }} fa-fw"></i>
+                            {% endif %}
+                            {{ round.title }}
                         </h5>
                     {% endif %}
                     {% if round.isPictureRound == True %}
