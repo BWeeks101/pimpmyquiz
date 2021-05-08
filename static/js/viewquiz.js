@@ -99,8 +99,9 @@ function listenToCopyQuiz() {
     });
 }
 
-/* Document Ready Function */
-$(function() {
+/* Initialise listeners and MaterializeCSS modal for quiz copy functionality */
+// eslint-disable-next-line no-unused-vars
+function initQuizCopy() {
     // If the #viewQuiz element is present...
     if ($('#viewQuiz').length) {
         // Reset the #modalQuizTitle input
@@ -110,7 +111,10 @@ $(function() {
         // Initialise the click listener on the .copy-quiz element
         listenToCopyQuiz();
     }
+}
 
+/* Document Ready Function */
+$(function() {
     // For each .quiz-image element, call listenToQuizImg()
     // (i declaration required by jQuery .each)
     $('.quiz-image').each((i, elem) => listenToQuizImg(elem));
