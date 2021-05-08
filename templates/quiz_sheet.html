@@ -55,7 +55,7 @@
                                         <div class="col s6">
                                             <div class="image-preview">
                                                 <!-- image -->
-                                                <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image small hidden inline-block" src="">
+                                                <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image small hidden inline-block" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                                 <!-- preloader -->
                                                 <div class="preloader-container">
                                                     <div class="preloader-wrapper big active">
@@ -85,7 +85,7 @@
                                 <div class="col s6 page-break-inside-avoid">
                                     <div class="image-preview">
                                         <!-- image -->
-                                        <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image small hidden inline-block" src="">
+                                        <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image small hidden inline-block" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                         <!-- preloader -->
                                         <div class="preloader-container">
                                             <div class="preloader-wrapper big active">
@@ -132,7 +132,7 @@
                                 {% if question.question_img_url != '' %}
                                     <div class="center-align">
                                         <!-- image -->
-                                        <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden inline-block" src="">
+                                        <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden inline-block" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                         <!-- preloader -->
                                         <div class="preloader-container">
                                             <div class="preloader-wrapper big active">
@@ -165,7 +165,7 @@
                                         {% if option.answer_img_url != '' %}
                                             <div class="center-align">
                                                 <!-- image -->
-                                                <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" src="">
+                                                <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" alt="Image for Multiple Choice Option {{ option.option_num }} for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                                 <!-- preloader -->
                                                 <div class="preloader-container">
                                                     <div class="preloader-wrapper big active">
