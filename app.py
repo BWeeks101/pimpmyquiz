@@ -505,9 +505,15 @@ def admin_users():
             role_groups=role_groups
         )
 
-    # User is not authorised.  Display a flash message and redirect to the
-    # my_quizzes page
-    flash("Permission Denied")
+    # User is not logged in, display a flash message and redirect to the login
+    # page.
+    if type(auth_state['reason']) == str:
+        flash("Permission Denied")
+        return redirect(url_for("login"))
+
+    # User is not authorised. Display a flash message and redirect to the
+    # my_quizzes page.
+    flash("Access to the Admin Console is Restricted")
     return redirect(url_for("my_quizzes"))
 
 
@@ -1187,7 +1193,7 @@ def myQuizSearch():
         return results
 
     # Otherwise display flash message and redirect to login page
-    flash("Permission Denied")
+    flash("Please log in to view your quizzes")
     return redirect(url_for("login"))
 
 
@@ -1310,12 +1316,12 @@ def deleteQuiz():
 
         # Otherwise user is not authorised, so display a flash message and
         # redirect to the referrer url
-        flash("Permission Denied")
+        flash("You do not have permission to delete this quiz")
         return redirect(request.referrer)
 
     # User is not logged in, so display a flash message and redirect to the
     # login page
-    flash("Permission Denied")
+    flash("Please log in to create, edit or delete a quiz")
     return redirect(url_for("login"))
 
 
@@ -1889,7 +1895,7 @@ def copyQuiz():
         return redirect(request.referrer)
 
     # If not logged in, redirect to the login page
-    flash("Permission Denied")
+    flash("Please log in to copy a quiz")
     return redirect(url_for("login"))
 
 
@@ -2278,7 +2284,7 @@ def displayQuiz():
                                    cancel_url=cancel_url)
 
         # If not authorised or author display flash message
-        flash("Permission Denied")
+        flash("Please log in to edit a quiz")
         # If not logged in redirect to login page
         if auth_state['auth'] is False and type(auth_state['reason']) == str:
             return redirect(url_for('login'))
@@ -2363,11 +2369,11 @@ def validateQuizTitle(quiz_title, quiz_id=None):
 
         # Otherwise display a flash message and redirect to the quiz_search
         # page
-        flash("Permission Denied")
+        flash("You do not have permission to edit this quiz")
         return redirect(url_for("quiz_search"))
 
     # Otherwise display a flash message and redirect to the login page
-    flash("Permission Denied")
+    flash("Please log in to create, edit or copy a quiz")
     return redirect(url_for("login"))
 
 
@@ -2624,8 +2630,14 @@ def userSearch():
         # return the results object
         return results
 
+    # Otherwise if the user is not logged in, display a flash message and
+    # redirect to the login page
+    if type(auth_state['reason']) == str:
+        flash("Permission Denied")
+        return redirect(url_for("login"))
+
     # Otherwise display a flash message and redirect to the my_quizzes page
-    flash("Permission Denied")
+    flash("Access to User Search is Restricted")
     return redirect(url_for("my_quizzes"))
 
 
@@ -2786,8 +2798,14 @@ def getUsers():
         # return the results object
         return results
 
+    # Otherwise if the user is not logged in, display a flash message and
+    # redirect to the login page
+    if type(auth_state['reason']) == str:
+        flash("Permission Denied")
+        return redirect(url_for("login"))
+
     # Otherwise display a flash message and redirect to the my_quizzes page
-    flash("Permission Denied")
+    flash("Access to the Admin Console is Restricted")
     return redirect(url_for("my_quizzes"))
 
 
