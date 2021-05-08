@@ -1,3 +1,14 @@
+/*
+* Validated by https://jigsaw.w3.org/css-validator/
+*/
+
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 4 version
+*/
+
 /* Min Supported Screen Width */
 body {
     min-width: 360px
@@ -79,8 +90,12 @@ body {
 /* Disable Transition/Transform on custom MaterializeCSS Select Box */
 /* Works around MaterializeCSS issue #6464 */
 .select-wrapper * {
+    -webkit-transition: none !important;
+    -o-transition: none !important;
     transition: none !important;
-    transform: none !important;
+    -webkit-transform: none !important;
+        -ms-transform: none !important;
+            transform: none !important;
 }
 
 /* MaterializeCSS nav style overrides */
@@ -118,9 +133,16 @@ img.small {
     width: 298px;
     height: 298px;
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     margin-left: auto;
     margin-right: auto;
 }
@@ -222,7 +244,6 @@ form .user-search .input-field {
 
 .dummy-collapsible-header {
 	display: -webkit-box;
-	display: -webkit-flex;
 	display: -ms-flexbox;
 	display: flex;
 	-webkit-tap-highlight-color: transparent;
@@ -248,7 +269,8 @@ form .user-search .input-field {
 #modalChangePasswordCollapsible {
 	margin: 0;
 	border: none;
-	box-shadow: none;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
 }
 
 #modalChangePasswordCollapsible .collapsible-header,
@@ -263,14 +285,16 @@ form .user-search .input-field {
 
 .collapsible-header.round-title,
 .collapsible-header.question-title,
-.collapsible-body :not(h6 span).title {
+.collapsible-body :not(h6).title,
+.collapsible-body :not(span).title {
 	font-size: 24px;
 	font-weight: 300;
     line-height: 32px;
     margin-bottom: 1rem;
 }
 
-.collapsible-body :not(h6 span).title {
+.collapsible-body :not(h6).title,
+.collapsible-body :not(span).title {
     display: block;
 }
 
@@ -342,7 +366,9 @@ left: 3.5px;
 }
 
 .answers-container .inline-input [type="checkbox"]:checked + span:not(.lever)::before {
-transform: translateX(-3.5px) rotate(40deg);
+-webkit-transform: translateX(-3.5px) rotate(40deg);
+    -ms-transform: translateX(-3.5px) rotate(40deg);
+        transform: translateX(-3.5px) rotate(40deg);
 }
 
 .card .card-content .row .collapsible .collapsible-header[data-question]~.collapsible-body .row .answers-container .input-field.col.s2.checkbox-container label {
@@ -392,7 +418,8 @@ transform: translateX(-3.5px) rotate(40deg);
     border: none !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important;
 }
 
 .helper-collapsible {
@@ -464,10 +491,19 @@ blockquote {
 }
 
 .search-no-results {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
 }
 
 .search-no-results h5 {
@@ -630,7 +666,8 @@ div.col.image-preview {
     .collapsible-search .collapsible-body .collapsible {
         margin-bottom: 0;
         border: none;
-        box-shadow: initial;
+        -webkit-box-shadow: initial;
+                box-shadow: initial;
     }
 
     .collapsible-header[data-role-group]~.collapsible-body {
@@ -647,7 +684,8 @@ div.col.image-preview {
 
     .collapsible-header[data-role]~.collapsible-body>.collapsible {
         border: none;
-        box-shadow: initial;
+        -webkit-box-shadow: initial;
+                box-shadow: initial;
     }
 
     .collection.user-search-results>.collection-item:last-child {
@@ -657,9 +695,12 @@ div.col.image-preview {
     /* new_quiz.html, edit_quiz.html */
     .card {
         margin-bottom: 0;
+        -webkit-transition: none;
+        -o-transition: none;
         transition: none;
         border-radius: initial !important;
-        box-shadow: initial;
+        -webkit-box-shadow: initial;
+                box-shadow: initial;
     }
 
     .card-content {
