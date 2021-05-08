@@ -28,8 +28,8 @@
             <!-- rounds -->
             {% for round in viewQuiz.rounds %}
                 <div class="round-container">
-                    <!-- round header text -->
                     {% if loop.length > 1 or round.isPictureRound %}
+                        <!-- round header text -->
                         <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">Round {{ round.round_num }}</h5>
                         <h5 class="light-blue-text text-darken-4 center-align page-break-inside-avoid page-break-after-avoid">
                             {% if viewQuiz.category.lower() == 'general knowledge' %}
