@@ -1145,11 +1145,18 @@ function setSelectValue(elem, value) {
         // Get the select container
         let selectContainer = el.closest('.select-container');
 
+        // Get current value so the existing icon class can be removed
+        let currentVal = $(el).closest('.select-wrapper').
+            find('select').
+                val().
+                    trim().
+                        toLowerCase();
+
         // Get the select icon prefix
         let selectIcon = $('i.prefix', selectContainer);
 
         // Clear the category icon class from the icon prefix element
-        clearSelectIcon(selectIcon, value.toLowerCase());
+        clearSelectIcon(selectIcon, currentVal);
 
         // Get the hidden .optgroup-option
         let selector = '.select-wrapper ul li.optgroup-option';
