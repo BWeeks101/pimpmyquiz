@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+    <!-- Register Form -->
     <h3 class="center-align">Register</h3>
     <div class="row">
         <form id="register" class="col s12 m8 offset-m2 formValidate" method="POST" action="{{ url_for('register') }}">
@@ -76,6 +77,7 @@
             </div>
         </form>
 
+        <!-- login link -->
         <div class="row col s12">
             <p class="center-align">
                 Already Registered? <a href="{{ url_for('login') }}" class="light-blue-text text-darken-4">Log In</a>
@@ -84,6 +86,7 @@
     </div>
 {% endblock %}
 
+<!-- Additional Javascript -->
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}

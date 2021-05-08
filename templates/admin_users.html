@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <!-- Modal Structure -->
+    <!-- edit user modal -->
     <div id="editUserModal" class="modal">
         <form class="col s12" method="POST" action="">
             <!-- Prevent Submission of Form on Enter Keypress -->
@@ -131,13 +131,13 @@
         </form>
     </div>
 
-    <!-- Collapsible Content -->
+    <!-- Main Content -->
     <h3 class="light-blue-text text-darken-4 center-align">User Administration</h3>
     <div class="row">
         <div class="col s12">
+            <!-- User Search -->
             <ul class="collapsible collapsible-search light-blue-text text-darken-4">
                 <li>
-                    <!-- Search -->
                     <div class="collapsible-header"><i class="fas fa-search"></i><span>Search</span></div>
                     <div class="collapsible-body">
                         <div class="user-search">
@@ -173,6 +173,7 @@
                     </div>
                 </li>
             </ul>
+            <!-- User Role Groups -->
             <ul class="collapsible collapsible-role-groups light-blue-text text-darken-4">
                 {% for role_group in role_groups %}
                 <li>
@@ -185,6 +186,7 @@
                             <span class="collapsible-header-text truncate">{{ role_group.role_group }}</span>&nbsp<span>({{ role_group.member_count }})</span>
                         </div>
                     <div class="collapsible-body">
+                        <!-- User Roles -->
                         <ul class="collapsible collapsible-user-roles">
                             {% for role in user_roles if role.role_group == role_group.role_group %}
                                 <li>
@@ -199,6 +201,7 @@
                                             <span class="collapsible-header-text truncate">{{ role.role_desc }}</span>&nbsp<span>({{ role.member_count }})</span>
                                         </div>
                                         <div class="collapsible-body">
+                                            <!-- Users -->
                                             <ul class="collapsible">
                                                 <div class="results-control hidden">
                                                     <a href="#" class="results-control-first tooltipped" data-position="bottom" data-tooltip="First"><i class="fas fa-angle-double-left fa-fw light-blue-text text-darken-4"></i></a>
@@ -226,6 +229,7 @@
     </div>
 {% endblock %}
 
+<!-- Additional Javascript -->
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/editusers.js') }}"></script>
     <script>

@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-    <!-- Main Content -->
+    <!-- Title row -->
     <div id="titleRow" class="row container">
         <div class="col s2"></div>
         <div class="col s8 center-align">
             <h3 class="light-blue-text text-darken-4">Edit a Quiz</h3>
         </div>
+        <!-- Cancel Link -->
         <div class="col s2 right-align">
             <h3>
                 <a id="cancelUrl" class="light-blue-text text-darken-4 tooltipped" data-position="bottom" data-tooltip="Cancel" href="{{ cancel_url }}">
@@ -14,6 +15,7 @@
             </h3>
         </div>
     </div>
+    <!-- Main Content -->
     <div id="editQuiz" class="container">
         <form id="editQuizForm" autocomplete="off" method="post">
             <!-- Prevent Submission of Form on Enter Keypress -->
@@ -72,6 +74,7 @@
                         <input id="roundCount" name="roundCount" type="text" class="hidden" value="{{ quiz.rounds|length }}">
                     </div>
                     <div class="row">
+                        <!-- Rounds -->
                         <ul class="collapsible expandable">
                             {% for round in quiz.rounds %}
                                 <li class="active">
@@ -144,6 +147,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col s12">
+                                                <!-- Questions -->
                                                 <ul class="collapsible expandable">
                                                     {% for question in round.questions %}
                                                         <li class="active">
@@ -275,6 +279,7 @@
                                                                             <span class="col s2 center-align">Correct?</span>
                                                                         </div>
                                                                         <input id="multiCount_{{ round.round_num }}_{{ question.question_num }}" name="multiCount_{{ round.round_num }}_{{ question.question_num }}" type="text" class="hidden" value="{{ question.multi_count }}">
+                                                                        <!-- Multiple Choice Options -->
                                                                         <div class="multi-container col s12">
                                                                             {% for option in question.multiple_choice_options %}
                                                                                 <ul id="answerHelperCollapsible_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="collapsible helper-collapsible col s12">
@@ -349,7 +354,7 @@
                     </div>
                 </div>
             </div>
-            <!-- create quiz -->
+            <!-- Save Quiz Button -->
             <div class="row">
                 <div class="col-12">
                     <button id="submitButton" type="submit" class="col s12 btn-large light-blue darken-4 text-shadow">
@@ -361,6 +366,7 @@
     </div>
 {% endblock%}
 
+<!-- Additional Javascript -->
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/newquizlisteners.js') }}"></script>
     <script src="{{ url_for('static', filename='js/newquiz.js') }}"></script>
@@ -369,7 +375,9 @@
         // Convert mongoDB data to JS global array for use in this template
         createCategoryArray({{ quiz_categories | tojson }});
 
+        /* Doc Ready Function */
         $(function () {
+            // Create array of initial select box values
             let initialSelectVals = [{
                 'elem': '#quizCategory',
                 'category': '{{ quiz.category }}'
@@ -382,6 +390,7 @@
                 });
             {% endfor %}
 
+            // Set initial select box values
             setInitialSelectVals(initialSelectVals);
         })
     </script>

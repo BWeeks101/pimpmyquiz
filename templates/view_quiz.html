@@ -9,6 +9,7 @@
             </div>
             <div class="col s2">
                 {% if 'user' in session %}
+                    <!-- copy quiz link -->
                     <h3 class="right-align">
                         <a class="light-blue-text text-darken-4 tooltipped copy-quiz" data-position="bottom" data-tooltip="Copy Quiz" href="#!">
                             <i class="fas fa-copy fa-fw"></i>
@@ -17,10 +18,14 @@
                 {% endif %}
             </div>
         </div>
+        <!-- quiz author -->
         <h5 class="light-blue-text text-darken-4 center-align">By: {{ viewQuiz.author }}</h5>
+        <!-- quiz category -->
         <h5 class="light-blue-text text-darken-4 center-align">Category: <i class="fas {{ viewQuiz.category_icon.class }} fa-fw"></i> {{ viewQuiz.category }}</h5>
         <div class="divider"></div>
+        <!-- quiz container -->
         <div class="quiz-container">
+            <!-- rounds -->
             {% for round in viewQuiz.rounds %}
                 <h5 class="light-blue-text text-darken-4 center-align">
                     Round {{ round.round_num }}
@@ -31,6 +36,7 @@
                         {{ round.title }}
                     </p>
                 </h5>
+                <!-- Questions -->
                 {% for question in round.questions %}
                     <h6 class="light-blue-text text-darken-4 left-align">
                         Q{{ question.question_num}}) {{ question.question_text }}
@@ -38,7 +44,9 @@
 
                     {% if question.question_img_url != '' %}
                         <div class="center-align">
+                            <!-- image -->
                             <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" src="">
+                            <!-- preloader -->
                             <div class="preloader-container">
                                 <div class="preloader-wrapper big active">
                                     <div class="spinner-layer">
@@ -57,6 +65,7 @@
                         </div>
                     {% endif %}
                     {% if question.multiple_choice == False %}
+                        <!-- Answer -->
                         <h6 class="light-blue-text text-darken-4 left-align">
                             &emsp;A{{ question.question_num }}) {{ question.answer_text }}
                         </h6>
@@ -82,6 +91,7 @@
                         {% endif %}
                     {% else %}
                         {% for option in question.multiple_choice_options %}
+                            <!-- Multiple Choice Option -->
                             <h6 class="light-blue-text text-darken-4">
                                 &emsp;{{ option.option_num}}) {{ option.answer_text }}
                                 {% if option.answer_text != '' %}
@@ -92,7 +102,9 @@
                             </h6>
                             {% if option.answer_img_url != '' %}
                                 <div class="center-align">
+                                    <!-- image -->
                                     <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" src="">
+                                    <!-- preloader -->
                                     <div class="preloader-container">
                                         <div class="preloader-wrapper big active">
                                             <div class="spinner-layer">
@@ -127,13 +139,18 @@
     </div>
 {% endblock %}
 
+<!-- Additional Javascript -->
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/copyquiz.js') }}"></script>
     <script src="{{ url_for('static', filename='js/viewquiz.js') }}"></script>
     <script>
+        /* Document Ready Function */
         $(function() {
-          loadImg({{ viewQuiz.rounds | tojson }});
-          $('#modalCopyQuizButton').attr('data-quizId', '{{ viewQuiz._id }}');
+            // Load images
+            loadImg({{ viewQuiz.rounds | tojson }});
+
+            // Set data-quizId attribute on modalCopyQuizButton
+            $('#modalCopyQuizButton').attr('data-quizId', '{{ viewQuiz._id }}');
         });
     </script>
 {% endblock %}
