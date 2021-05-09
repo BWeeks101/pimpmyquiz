@@ -285,17 +285,28 @@ form .user-search .input-field {
 
 .collapsible-header.round-title,
 .collapsible-header.question-title,
-.collapsible-body :not(h6).title,
-.collapsible-body :not(span).title {
+.collapsible-body .title {
 	font-size: 24px;
 	font-weight: 300;
     line-height: 32px;
     margin-bottom: 1rem;
 }
 
-.collapsible-body :not(h6).title,
-.collapsible-body :not(span).title {
+.collapsible-body .results-data h6 > span.title,
+.collapsible-body .results-data h6 > a > span.title {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+    margin-bottom: none !important;
+}
+
+.collapsible-body .title {
     display: block;
+}
+
+.collapsible-body .results-data h6 > span.title,
+.collapsible-body .results-data h6 > a > span.title {
+    display: initial !important;
 }
 
 .collapsible-header.round-title,
