@@ -28,7 +28,7 @@
                     <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
                 {% endif %}
                 {% if session.user %}
-                    <li><a href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
+                    <li><a id='navMyQuizzes' href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
                     <li><a href="{{ url_for('new_quiz') }}">New Quiz</a></li>
                     <li><a id='navQuizSearch' href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
                     {% if session.user_role == "global admin" or session.user_role == "user account admin" %}
