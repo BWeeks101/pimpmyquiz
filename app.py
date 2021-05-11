@@ -103,6 +103,7 @@ def auth_user(auth_criteria):
 # root route!
 # Redirect the user to an appropriate landing page
 @app.route("/")
+@app.route("/landing")
 def landing():
     # Check that the user is logged in
     auth_criteria = {
