@@ -3,7 +3,7 @@
 /* global observerList */
 /* global xHttpRequest, M, checkBoxMulti,
 removeQAction, removeRoundAction, deleteQuiz, checkImgUrl, imgPreview,
-removeMultiAction */
+removeMultiAction, xHttpValidateResponseText */
 
 /* Common Global Variables */
 let observerList = [];
@@ -1561,22 +1561,28 @@ function quizTitleValidate(invalid, valid, override = false) {
         xhttp.onreadystatechange = () => {
             // If the ready state is 4 or 200...
             if (xhttp.readyState === 4 && xhttp.status === 200) {
-                // If the responseText is 'false'...
-                if (xhttp.responseText === 'false') {
-                    // Call setQuizTitleLabel() for 'dup' (title already exists)
-                    setQuizTitleLabel('dup');
+                // if the responseText is valid...
+                if (xHttpValidateResponseText(xhttp.responseText)) {
+                    // If the responseText is 'false'...
+                    if (xhttp.responseText === 'false') {
 
-                    // If the invalid callback function was provided, call it
-                    if (invalid) {
-                        invalid(quizTitle);
+                        /* Call setQuizTitleLabel() for 'dup' (title already */
+                        /* exists) */
+                        setQuizTitleLabel('dup');
+
+                        /* If the invalid callback function was provided, */
+                        /* call it */
+                        if (invalid) {
+                            invalid(quizTitle);
+                        }
+
+                        // If override is false, set validation complete
+                        if (override !== true) {
+                            setValidationComplete(elemId);
+                        }
+
+                        return false; // quiz title is invalid, so return false
                     }
-
-                    // If override is false, set validation complete
-                    if (override !== true) {
-                        setValidationComplete(elemId);
-                    }
-
-                    return false; // quiz title is invalid, so return false
                 }
 
                 /* Otherwise responseText is not 'false' so call */
@@ -1979,14 +1985,36 @@ function userIdValidate(invalid, valid, override = false) {
         xhttp.onreadystatechange = () => {
             // If the ready state is 4 or 200...
             if (xhttp.readyState === 4 && xhttp.status === 200) {
-                // If the responseText is 'false'...
-                if (xhttp.responseText === 'false') {
-                    // Call setUserIdLabel() for 'dup' (title already exists)
-                    setUserIdLabel('dup');
+                // if the responseText is valid...
+                if (xHttpValidateResponseText(xhttp.responseText)) {
+                    // If the responseText is 'false'...
+                    if (xhttp.responseText === 'false') {
 
-                    // If the invalid callback function was provided, call it
-                    if (invalid) {
-                        invalid(userId);
+                        /* Call setUserIdLabel() for 'dup' (title already */
+                        /* exists) */
+                        setUserIdLabel('dup');
+
+                        /* If the invalid callback function was provided, */
+                        /* call it */
+                        if (invalid) {
+                            invalid(userId);
+                        }
+
+                        // If override is false, set validation complete
+                        if (override !== true) {
+                            setValidationComplete(elemId);
+                        }
+
+                        return false; // user id is invalid, so return false
+                    }
+
+                    /* Otherwise responseText is not 'false' so call */
+                    /* setUserIdLabel() for 'default' */
+                    setUserIdLabel('default');
+
+                    // If the valid callback function was provided, call it
+                    if (valid) {
+                        valid(userId);
                     }
 
                     // If override is false, set validation complete
@@ -1994,24 +2022,8 @@ function userIdValidate(invalid, valid, override = false) {
                         setValidationComplete(elemId);
                     }
 
-                    return false; // user id is invalid, so return false
+                    return true; // user id is valid, so return true
                 }
-
-                /* Otherwise responseText is not 'false' so call */
-                /* setUserIdLabel() for 'default' */
-                setUserIdLabel('default');
-
-                // If the valid callback function was provided, call it
-                if (valid) {
-                    valid(userId);
-                }
-
-                // If override is false, set validation complete
-                if (override !== true) {
-                    setValidationComplete(elemId);
-                }
-
-                return true; // user id is valid, so return true
             }
         };
     };
