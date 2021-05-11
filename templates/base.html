@@ -30,11 +30,11 @@
                 {% if session.user %}
                     <li><a href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
                     <li><a href="{{ url_for('new_quiz') }}">New Quiz</a></li>
-                    <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
+                    <li><a id='navQuizSearch' href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
                     {% if session.user_role == "global admin" or session.user_role == "user account admin" %}
                         <li><a href="{{ url_for('admin_users') }}">User Admin</a></li>
                     {% endif %}
-                    <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                    <li><a id='navLogout' href="{{ url_for('logout') }}">Log Out</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login') }}">Log In</a></li>
                     <li><a href="{{ url_for('register') }}">Register</a></li>
