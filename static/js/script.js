@@ -211,7 +211,7 @@ function returnHtml(params) {
                 </label>
             </div>
             <!-- Optional Image URL -->
-            <ul id="aImgHelperCollapsible_${rId}_${qId}_${mId}" ` +
+            <ul id="oImgHelperCollapsible_${rId}_${qId}_${mId}" ` +
                     `class="collapsible helper-collapsible col s12">
                 <li>
                     <div class="collapsible-header"></div>
@@ -2031,7 +2031,7 @@ function listenToUserId() {
 
 /* Add click listener to a elements to close tooltip */
 function listenToATags() {
-    $('a').on('click', (e) => {
+    $('a.tooltipped').on('click', (e) => {
         // Close the tooltip for the clicked a element
         closeToolTip(e.currentTarget);
     });
