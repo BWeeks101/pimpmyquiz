@@ -43,10 +43,17 @@ def auth_user(auth_criteria):
         # Is the user a member of an admin role?
         is_admin = mongo.db.users.find_one(
             {'user_id': session['user'].lower()},
-            {'_id': 1, 'role_id': 1})
+            {'_id': 1, 'role_id': 1, 'locked': 1})
+
+        # If the user account is locked, log them out and return false
+        if is_admin['locked']:
+            session.pop('user')
+            return {'auth': False, 'reason': 'Account Locked'}
+
         uid = is_admin['_id']  # Get the user _id
         role = mongo.db.user_roles.find_one(
             {'_id': ObjectId(is_admin['role_id'])})  # Get the role _id
+
         is_admin = mongo.db.role_groups.find_one(
             {'_id': ObjectId(role['role_group_id'])})  # Get the role group _id
 
@@ -57,6 +64,9 @@ def auth_user(auth_criteria):
             is_admin = False  # Otherwise is_admin is false
 
         role = role['role']  # Get the role
+
+        # Update session['user_role'] in case the users role has changed
+        session['user_role'] = role.lower()
 
         # Define auth_vals object
         auth_vals = {'auth': True, 'is_admin': is_admin, 'role': role}
@@ -1194,7 +1204,7 @@ def myQuizSearch():
 
     # Otherwise display flash message and redirect to login page
     flash("Please log in to view your quizzes")
-    return redirect(url_for("login"))
+    return 'logout'
 
 
 # Global Quiz Search
@@ -1214,6 +1224,9 @@ def globalQuizSearch():
     if auth_state['auth']:
         # get the users role
         user_role = auth_state['reason']['role']
+
+    if auth_state['reason'] == 'Account Locked':
+        return 'quizSearch'
 
     # Get page
     page = request.args.get('page')
@@ -1899,402 +1912,398 @@ def copyQuiz():
     return redirect(url_for("login"))
 
 
+# Edit Quiz
+@app.route("/edit_quiz", methods=["GET", "POST"])
+def edit_quiz():
+    # Check user is logged in, and member of Global or Content admin
+    auth_criteria = {
+        'is_admin': True,
+        'role': [
+            'Global Admin',
+            'Content Admin'
+        ]
+    }
+    auth_state = auth_user(auth_criteria)
+
+    # If user is logged in...
+    if type(auth_state['reason']) != str:
+        # Get the quiz object _id
+        quiz_id = ObjectId(request.args.get('id'))
+
+        # If user is authorised...
+        if auth_state['reason']['auth'] is True:
+            # Get the author_id field
+            author_id = mongo.db.quizzes.find_one({
+                '_id': quiz_id
+            }, {
+                '_id': 0,
+                'author_id': 1
+            })['author_id']
+    # If user is authorised, or user is author
+    if auth_state['auth'] or (
+            'id' in auth_state and auth_state['id'] == author_id):
+
+        # Edit quiz form submission handler
+        if request.method == 'POST':
+            # Get the quiz category
+            quiz_category = request.form.get('quizCategory')
+
+            # Get the category object _id
+            category_id = getCategoryId(quiz_category)
+
+            # Update the quiz document with the title and category from the
+            # POST request
+            mongo.db.quizzes.update_one(
+                {'_id': quiz_id},
+                {'$set': {
+                    'title': request.form.get('quiz_title'),
+                    'category_id': category_id
+                }}
+            )
+
+            # Get a list of existing quiz rounds
+            round_id_list = list(mongo.db.rounds.find({
+                'quiz_id': quiz_id
+            }, {
+                '_id': 1
+            }))
+
+            # Get the round count + 1
+            round_count = int(request.form.get('roundCount')) + 1
+
+            # Initialise Round Deletion List
+            delete_list = []
+            for round_id in round_id_list:
+                delete_list.append(round_id['_id'])
+
+            # Finalise Round Deletion List
+            # Iterate over returned rounds, removing any from the delete
+            # list that still exist in the POST request
+            for rId in range(1, round_count):
+                rnd_id = request.form.get('round_' + str(rId) + '_id')
+                for round_id in round_id_list:
+                    if (round_id['_id'] == ObjectId(rnd_id) and
+                            rnd_id is not None):
+                        delete_list.remove(round_id['_id'])
+                        break
+
+            # If any rounds remain in the deletion list, delete them and
+            # any associated questions
+            if len(delete_list) > 0:
+                for rId in delete_list:
+                    mongo.db.rounds.find_one_and_delete({'_id': rId})
+                    mongo.db.questions.delete_many({'round_id': rId})
+
+            # Update rounds
+            # Iterate over returned rounds...
+            for rId in range(1, round_count):
+                # Convert the rId to a string
+                rId = str(rId)
+
+                # If this is a general knowledge quiz...
+                if (quiz_category.lower() == 'general knowledge'):
+                    # Get the category object _id for the round category
+                    round_category_id = getCategoryId(
+                        request.form.get('roundCategory_' + rId)
+                    )
+                else:
+                    # Otherwise the round category object _id is equal to
+                    # the quiz category object _id
+                    round_category_id = category_id
+
+                # Get the round _object id
+                round_id = request.form.get('round_' + rId + '_id')
+
+                # If no round object _id is returned, this is a new round
+                if round_id is None:
+
+                    # Create a round_data object
+                    round_data = {
+                        'quiz_id': quiz_id,
+                        'round_num': int(rId),
+                        'title': request.form.get('round_title_' + rId),
+                        'author_id': auth_state['id'],
+                        'date': datetime.datetime.now(),
+                        'category_id': round_category_id,
+                        'public': False
+                    }
+
+                    # Create round document
+                    createRound(rId, round_data)
+
+                # Otherwise the round exists, so update it
+                else:
+                    # Get the round object _id
+                    round_id = ObjectId(round_id)
+
+                    # Update the round document title and category object
+                    # _id
+                    mongo.db.rounds.update_one(
+                        {'_id': round_id},
+                        {'$set': {
+                            'title': request.form.get(
+                                'round_title_' + rId
+                            ),
+                            'category_id': round_category_id
+                        }}
+                    )
+
+                    # Get a list of existing questions for this round
+                    question_id_list = list(mongo.db.questions.find({
+                        'round_id': round_id
+                    }, {
+                        '_id': 1
+                    }))
+
+                    # Get the question count + 1
+                    question_count = int(request.form.get(
+                        'questionCount_' + rId
+                    )) + 1
+
+                    # Initialise question deletion list
+                    delete_list = []
+                    for question_id in question_id_list:
+                        delete_list.append(question_id['_id'])
+
+                    # Finalise question deletion list
+                    # Iterate over returned questions, removing any from
+                    # the delete list that still exist in the POST request
+                    for qId in range(1, question_count):
+                        qst_id = request.form.get('question_' + rId +
+                                                  '_' + str(qId) + '_id')
+                        for question_id in question_id_list:
+                            if (question_id['_id'] == ObjectId(qst_id) and
+                                    qst_id is not None):
+                                delete_list.remove(question_id['_id'])
+                                break
+
+                    # If any questions remain in the deletion list,
+                    # delete them
+                    if len(delete_list) > 0:
+                        for qId in delete_list:
+                            mongo.db.questions.find_one_and_delete({
+                                '_id': qId
+                            })
+
+                    # Update Questions
+                    # Iterate over returned questions...
+                    for qId in range(1, question_count):
+                        # Convert the qId to a string
+                        qId = str(qId)
+
+                        # Get the question object _id
+                        question_id = request.form.get(
+                            'question_' + rId + '_' + qId + '_id'
+                        )
+
+                        # If no question object _id, this is a new question
+                        if question_id is None:
+
+                            # Create a question_data object
+                            question_data = {
+                                'author_id': auth_state['id'],
+                                'date': datetime.datetime.now(),
+                                'round_id': round_id,
+                                'question_num': int(qId),
+                                'question_text': request.form.get(
+                                    'question_' + rId + '_' + qId
+                                ),
+                                'question_img_url': request.form.get(
+                                    'q_img_' + rId + '_' + qId
+                                ),
+                                'public': False
+                            }
+
+                            # create question document
+                            createQuestion(rId, qId, question_data)
+
+                        # Otherwise this question exists, so update it
+                        else:
+                            # Get the question object _id
+                            question_id = ObjectId(question_id)
+
+                            # Define update_question object
+                            update_question = {
+                                # Get question text
+                                'question_text': request.form.get(
+                                    'question_' + rId + '_' + qId
+                                ),
+                                # Get question image url
+                                'question_img_url': request.form.get(
+                                    'q_img_' + rId + '_' + qId
+                                )
+                            }
+
+                            # Get multiple choice checkbox value
+                            multiple_choice = request.form.get(
+                                'quizMulti_' + rId + '_' + qId
+                            )
+
+                            # Convert checkbox value to boolean
+                            multiple_choice = transposeWithBoolean(
+                                multiple_choice
+                            )
+
+                            # If not multiple choice...
+                            if multiple_choice is False:
+                                # Get answer text
+                                update_question[
+                                    'answer_text'
+                                ] = request.form.get(
+                                    'answer_' + rId + '_' + qId
+                                )
+
+                                # Get answer image url
+                                update_question[
+                                    'answer_img_url'
+                                ] = request.form.get(
+                                    'a_img_' + rId + '_' + qId
+                                )
+
+                                # Set multiple choice value
+                                update_question[
+                                    'multiple_choice'
+                                ] = multiple_choice
+
+                                # Set multiple choice option count to 0
+                                update_question[
+                                    'multi_count'
+                                ] = 0
+
+                            # If multiple choice...
+                            if multiple_choice is True:
+                                # declare multi_array
+                                multi_array = []
+
+                                # Get the multiple choice option count + 1
+                                multi_count = int(request.form.get(
+                                    'multiCount_' + rId + '_' + qId
+                                )) + 1
+
+                                # Iterate over multiple choice options...
+                                for multi in range(1, multi_count):
+                                    # Get the answer text
+                                    answer_text = request.form.get(
+                                        'answer_' + rId + '_' + qId +
+                                        '_' + str(multi))
+
+                                    # Get the .correct checkbox value
+                                    correct = request.form.get(
+                                        'correct_' + rId + '_' + qId +
+                                        '_' + str(multi))
+
+                                    # Get the answer image url
+                                    answer_url = request.form.get(
+                                        'a_img_' + rId + '_' + qId +
+                                        '_' + str(multi))
+
+                                    # Convert checkbox value to boolean
+                                    correct = transposeWithBoolean(correct)
+
+                                    # package the values into an option
+                                    # object, add an option number, and
+                                    # append to the multi_array list
+                                    multi_array.append({
+                                        'option_num': int(multi),
+                                        'answer_text': answer_text,
+                                        'correct': correct,
+                                        'answer_img_url': answer_url
+                                    })
+
+                                # Add the number of multiple choice options
+                                update_question[
+                                    'multi_count'
+                                ] = len(multi_array)
+
+                                # Set the multiple choice value
+                                update_question[
+                                    'multiple_choice_options'
+                                ] = multi_array
+
+                            # Define update_params list
+                            update_params = [
+                                {'$set': update_question}
+                            ]
+
+                            # If not multiple choice, append an unset
+                            # object to the update_params list
+                            if multiple_choice is False:
+                                update_params.append(
+                                    {'$unset': 'multiple_choice_options'}
+                                )
+
+                            # update the question
+                            mongo.db.questions.update_one(
+                                {'_id': question_id},
+                                update_params
+                            )
+
+            # display a flash message
+            flash("Quiz Saved")
+
+            # Get the cancel url
+            cancel_url = generateCancelUrl(request.form.get('cancel_url'))
+
+            # redirect to referrer passing the cancel url
+            return redirect(request.referrer +
+                            '&cancel_url=' + cancel_url)
+
+        # GET method handler
+        # Get the quiz data set
+        quiz = buildViewQuizDataSet({'show_answers': True, 'quiz_id': quiz_id})
+
+        # Get category data
+        category_data = getCategories()
+
+        # Get the cancel url
+        cancel_url = generateCancelUrl(request.args.get('cancel_url'))
+
+        # render the 'edit_quiz' template, passing the quiz, category data
+        # and cancel url
+        return render_template("edit_quiz.html",
+                               quiz=quiz,
+                               quiz_categories=category_data,
+                               cancel_url=cancel_url)
+
+    # If not logged in redirect to login page
+    if auth_state['auth'] is False and type(auth_state['reason']) == str:
+        flash("Please log in to edit a quiz")
+        return redirect(url_for('login'))
+
+    # Otherwise if logged in, display flash message and redirect to
+    # quiz_search page
+    flash("You do not have permission to edit this quiz")
+    return redirect(url_for('quiz_search'))
+
+
 # Quiz Sheet
 # View quiz sheet (without answers) as a web page
 @app.route("/quiz_sheet", endpoint="quiz_sheet")
 # View Quiz
 # View quiz as a web page
 @app.route("/view_quiz", endpoint="view_quiz")
-# Edit Quiz
-@app.route("/edit_quiz", methods=["GET", "POST"], endpoint="edit_quiz")
 def displayQuiz():
     # Get the quiz object _id
     quiz_id = ObjectId(request.args.get('id'))
 
-    # Set default parameter values
-    params = {
-        'show_answers': False,
-        'quiz_id': quiz_id
-    }
-
     # View Quiz request
     if request.endpoint == 'view_quiz':
-        # set show_answers to True
-        params['show_answers'] = True
 
         # Get the quiz data set
-        quiz = buildViewQuizDataSet(params)
+        quiz = buildViewQuizDataSet({
+            'show_answers': True,
+            'quiz_id': quiz_id
+        })
 
         # render the 'view_quiz' template, passing the quiz object
         return render_template("view_quiz.html", viewQuiz=quiz)
 
-    # Edit Quiz request
-    elif request.endpoint == 'edit_quiz':
-        # Check user is logged in, and member of Global or Content admin
-        auth_criteria = {
-            'is_admin': True,
-            'role': [
-                'Global Admin',
-                'Content Admin'
-            ]
-        }
-        auth_state = auth_user(auth_criteria)
-
-        # If user is logged in...
-        if type(auth_state['reason']) != str:
-            # If user is authorised...
-            if auth_state['reason']['auth'] is True:
-                # Get the author_id field
-                author_id = mongo.db.quizzes.find_one({
-                    '_id': quiz_id
-                }, {
-                    '_id': 0,
-                    'author_id': 1
-                })['author_id']
-        # If user is authorised, or user is author
-        if auth_state['auth'] or (
-                'id' in auth_state and auth_state['id'] == author_id):
-
-            # Edit quiz form submission handler
-            if request.method == 'POST':
-                # Get the quiz object _id
-                quiz_id = ObjectId(request.args.get('id'))
-
-                # Get the quiz category
-                quiz_category = request.form.get('quizCategory')
-
-                # Get the category object _id
-                category_id = getCategoryId(quiz_category)
-
-                # Update the quiz document with the title and category from the
-                # POST request
-                mongo.db.quizzes.update_one(
-                    {'_id': quiz_id},
-                    {'$set': {
-                        'title': request.form.get('quiz_title'),
-                        'category_id': category_id
-                    }}
-                )
-
-                # Get a list of existing quiz rounds
-                round_id_list = list(mongo.db.rounds.find({
-                    'quiz_id': quiz_id
-                }, {
-                    '_id': 1
-                }))
-
-                # Get the round count + 1
-                round_count = int(request.form.get('roundCount')) + 1
-
-                # Initialise Round Deletion List
-                delete_list = []
-                for round_id in round_id_list:
-                    delete_list.append(round_id['_id'])
-
-                # Finalise Round Deletion List
-                # Iterate over returned rounds, removing any from the delete
-                # list that still exist in the POST request
-                for rId in range(1, round_count):
-                    rnd_id = request.form.get('round_' + str(rId) + '_id')
-                    for round_id in round_id_list:
-                        if (round_id['_id'] == ObjectId(rnd_id) and
-                                rnd_id is not None):
-                            delete_list.remove(round_id['_id'])
-                            break
-
-                # If any rounds remain in the deletion list, delete them and
-                # any associated questions
-                if len(delete_list) > 0:
-                    for rId in delete_list:
-                        mongo.db.rounds.find_one_and_delete({'_id': rId})
-                        mongo.db.questions.delete_many({'round_id': rId})
-
-                # Update rounds
-                # Iterate over returned rounds...
-                for rId in range(1, round_count):
-                    # Convert the rId to a string
-                    rId = str(rId)
-
-                    # If this is a general knowledge quiz...
-                    if (quiz_category.lower() == 'general knowledge'):
-                        # Get the category object _id for the round category
-                        round_category_id = getCategoryId(
-                            request.form.get('roundCategory_' + rId)
-                        )
-                    else:
-                        # Otherwise the round category object _id is equal to
-                        # the quiz category object _id
-                        round_category_id = category_id
-
-                    # Get the round _object id
-                    round_id = request.form.get('round_' + rId + '_id')
-
-                    # If no round object _id is returned, this is a new round
-                    if round_id is None:
-
-                        # Create a round_data object
-                        round_data = {
-                            'quiz_id': quiz_id,
-                            'round_num': int(rId),
-                            'title': request.form.get('round_title_' + rId),
-                            'author_id': auth_state['id'],
-                            'date': datetime.datetime.now(),
-                            'category_id': round_category_id,
-                            'public': False
-                        }
-
-                        # Create round document
-                        createRound(rId, round_data)
-
-                    # Otherwise the round exists, so update it
-                    else:
-                        # Get the round object _id
-                        round_id = ObjectId(round_id)
-
-                        # Update the round document title and category object
-                        # _id
-                        mongo.db.rounds.update_one(
-                            {'_id': round_id},
-                            {'$set': {
-                                'title': request.form.get(
-                                    'round_title_' + rId
-                                ),
-                                'category_id': round_category_id
-                            }}
-                        )
-
-                        # Get a list of existing questions for this round
-                        question_id_list = list(mongo.db.questions.find({
-                            'round_id': round_id
-                        }, {
-                            '_id': 1
-                        }))
-
-                        # Get the question count + 1
-                        question_count = int(request.form.get(
-                            'questionCount_' + rId
-                        )) + 1
-
-                        # Initialise question deletion list
-                        delete_list = []
-                        for question_id in question_id_list:
-                            delete_list.append(question_id['_id'])
-
-                        # Finalise question deletion list
-                        # Iterate over returned questions, removing any from
-                        # the delete list that still exist in the POST request
-                        for qId in range(1, question_count):
-                            qst_id = request.form.get('question_' + rId +
-                                                      '_' + str(qId) + '_id')
-                            for question_id in question_id_list:
-                                if (question_id['_id'] == ObjectId(qst_id) and
-                                        qst_id is not None):
-                                    delete_list.remove(question_id['_id'])
-                                    break
-
-                        # If any questions remain in the deletion list,
-                        # delete them
-                        if len(delete_list) > 0:
-                            for qId in delete_list:
-                                mongo.db.questions.find_one_and_delete({
-                                  '_id': qId
-                                })
-
-                        # Update Questions
-                        # Iterate over returned questions...
-                        for qId in range(1, question_count):
-                            # Convert the qId to a string
-                            qId = str(qId)
-
-                            # Get the question object _id
-                            question_id = request.form.get(
-                                'question_' + rId + '_' + qId + '_id'
-                            )
-
-                            # If no question object _id, this is a new question
-                            if question_id is None:
-
-                                # Create a question_data object
-                                question_data = {
-                                    'author_id': auth_state['id'],
-                                    'date': datetime.datetime.now(),
-                                    'round_id': round_id,
-                                    'question_num': int(qId),
-                                    'question_text': request.form.get(
-                                        'question_' + rId + '_' + qId
-                                    ),
-                                    'question_img_url': request.form.get(
-                                        'q_img_' + rId + '_' + qId
-                                    ),
-                                    'public': False
-                                }
-
-                                # create question document
-                                createQuestion(rId, qId, question_data)
-
-                            # Otherwise this question exists, so update it
-                            else:
-                                # Get the question object _id
-                                question_id = ObjectId(question_id)
-
-                                # Define update_question object
-                                update_question = {
-                                    # Get question text
-                                    'question_text': request.form.get(
-                                        'question_' + rId + '_' + qId
-                                    ),
-                                    # Get question image url
-                                    'question_img_url': request.form.get(
-                                        'q_img_' + rId + '_' + qId
-                                    )
-                                }
-
-                                # Get multiple choice checkbox value
-                                multiple_choice = request.form.get(
-                                    'quizMulti_' + rId + '_' + qId
-                                )
-
-                                # Convert checkbox value to boolean
-                                multiple_choice = transposeWithBoolean(
-                                    multiple_choice
-                                )
-
-                                # If not multiple choice...
-                                if multiple_choice is False:
-                                    # Get answer text
-                                    update_question[
-                                        'answer_text'
-                                    ] = request.form.get(
-                                        'answer_' + rId + '_' + qId
-                                    )
-
-                                    # Get answer image url
-                                    update_question[
-                                        'answer_img_url'
-                                    ] = request.form.get(
-                                        'a_img_' + rId + '_' + qId
-                                    )
-
-                                    # Set multiple choice value
-                                    update_question[
-                                        'multiple_choice'
-                                    ] = multiple_choice
-
-                                    # Set multiple choice option count to 0
-                                    update_question[
-                                        'multi_count'
-                                    ] = 0
-
-                                # If multiple choice...
-                                if multiple_choice is True:
-                                    # declare multi_array
-                                    multi_array = []
-
-                                    # Get the multiple choice option count + 1
-                                    multi_count = int(request.form.get(
-                                        'multiCount_' + rId + '_' + qId
-                                    )) + 1
-
-                                    # Iterate over multiple choice options...
-                                    for multi in range(1, multi_count):
-                                        # Get the answer text
-                                        answer_text = request.form.get(
-                                            'answer_' + rId + '_' + qId +
-                                            '_' + str(multi))
-
-                                        # Get the .correct checkbox value
-                                        correct = request.form.get(
-                                            'correct_' + rId + '_' + qId +
-                                            '_' + str(multi))
-
-                                        # Get the answer image url
-                                        answer_url = request.form.get(
-                                            'a_img_' + rId + '_' + qId +
-                                            '_' + str(multi))
-
-                                        # Convert checkbox value to boolean
-                                        correct = transposeWithBoolean(correct)
-
-                                        # package the values into an option
-                                        # object, add an option number, and
-                                        # append to the multi_array list
-                                        multi_array.append({
-                                            'option_num': int(multi),
-                                            'answer_text': answer_text,
-                                            'correct': correct,
-                                            'answer_img_url': answer_url
-                                        })
-
-                                    # Add the number of multiple choice options
-                                    update_question[
-                                        'multi_count'
-                                    ] = len(multi_array)
-
-                                    # Set the multiple choice value
-                                    update_question[
-                                        'multiple_choice_options'
-                                    ] = multi_array
-
-                                # Define update_params list
-                                update_params = [
-                                    {'$set': update_question}
-                                ]
-
-                                # If not multiple choice, append an unset
-                                # object to the update_params list
-                                if multiple_choice is False:
-                                    update_params.append(
-                                        {'$unset': 'multiple_choice_options'}
-                                    )
-
-                                # update the question
-                                mongo.db.questions.update_one(
-                                    {'_id': question_id},
-                                    update_params
-                                )
-
-                # display a flash message
-                flash("Quiz Saved")
-
-                # Get the cancel url
-                cancel_url = generateCancelUrl(request.form.get('cancel_url'))
-
-                # redirect to referrer passing the cancel url
-                return redirect(request.referrer +
-                                '&cancel_url=' + cancel_url)
-
-            # GET method handler
-            # Set show_answers to true
-            params['show_answers'] = True
-
-            # Get the quiz data set
-            quiz = buildViewQuizDataSet(params)
-
-            # Get category data
-            category_data = getCategories()
-
-            # Get the cancel url
-            cancel_url = generateCancelUrl(request.args.get('cancel_url'))
-
-            # render the 'edit_quiz' template, passing the quiz, category data
-            # and cancel url
-            return render_template("edit_quiz.html",
-                                   quiz=quiz,
-                                   quiz_categories=category_data,
-                                   cancel_url=cancel_url)
-
-        # If not authorised or author display flash message
-        flash("Please log in to edit a quiz")
-        # If not logged in redirect to login page
-        if auth_state['auth'] is False and type(auth_state['reason']) == str:
-            return redirect(url_for('login'))
-
-        # Otherwise if logged in, redirect to quiz_search page
-        return redirect(url_for('quiz_search'))
-
     # Quiz Sheet request
     # Get the quiz data set (minus answers)
-    quiz = buildViewQuizDataSet(params)
+    quiz = buildViewQuizDataSet({
+        'show_answers': False,
+        'quiz_id': quiz_id
+    })
 
     # render the 'quiz_sheet' template, passing the quiz object
     return render_template("quiz_sheet.html", viewQuiz=quiz)
@@ -2634,11 +2643,11 @@ def userSearch():
     # redirect to the login page
     if type(auth_state['reason']) == str:
         flash("Permission Denied")
-        return redirect(url_for("login"))
+        return 'logout'
 
     # Otherwise display a flash message and redirect to the my_quizzes page
     flash("Access to User Search is Restricted")
-    return redirect(url_for("my_quizzes"))
+    return 'myQuizzes'
 
 
 # Get Users
@@ -2802,11 +2811,11 @@ def getUsers():
     # redirect to the login page
     if type(auth_state['reason']) == str:
         flash("Permission Denied")
-        return redirect(url_for("login"))
+        return 'logout'
 
     # Otherwise display a flash message and redirect to the my_quizzes page
     flash("Access to the Admin Console is Restricted")
-    return redirect(url_for("my_quizzes"))
+    return 'myQuizzes'
 
 
 # Create a new quiz
