@@ -1,7 +1,7 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
 /* global addRound, addQ, removeMulti, addMulti, removeRound,
-removeQ, imgPreviewError, imgPreviewLoad, popChangeConfModal, closeToolTip,
-inputValidation, quizFormValidation, M, validateCorrectCheckboxes */
+removeQ, imgPreviewError, imgPreviewLoad, popChangeConfModal, inputValidation,
+quizFormValidation, M, validateCorrectCheckboxes */
 
 /* Remove click listener from .subopt elements */
 // eslint-disable-next-line no-unused-vars
@@ -24,14 +24,12 @@ function listenToRControls() {
     // Define the .rcontrols-remove click listener
     $('.rcontrols-remove').on("click", (e) => {
         e.stopPropagation(); // Prevent the default link click action
-        closeToolTip(e.currentTarget); // Close the tooltip for this element
         removeRound(e.currentTarget); // call removeRound()
     });
 
     // Define the .rcontrols-add click listener
     $('.rcontrols-add').on("click", (e) => {
         e.stopPropagation(); // Prevent the default link click action
-        closeToolTip(e.currentTarget); // Close the tooltip for this element
         addRound(e.currentTarget); // call addRound()
     });
 }
@@ -49,14 +47,12 @@ function listenToQControls() {
     // Define the .qcontrols-remove click listener
     $('.qcontrols-remove').on("click", (e) => {
         e.stopPropagation(); // Prevent the default link click action
-        closeToolTip(e.currentTarget); // Close the tooltip for this element
         removeQ(e.currentTarget); // Call removeQ()
     });
 
     // Define the .qcontrols-add click listener
     $('.qcontrols-add').on("click", (e) => {
         e.stopPropagation(); // Prevent the default link click action
-        closeToolTip(e.currentTarget); // Close the tooltip for this element
         addQ(e.currentTarget); // Call addQ()
     });
 }
@@ -74,14 +70,12 @@ function listenToMultiControls() {
     // define the .multi-control-remove click listener
     $('a.multi-control-remove').on("click", (e) => {
         e.stopPropagation(); // Prevent the default link click action
-        closeToolTip(e.currentTarget); // Close the tooltip for this element
         removeMulti(e.currentTarget); // Call removeMulti()
     });
 
     // define the .multi-control-add click listener
     $('a.multi-control-add').on("click", (e) => {
         e.stopPropagation(); // Prevent the default link click action
-        closeToolTip(e.currentTarget); // Close the tooltip for this element
         addMulti(e.currentTarget); // Call addMulti()
     });
 }
