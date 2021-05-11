@@ -2216,10 +2216,11 @@ function inputValidation(elem, noTimeout = false) {
 // eslint-disable-next-line no-unused-vars
 function listenToInputs() {
 
-    /* Define input element selector, avoiding .compare-password and quiz */
-    /* title inputs */
+    /* Define input element selector, avoiding .compare-password, quiz */
+    /* title, login password, quiz search and user search inputs */
     let inputSelector = ".input-field:not(.compare-password)>" +
-        "input:not(#quizTitle, #modalQuizTitle, #user_id, #modalUserId)";
+        "input:not(#quizTitle, #modalQuizTitle, #user_id, #modalUserId," +
+        " #quizSearch, #userSearch, #loginForm #pwd)";
 
     // Add input listener to call inputValidation()
     $(inputSelector).on("input", (e) => inputValidation(e.currentTarget));
