@@ -1204,6 +1204,11 @@ def myQuizSearch():
 
     # Otherwise display flash message and redirect to login page
     flash("Please log in to view your quizzes")
+    # no referrer, so this was a manual url entry.  Redirect to the login url
+    if request.referrer is None:
+        return redirect(url_for('login'))
+    # Otherwise this was an xHttp request, so return string for the client to
+    # process
     return 'logout'
 
 
@@ -1226,6 +1231,12 @@ def globalQuizSearch():
         user_role = auth_state['reason']['role']
 
     if auth_state['reason'] == 'Account Locked':
+        # no referrer, so this was a manual url entry.  Redirect to the login
+        # url
+        if request.referrer is None:
+            return redirect(url_for('quiz_search'))
+        # Otherwise this was an xHttp request, so return string for the client
+        # to process
         return 'quizSearch'
 
     # Get page
@@ -2379,10 +2390,21 @@ def validateQuizTitle(quiz_title, quiz_id=None):
         # Otherwise display a flash message and redirect to the quiz_search
         # page
         flash("You do not have permission to edit this quiz")
+        # no referrer, so this was a manual url entry.  Redirect to the login
+        # url
+        if request.referrer is None:
+            return redirect(url_for('quiz_search'))
+        # Otherwise this was an xHttp request, so return string for the client
+        # to process
         return 'quizSearch'
 
     # Otherwise display a flash message and redirect to the login page
     flash("Please log in to create, edit or copy a quiz")
+    # no referrer, so this was a manual url entry.  Redirect to the login url
+    if request.referrer is None:
+        return redirect(url_for('login'))
+    # Otherwise this was an xHttp request, so return string for the client to
+    # process
     return 'logout'
 
 
@@ -2418,6 +2440,11 @@ def validate_quiz_title():
     # Account is not logged in, so display a flash message and redirect to the
     # login page
     flash("Please log in to create, edit or copy a quiz")
+    # no referrer, so this was a manual url entry.  Redirect to the login url
+    if request.referrer is None:
+        return redirect(url_for('login'))
+    # Otherwise this was an xHttp request, so return string for the client to
+    # process
     return 'logout'
 
 
@@ -2459,11 +2486,23 @@ def validate_user_id():
         # the login page.
         if auth_state['reason'] == 'Account Locked':
             flash('Permission Denied')
+            # no referrer, so this was a manual url entry.  Redirect to the
+            # login url
+            if request.referrer is None:
+                return redirect(url_for('login'))
+            # Otherwise this was an xHttp request, so return string for the
+            # client to process
             return 'logout'
         elif type(auth_state['reason']) != str:
             # Account is not locked, but still not authorised.  Display a flash
             # message and redirect to the my_quizzes page.
             flash('Access to the Administration Console is restricted')
+            # no referrer, so this was a manual url entry.  Redirect to the
+            # my_quizzes url
+            if request.referrer is None:
+                return redirect(url_for('my_quizzes'))
+            # Otherwise this was an xHttp request, so return string for the
+            # client to process
             return 'myQuizzes'
 
     # Otherwise the user is authorised (request comes from the user admin
@@ -2683,10 +2722,22 @@ def userSearch():
     # redirect to the login page
     if type(auth_state['reason']) == str:
         flash("Permission Denied")
+        # no referrer, so this was a manual url entry.  Redirect to the login
+        # url
+        if request.referrer is None:
+            return redirect(url_for('login'))
+        # Otherwise this was an xHttp request, so return string for the client
+        # to process
         return 'logout'
 
     # Otherwise display a flash message and redirect to the my_quizzes page
     flash("Access to User Search is Restricted")
+    # no referrer, so this was a manual url entry.  Redirect to the
+    # my_quizzes url
+    if request.referrer is None:
+        return redirect(url_for('my_quizzes'))
+    # Otherwise this was an xHttp request, so return string for the client to
+    # process
     return 'myQuizzes'
 
 
@@ -2851,10 +2902,21 @@ def getUsers():
     # redirect to the login page
     if type(auth_state['reason']) == str:
         flash("Permission Denied")
+        # no referrer, so this was a manual url entry.  Redirect to the login
+        # url
+        if request.referrer is None:
+            return redirect(url_for('login'))
+        # Otherwise this was an xHttp request, so return string for the client
+        # to process
         return 'logout'
 
     # Otherwise display a flash message and redirect to the my_quizzes page
     flash("Access to the Administration Console is restricted")
+    # no referrer, so this was a manual url entry.  Redirect to the login url
+    if request.referrer is None:
+        return redirect(url_for('my_quizzes'))
+    # Otherwise this was an xHttp request, so return string for the client to
+    # process
     return 'myQuizzes'
 
 
