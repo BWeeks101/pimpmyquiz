@@ -22,23 +22,22 @@
         <div class="navbar-fixed">
             <nav class="text-shadow light-blue darken-4">
                 <div class="nav-wrapper">
-                <a href="#" class="nav-title">Pimp My Quiz!</a>
+                <a href="{{ url_for('landing') }}" class="nav-title">Pimp My Quiz!</a>
                 <a href="#" data-target="sideNav" class="sidenav-trigger right"><i class="fas fa-bars"></i></a>
                 <ul class="right hide-on-med-and-down">
-                    {% if not session.user %}
-                        <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
-                    {% endif %}
                     {% if session.user %}
-                        <li><a id='navMyQuizzes' href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
-                        <li><a href="{{ url_for('new_quiz') }}">New Quiz</a></li>
-                        <li><a id='navQuizSearch' href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
+                        <li><a id="navMyQuizzes" href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
+                        <li><a id="navNewQuiz" href="{{ url_for('new_quiz') }}">New Quiz</a></li>
+                    {% endif %}
+                        <li><a id="navQuizSearch" href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
+                    {% if session.user %}
                         {% if session.user_role == "global admin" or session.user_role == "user account admin" %}
-                            <li><a href="{{ url_for('admin_users') }}">User Admin</a></li>
+                            <li><a id="navUserAdmin" href="{{ url_for('admin_users') }}">User Admin</a></li>
                         {% endif %}
-                        <li><a id='navLogout' href="{{ url_for('logout') }}">Log Out</a></li>
+                        <li><a id="navLogout" href="{{ url_for('logout') }}">Log Out</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('login') }}">Log In</a></li>
-                        <li><a href="{{ url_for('register') }}">Register</a></li>
+                        <li><a id="navLogin" href="{{ url_for('login') }}">Log In</a></li>
+                        <li><a id="navRegister" href="{{ url_for('register') }}">Register</a></li>
                     {% endif %}
                 </ul>
                 </div>
@@ -48,20 +47,19 @@
         <!-- mobile sidenav -->
         <ul class="sidenav" id="sideNav">
             <li><h4 class="center-align light-blue-text text-darken-4">Pimp My Quiz!</h4></li>
-            {% if not session.user %}
-                <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
-            {% endif %}
             {% if session.user %}
-                <li><a href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
-                <li><a href="{{ url_for('new_quiz') }}">New Quiz</a></li>
-                <li><a href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
+                <li><a id="sideNavMyQuizzes" href="{{ url_for('my_quizzes') }}">My Quizzes</a></li>
+                <li><a id="sideNavNewQuiz" href="{{ url_for('new_quiz') }}">New Quiz</a></li>
+            {% endif %}
+                <li><a id="sideNavQuizSearch" href="{{ url_for('quiz_search') }}">Quiz Search</a></li>
+            {% if session.user %}
                 {% if session.user_role == "global admin" or session.user_role == "user account admin" %}
-                    <li><a href="{{ url_for('admin_users') }}">User Admin</a></li>
+                    <li><a id="sideNavUserAdmin" href="{{ url_for('admin_users') }}">User Admin</a></li>
                 {% endif %}
-                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                <li><a id="sideNavLogout" href="{{ url_for('logout') }}">Log Out</a></li>
             {% else %}
-                <li><a href="{{ url_for('login') }}">Log In</a></li>
-                <li><a href="{{ url_for('register') }}">Register</a></li>
+                <li><a id="sideNavLogin" href="{{ url_for('login') }}">Log In</a></li>
+                <li><a id="sideNavRegister" href="{{ url_for('register') }}">Register</a></li>
             {% endif %}
         </ul>
     </header>
@@ -185,16 +183,16 @@
 
     <footer class="footer text-shadow light-blue darken-4 center-align">
         <h5>
-            <a class="tooltipped" data-position="top" data-tooltip="Facebook" href="https://wwww.facebook.com">
+            <a class="tooltipped" data-position="top" data-tooltip="Facebook" href="https://www.facebook.com">
                 <i class="fab fa-facebook fa-fw"></i>
             </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Instagram" href="https://wwww.instagram.com">
+            <a class="tooltipped" data-position="top" data-tooltip="Instagram" href="https://www.instagram.com">
                 <i class="fab fa-instagram fa-fw"></i>
             </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Twitter" href="https://wwww.twitter.com">
+            <a class="tooltipped" data-position="top" data-tooltip="Twitter" href="https://www.twitter.com">
                 <i class="fab fa-twitter fa-fw"></i>
             </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Youtube" href="https://wwww.youtube.com">
+            <a class="tooltipped" data-position="top" data-tooltip="Youtube" href="https://www.youtube.com">
                 <i class="fab fa-youtube fa-fw"></i>
             </a>
             <a class="tooltipped" data-position="top" data-tooltip="Contact Us" href="mailto://admins@pimp-my-quiz.herokuapp.com">
