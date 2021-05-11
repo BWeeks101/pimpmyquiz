@@ -239,6 +239,16 @@ form .user-search .input-field {
     font-size: 1.2rem;
 }
 
+#editUserModal .input-field.col .prefix ~ label {
+    width: 100%;
+}
+
+#editUserModal .input-field.col.select-container .prefix ~ label,
+#editUserModal #modalUserPwd ~ label,
+#editUserModal #modalUserCpwd ~ label {
+    width: calc(100% - 3rem - 1.5rem);
+}
+
 /* MaterializeCSS Collection Style Overrides */
 .collection.user-search-results>.collection-item>.row,
 .collection.quiz-search-results>.collection-item>.row {
@@ -441,11 +451,6 @@ left: 3.5px;
 /* MaterializeCSS prefix Style Override */
 .input-field .prefix {
     line-height: 1;
-}
-
-/* MaterializeCSS label Style Override */
-.input-field.col .prefix ~ label {
-    width: 100%;
 }
 
 /* Valid/Invalid classes for '.correct' checkboxes */
