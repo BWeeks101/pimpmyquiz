@@ -194,11 +194,6 @@ def login():
             {"user_id": request.form.get("user_id").lower()},
             {"_id": 0, "user_id": 1, "pwd": 1, "role_id": 1, "locked": 1})
 
-        # get the users role
-        user_role = mongo.db.user_roles.find_one(
-            {"_id": ObjectId(existing_user['role_id'])},
-            {"_id": 0, "role": 1})
-
         # If the user exists
         if existing_user:
             # ensure hashed password matches user input
@@ -210,6 +205,11 @@ def login():
                 if existing_user["locked"] is True:
                     flash("Your account is currently locked.")
                     return redirect(url_for("login"))
+
+                # get the users role
+                user_role = mongo.db.user_roles.find_one(
+                    {"_id": ObjectId(existing_user['role_id'])},
+                    {"_id": 0, "role": 1})
 
                 # Add the user id and role to session
                 session["user"] = request.form.get("user_id").lower()
@@ -2403,7 +2403,7 @@ def validate_quiz_title():
 # Requires:
 #   new_user_id: The username string to validate
 #   original_user_id: OPTIONAL. The original username for comparison
-def validateUserId(new_user_id, original_user_id):
+def validateUserId(new_user_id, original_user_id=None):
     # If the user Id values do not match...
     if new_user_id != original_user_id:
         # check if new_user_id is already in use
