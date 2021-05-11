@@ -1,5 +1,5 @@
 /*eslint func-style: ["error", "declaration", { "allowArrowFunctions": true }]*/
-/* global setSelectValue, reinitSelectOnDisabled */
+/* global setSelectValue, reinitSelectOnDisabled, listenToMultiControls */
 
 /* Set quiz and round category select box values */
 /* Requires initialVals array parameter */
@@ -47,7 +47,9 @@ function setInitialSelectVals(initialVals) {
 }
 
 /* When document is ready, trigger the .img-url input elem 'input' listener */
-/* to load and display images */
+/* to load and display images, and add click listeners to any multiple choice */
+/* option controls */
 $(function () {
     $('.img-url').trigger('input');
+    listenToMultiControls();
 });
