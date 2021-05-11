@@ -2275,8 +2275,62 @@ function resetModalQuizTitleInput() {
     $('#modalCopyQuizButton').attr('data-quizId', '');
 }
 
+/* Add active class to navigation element for the current page */
+function setActiveNav() {
+    if ($('h3').html() === 'My Quizzes') {
+        $('#navMyQuizzes').closest('li').
+            addClass('active');
+        $('#sideNavMyQuizzes').closest('li').
+            addClass('active');
+        return;
+    }
+
+    if ($('#createQuiz').length) {
+        $('#navNewQuiz').closest('li').
+            addClass('active');
+        $('#sideNavNewQuiz').closest('li').
+            addClass('active');
+        return;
+    }
+
+    if ($('.quiz-search').length) {
+        $('#navQuizSearch').closest('li').
+            addClass('active');
+        $('#sideNavQuizSearch').closest('li').
+            addClass('active');
+        return;
+    }
+
+    if ($('#editUserModal').length) {
+        $('#navUserAdmin').closest('li').
+            addClass('active');
+        $('#sideNavUserAdmin').closest('li').
+            addClass('active');
+        return;
+    }
+
+    if ($('#loginForm').length) {
+        $('#navLogin').closest('li').
+            addClass('active');
+        $('#sideNavLogin').closest('li').
+            addClass('active');
+        return;
+    }
+
+    if ($('#register').length) {
+        $('#navRegister').closest('li').
+            addClass('active');
+        $('#sideNavRegister').closest('li').
+            addClass('active');
+    }
+
+}
+
 /* Document Ready Function */
 $(function() {
+    // Add active class to the navigation link for the current page
+    setActiveNav();
+
     // Initialise MaterializeCSS Sidenav
     $('.sidenav').sidenav({edge: "right"});
 
