@@ -439,6 +439,21 @@ function xHttpRenderPreloader(elem) {
     elem.innerHTML = html;
 }
 
+function xHttpValidateResponseText(responseText) {
+    if (responseText === 'logout') {
+        window.location.href = $('#navLogout').attr('href');
+        return false;
+    } else if (responseText === 'quizSearch') {
+        window.location.href = $('#navQuizSearch').attr('href');
+        return false;
+    } else if (responseText === 'myQuizzes') {
+        window.location.href = $('#navMyQuizzes').attr('href');
+        return false;
+    }
+
+    return true;
+}
+
 /* Send new xHttp Request */
 /* Requires: */
 /*  requestObj: preformatted string, or object with the following */
@@ -470,10 +485,14 @@ function xHttpRequest(requestObj, elem) {
         let result;
         if (xHttpRequest.readyState === 4 &&
                 xHttpRequest.status === 200) { // If we have a result...
-            // Convert the response text into an object
-            result = JSON.parse(xHttpRequest.responseText);
-            // Call xHttpRenderResult()
-            xHttpRenderResult(elem, result);
+
+            // if the responseText is valid...
+            if (xHttpValidateResponseText(xHttpRequest.responseText)) {
+                // Convert the response text into an object
+                result = JSON.parse(xHttpRequest.responseText);
+                // Call xHttpRenderResult()
+                xHttpRenderResult(elem, result);
+            }
         }
     };
 
