@@ -2379,33 +2379,46 @@ def validateQuizTitle(quiz_title, quiz_id=None):
         # Otherwise display a flash message and redirect to the quiz_search
         # page
         flash("You do not have permission to edit this quiz")
-        return redirect(url_for("quiz_search"))
+        return 'quizSearch'
 
     # Otherwise display a flash message and redirect to the login page
     flash("Please log in to create, edit or copy a quiz")
-    return redirect(url_for("login"))
+    return 'logout'
 
 
 # Allow external requests to validate a quiz title
 @app.route("/validate_quiz_title")
 def validate_quiz_title():
-    # Get the quiz title
-    quiz_title = request.args.get('quizTitle')
+    # Check if user account is authorised
+    auth_criteria = {
+        'auth': True
+    }
+    auth_state = auth_user(auth_criteria)
 
-    # Get the quiz object _id
-    quiz_id = request.args.get('id')
+    # if user is authorised...
+    if auth_state['auth']:
+        # Get the quiz title
+        quiz_title = request.args.get('quizTitle')
 
-    # validate the title
-    validate_title = validateQuizTitle(quiz_title, quiz_id)
+        # Get the quiz object _id
+        quiz_id = request.args.get('id')
 
-    # Convert python boolean to js boolean
-    if validate_title is False:
-        validate_title = 'false'
-    else:
-        validate_title = 'true'
+        # validate the title
+        validate_title = validateQuizTitle(quiz_title, quiz_id)
 
-    # return the validation result
-    return validate_title
+        # Convert python boolean to js boolean
+        if validate_title is False:
+            validate_title = 'false'
+        else:
+            validate_title = 'true'
+
+        # return the validation result
+        return validate_title
+
+    # Account is not logged in, so display a flash message and redirect to the
+    # login page
+    flash("Please log in to create, edit or copy a quiz")
+    return 'logout'
 
 
 # Validate a username to ensure it is unique
@@ -2430,6 +2443,33 @@ def validateUserId(new_user_id, original_user_id=None):
 # Allow external requests to validate a username
 @app.route("/validate_user_id")
 def validate_user_id():
+    # If user is logged in, check they are authorised to validate a user id
+    auth_criteria = {
+        'is_admin': True,
+        'role': [
+            'Global Admin',
+            'User Account Admin'
+        ]
+    }
+    auth_state = auth_user(auth_criteria)
+
+    # If the user is not authorised...
+    if auth_state['auth'] is False:
+        # If the account is locked, display a flash message and redirect to
+        # the login page.
+        if auth_state['reason'] == 'Account Locked':
+            flash('Permission Denied')
+            return 'logout'
+        elif type(auth_state['reason']) != str:
+            # Account is not locked, but still not authorised.  Display a flash
+            # message and redirect to the my_quizzes page.
+            flash('Access to the Administration Console is restricted')
+            return 'myQuizzes'
+
+    # Otherwise the user is authorised (request comes from the user admin
+    # console), or the user is not logged in (request comes from the
+    # registration page), so continue.
+
     # Get the original username
     original_user_id = request.args.get('orig_user_id')
 
@@ -2814,7 +2854,7 @@ def getUsers():
         return 'logout'
 
     # Otherwise display a flash message and redirect to the my_quizzes page
-    flash("Access to the Admin Console is Restricted")
+    flash("Access to the Administration Console is restricted")
     return 'myQuizzes'
 
 
