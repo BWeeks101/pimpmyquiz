@@ -48,6 +48,7 @@ def auth_user(auth_criteria):
         # If the user account is locked, log them out and return false
         if is_admin['locked']:
             session.pop('user')
+            session.pop('user_role')
             return {'auth': False, 'reason': 'Account Locked'}
 
         uid = is_admin['_id']  # Get the user _id
@@ -252,6 +253,7 @@ def logout():
         # remove user from session cookies and display a flash message
         flash("You have been logged out")
         session.pop("user")
+        session.pop('user_role')
 
     # redirect to the login page
     return redirect(url_for("login"))
