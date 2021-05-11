@@ -3,13 +3,13 @@
     <!-- login page -->
     <h3 class="center-align">Log In</h3>
     <div class="row">
-        <form class="col s12 m8 offset-m2" method="POST" action="{{ url_for('login') }}">
+        <form id="loginForm" class="col s12 m8 offset-m2" method="POST" action="{{ url_for('login') }}">
             <div class="card-panel">
                 <!-- username -->
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="fas fa-user-cog prefix light-blue-text text-darken-4"></i>
-                        <input id="user_id" name="user_id" type="text" class="validate">
+                        <input id="user_id" name="user_id" type="text" required>
                         <label for="user_id">Username</label>
                     </div>
                 </div>
@@ -17,9 +17,13 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                        <input id="pwd" name="pwd" type="password" class="validate">
+                        <input id="pwd" name="pwd" type="password" required>
                         <label for="pwd">Password</label>
                     </div>
+                </div>
+                <!-- Forgotten Password -->
+                <div class="row col s12 center-align">
+                    <a href="mailto:admins@pimp-my-quiz.herokuapp.com?subject=Password%20Reset%20Request&body=Hi,%20My%20username%20is%20<username>%20and%20my%20email%20address%20is%20<email%20address>.%20%20Could%20you%20please%20reset%20my%20password?" class="light-blue-text text-darken-4">Forgotten your Password?</a>
                 </div>
                 <!-- log in -->
                 <div class="row">
