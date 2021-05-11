@@ -143,6 +143,10 @@ nav ul a:hover {
     background-color: rgba(0,0,0,0.1);
 }
 
+.sidenav li.active {
+	background-color: rgba(0,0,0,0.1);
+}
+
 .sidenav li > a:hover {
 	background-color: rgba(0,0,0,0.1);
 }
