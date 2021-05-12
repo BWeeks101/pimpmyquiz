@@ -7,14 +7,12 @@
             <div class="col s8 center-align">
                 <h3 id="quizOriginalTitle" class="light-blue-text text-darken-4" >{{ viewQuiz.title }}</h3>
             </div>
-            <div class="col s2">
+            <div class="col s2 right-align">
                 {% if 'user' in session %}
                     <!-- copy quiz link -->
-                    <h3 class="right-align">
-                        <a class="light-blue-text text-darken-4 tooltipped copy-quiz" data-position="bottom" data-tooltip="Copy Quiz" href="#!">
-                            <i class="fas fa-copy fa-fw"></i>
-                        </a>
-                    </h3>
+                    <a id="copyQuizLink" class="light-blue-text text-darken-4 tooltipped copy-quiz" data-position="bottom" data-tooltip="Copy Quiz" href="#!">
+                        <i class="fas fa-copy fa-fw"></i>
+                    </a>
                 {% endif %}
             </div>
         </div>
