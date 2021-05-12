@@ -2,7 +2,7 @@
 {% block content %}
     <!-- edit user modal -->
     <div id="editUserModal" class="modal">
-        <form class="col s12" method="POST" action="">
+        <form class="col s12" method="POST">
             <!-- Prevent Submission of Form on Enter Keypress -->
             <!-- https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/51507806#51507806 -->
             <button class="hidden" type="submit" disabled></button>
@@ -108,13 +108,13 @@
                                 </ul>
                                 <div class="input-field password col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                                    <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" disabled="true" required>
+                                    <input id="modalUserPwd" name="pwd" type="password" minlength="5" maxlength="15" pattern="^[a-zA-Z0-9]{5,15}$" disabled required>
                                     <label for="modalUserPwd" data-error="Invalid Password." data-default="Password">Password</label>
                                 </div>
                                 <!-- password confirmation -->
                                 <div class="input-field compare-password col s12">
                                     <i class="fas fa-user-lock prefix light-blue-text text-darken-4"></i>
-                                    <input id="modalUserCpwd" name="cPwd" type="password" disabled="true" required>
+                                    <input id="modalUserCpwd" name="cPwd" type="password" disabled required>
                                     <label for="modalUserCpwd" data-error="" data-default="Password Confirmation">Password Confirmation</label>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@
                                     Search <i class="fas fa-search"></i>
                                 </button>
                             </div>
-                            <ul class="collapsible">
+                            <div class="collapsible">
                                 <div class="results-control hidden">
                                     <a href="#" class="results-control-first tooltipped" data-position="bottom" data-tooltip="First"><i class="fas fa-angle-double-left fa-fw light-blue-text text-darken-4"></i></a>
                                     <a href="#" class="results-control-prev tooltipped" data-position="bottom" data-tooltip="Previous"><i class="fas fa-angle-left fa-fw light-blue-text text-darken-4"></i></a>
@@ -168,7 +168,7 @@
                                 <div id="userSearchResults" class="results-data">
                                     <!--returned records go here-->
                                 </div>
-                            </ul>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -202,7 +202,7 @@
                                         </div>
                                         <div class="collapsible-body">
                                             <!-- Users -->
-                                            <ul class="collapsible">
+                                            <div class="collapsible">
                                                 <div class="results-control hidden">
                                                     <a href="#" class="results-control-first tooltipped" data-position="bottom" data-tooltip="First"><i class="fas fa-angle-double-left fa-fw light-blue-text text-darken-4"></i></a>
                                                     <a href="#" class="results-control-prev tooltipped" data-position="bottom" data-tooltip="Previous"><i class="fas fa-angle-left fa-fw light-blue-text text-darken-4"></i></a>
@@ -215,7 +215,7 @@
                                                 <div class="results-data">
                                                     <!--returned records go here-->
                                                 </div>
-                                            </ul>
+                                            </div>
                                         </div>
                                     {% endif %}
                                 </li>
