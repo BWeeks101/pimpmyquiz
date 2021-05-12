@@ -334,11 +334,64 @@ function getUserSearchResults() {
     xHttpRequest(request, $('#userSearchResults')[0]);
 }
 
+/* Initialise the Search Collapsible */
+function initCollapsibleSearch() {
+
+    /* Close Role Group Collapsibles */
+    let closeRoleGroups = () => {
+        $(".collapsible-role-groups li").each((i) => {
+            M.Collapsible.getInstance($(".collapsible-role-groups")[0]).
+                close(i);
+        });
+    };
+
+    /* Initialise Search Collapsible with on start callback */
+    M.Collapsible.init($(".collapsible-search")[0], {
+        onOpenStart: closeRoleGroups
+    });
+}
+
+/* Initialise the Role Groups Collapsible */
+function initCollapsibleRoleGroups() {
+
+    /* Close Search Collapsible */
+    let closeSearch = () => {
+        $('.collapsible-search').find('.results-data .modal-trigger').
+            off('click');
+        M.Collapsible.getInstance($('.collapsible-search')[0]).close();
+    };
+
+    /* Close User Role Collapsibles Within the closed Role Group Collapsible */
+    let closeChildren = () => {
+        $(".collapsible-role-groups").
+            find('.collapsible-user-roles').
+                each((i, elem) => { // (i declaration required by jQuery .each)
+                    let targetRoles = $(elem).
+                        find('.collapsible-header[data-role]');
+                    targetRoles.each((i, el) => {
+                        $(el).next().
+                            find('.collapsible .results-data').
+                                find('.modal-trigger').
+                                    off('click');
+                        M.Collapsible.getInstance(elem).close(i);
+                    });
+                });
+    };
+
+    /* Initialise Role Groups Collapsible with on start/close callbacks */
+    M.Collapsible.init($(".collapsible-role-groups")[0], {
+        onOpenStart: closeSearch,
+        onCloseEnd: closeChildren
+    });
+
+}
+
 /* Refresh the current results page when expanding a user role collapsible */
 function listenToUserRoleCollapsibleHeaders() {
     // Add a click listener to user role collapsible header elements
     $(".collapsible-user-roles .collapsible-header[data-role]").
         on("click", (e) => {
+
             // Get the .results-data container element
             let target = $(e.currentTarget).next().
                 find('.collapsible .results-data')[0];
@@ -444,6 +497,10 @@ $(function() {
 
     // Initialise listeners for modal elements
     modalCreateListeners();
+
+    // Initialise Search and Role Group MaterializeCSS Collapsibles
+    initCollapsibleSearch();
+    initCollapsibleRoleGroups();
 
     // Initialise listeners for user role and search collapsible headers
     listenToUserRoleCollapsibleHeaders();
