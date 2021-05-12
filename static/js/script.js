@@ -1777,10 +1777,10 @@ function initChangeConfModal() {
         removeActionParams = "";
 
         // Clear the modal title text
-        $('#modalTitle').html("");
+        $('#modalTitle').html("Title");
 
         // Clear the modal message text
-        $('#modalMessage').html("");
+        $('#modalMessage').html("Message");
     };
 
     // Initialise MaterializeCSS Modal
