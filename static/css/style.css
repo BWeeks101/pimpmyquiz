@@ -342,6 +342,14 @@ form .user-search .input-field {
     margin-bottom: 1rem;
 }
 
+.results-data div.h5 {
+    display: block;
+    font-size: 1.64rem;
+    line-height: 110%;
+    margin: 0.8rem 0 .656rem 0;
+    font-weight: 400;
+}
+
 .collapsible-body .results-data h6 > span.title,
 .collapsible-body .results-data h6 > a > span.title {
     font-size: inherit !important;
@@ -657,6 +665,7 @@ div.col.image-preview {
     padding: 0;
 }
 
+#copyQuizLink,
 #cancelUrl {
     display: block;
 	font-size: 2.92rem;
