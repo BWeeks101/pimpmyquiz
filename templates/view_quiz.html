@@ -37,40 +37,16 @@
                 </h5>
                 <!-- Questions -->
                 {% for question in round.questions %}
-                    <h6 class="light-blue-text text-darken-4 left-align">
-                        Q{{ question.question_num}}) {{ question.question_text }}
-                    </h6>
-
-                    {% if question.question_img_url != '' %}
-                        <div class="center-align">
-                            <!-- image -->
-                            <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
-                            <!-- preloader -->
-                            <div class="preloader-container">
-                                <div class="preloader-wrapper big active">
-                                    <div class="spinner-layer">
-                                        <div class="circle-clipper left">
-                                            <div class="circle"></div>
-                                        </div>
-                                        <div class="gap-patch">
-                                            <div class="circle"></div>
-                                        </div>
-                                        <div class="circle-clipper right">
-                                            <div class="circle"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if question.multiple_choice == False %}
-                        <!-- Answer -->
+                    <div class="page-break-inside-avoid">
                         <h6 class="light-blue-text text-darken-4 left-align">
-                            &emsp;A{{ question.question_num }}) {{ question.answer_text }}
+                            Q{{ question.question_num}}) {{ question.question_text }}
                         </h6>
-                        {% if question.answer_img_url != '' %}
+
+                        {% if question.question_img_url != '' %}
                             <div class="center-align">
-                                <img id="img_a_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
+                                <!-- image -->
+                                <img id="img_q_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
+                                <!-- preloader -->
                                 <div class="preloader-container">
                                     <div class="preloader-wrapper big active">
                                         <div class="spinner-layer">
@@ -88,22 +64,14 @@
                                 </div>
                             </div>
                         {% endif %}
-                    {% else %}
-                        {% for option in question.multiple_choice_options %}
-                            <!-- Multiple Choice Option -->
-                            <h6 class="light-blue-text text-darken-4">
-                                &emsp;{{ option.option_num}}) {{ option.answer_text }}
-                                {% if option.answer_text != '' %}
-                                    {% if option.correct == True %}
-                                        <i class="fas fa-check fa-fw"></i>
-                                    {% endif %}
-                                {% endif %}
+                        {% if question.multiple_choice == False %}
+                            <!-- Answer -->
+                            <h6 class="light-blue-text text-darken-4 left-align">
+                                A{{ question.question_num }}) {{ question.answer_text }}
                             </h6>
-                            {% if option.answer_img_url != '' %}
+                            {% if question.answer_img_url != '' %}
                                 <div class="center-align">
-                                    <!-- image -->
-                                    <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" alt="Image for Multiple Choice Option {{ option.option_num }} for Question {{ question.question_num }} of Round {{ round.round_num }}">
-                                    <!-- preloader -->
+                                    <img id="img_a_{{ round.round_num }}_{{ question.question_num }}" class="quiz-image hidden" alt="Image for Question {{ question.question_num }} of Round {{ round.round_num }}">
                                     <div class="preloader-container">
                                         <div class="preloader-wrapper big active">
                                             <div class="spinner-layer">
@@ -120,16 +88,50 @@
                                         </div>
                                     </div>
                                 </div>
-                                {% if option.answer_text == '' %}
-                                    {% if option.correct == True %}
-                                        <h6 class="light-blue-text text-darken-4">
+                            {% endif %}
+                        {% else %}
+                            {% for option in question.multiple_choice_options %}
+                                <!-- Multiple Choice Option -->
+                                <h6 class="light-blue-text text-darken-4">
+                                    &emsp;{{ option.option_num}}) {{ option.answer_text }}
+                                    {% if option.answer_text != '' %}
+                                        {% if option.correct == True %}
                                             <i class="fas fa-check fa-fw"></i>
-                                        </h6>
+                                        {% endif %}
+                                    {% endif %}
+                                </h6>
+                                {% if option.answer_img_url != '' %}
+                                    <div class="center-align">
+                                        <!-- image -->
+                                        <img id="img_o_{{ round.round_num }}_{{ question.question_num }}_{{ option.option_num }}" class="quiz-image hidden" alt="Image for Multiple Choice Option {{ option.option_num }} for Question {{ question.question_num }} of Round {{ round.round_num }}">
+                                        <!-- preloader -->
+                                        <div class="preloader-container">
+                                            <div class="preloader-wrapper big active">
+                                                <div class="spinner-layer">
+                                                    <div class="circle-clipper left">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                    <div class="gap-patch">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                    <div class="circle-clipper right">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if option.answer_text == '' %}
+                                        {% if option.correct == True %}
+                                            <h6 class="light-blue-text text-darken-4">
+                                                <i class="fas fa-check fa-fw"></i>
+                                            </h6>
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                     <div class="divider"></div>
                 {% endfor %}
                 <div class="divider"></div>
