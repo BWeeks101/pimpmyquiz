@@ -668,7 +668,7 @@ function returnHtml(params) {
         // Iterate over categoryList global to generate round category select
         categoryList.forEach((category) => {
             rHtml += `
-                                <optgroup label='<div class="subopt">
+                                <optgroup label='<span class="subopt">
                                     <i class="fas ${category.category_icon} ` +
                                         `fa-fw light-blue-text ` +
                                         `text-darken-4">` +
@@ -676,7 +676,7 @@ function returnHtml(params) {
                                     `<span class="light-blue-text ` +
                                         `text-darken-4">
                                         ${category.category}
-                                    </span></div>'>
+                                    </span></span>'>
                                     <option>${category.category}</option>
                                 </optgroup>`;
         });
@@ -1183,7 +1183,7 @@ function setSelectValue(elem, value) {
 function listenToSelect() {
     // Define the .subopt element selector
     let selector = ".select-container .select-wrapper ";
-    selector += "ul li.optgroup span div.subopt";
+    selector += "ul li.optgroup span span.subopt";
 
     // Define the click listener
     $(selector).on("click", (e) => {

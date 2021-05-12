@@ -16,11 +16,11 @@
             <div class="input-field col s12 select-container">
                 <i id="quizCategoryIcon" class="prefix light-blue-text text-darken-4 fas fa-asterisk"></i>
                 <select id="quizCategory" name="quizCategory">
-                    <optgroup label='<div class="subopt"><i class="fas fa-asterisk fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">All</span></div>'>
+                    <optgroup label='<span class="subopt"><i class="fas fa-asterisk fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">All</span></span>'>
                         <option>All</option>
                     </optgroup>
                     {% for category in categories %}
-                    <optgroup label='<div class="subopt"><i class="fas {{ category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ category.category }}</span></div>'>
+                    <optgroup label='<span class="subopt"><i class="fas {{ category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ category.category }}</span></span>'>
                         <option>{{ category.category }}</option>
                     </optgroup>
                     {% endfor %}

@@ -43,7 +43,7 @@
                             <i id="quizCategoryIcon" class="prefix light-blue-text text-darken-4 fas"></i>
                             <select id="quizCategory" name="quizCategory">
                                 {% for quiz_category in quiz_categories %}
-                                <optgroup label='<div class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></div>'>
+                                <optgroup label='<span class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></span>'>
                                     <option>{{ quiz_category.category }}</option>
                                 </optgroup>
                                 {% endfor %}
@@ -117,7 +117,7 @@
                                                 <i id="roundCategoryIcon_{{ round.round_num }}" class="prefix light-blue-text text-darken-4 fas"></i>
                                                 <select id="roundCategory_{{ round.round_num }}" class="round-category" name="roundCategory_{{ round.round_num }}">
                                                     {% for quiz_category in quiz_categories %}
-                                                    <optgroup label='<div class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></div>'>
+                                                    <optgroup label='<span class="subopt"><i class="fas {{ quiz_category.category_icon["class"] }} fa-fw light-blue-text text-darken-4"></i> <span class="light-blue-text text-darken-4">{{ quiz_category.category }}</span></span>'>
                                                         <option>{{ quiz_category.category }}</option>
                                                     </optgroup>
                                                     {% endfor %}

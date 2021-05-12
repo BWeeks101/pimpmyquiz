@@ -179,7 +179,7 @@ function modalClearUserRoleIcon() {
 /* Add listeners to modal elements */
 function modalCreateListeners() {
     // Add click listener to user role select box .subopt elements
-    $(".select-wrapper ul li.optgroup span div.subopt").on("click", (e) => {
+    $(".select-wrapper ul li.optgroup span span.subopt").on("click", (e) => {
         modalClearUserRoleIcon(); // Clear the user role icon
         // Get the matching optgroup .option element and call the click event
         $(e.currentTarget).parent().

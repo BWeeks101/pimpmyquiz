@@ -7,7 +7,7 @@ quizFormValidation, M, validateCorrectCheckboxes */
 // eslint-disable-next-line no-unused-vars
 function stopListeningToSelect() {
     let selector = ".select-container .select-wrapper ";
-    selector += "ul li.optgroup span div.subopt";
+    selector += "ul li.optgroup span span.subopt";
     $(selector).off("click");
 }
 
