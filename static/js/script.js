@@ -2347,7 +2347,9 @@ $(function() {
     $('.collapsible.expandable').collapsible({accordion: false});
 
     // Initialise remaining MaterializeCSS Collapsibles
-    $('.collapsible:not(.expandable, .helper-collapsible)').collapsible();
+    let notSelector = '.expandable, .helper-collapsible, ' +
+        '.collapsible-role-groups, .collapsible-search';
+    $(`.collapsible:not(${notSelector})`).collapsible();
 
     // Add input event listeners to input elements
     listenToInputs();
