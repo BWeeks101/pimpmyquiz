@@ -945,6 +945,7 @@ div.col.image-preview {
     }
 
     /* Images */
+    #viewQuiz img,
     #quizSheet img {
         max-width: 100mm !important;
         max-height: 100mm !important;
@@ -955,6 +956,7 @@ div.col.image-preview {
         max-height: 50mm !important;
     }
 
+    #viewQuiz .image-preview,
     #quizSheet .image-preview {
         max-width: 50mm !important;
         max-height: 50mm !important;
@@ -973,5 +975,11 @@ div.col.image-preview {
 
     .page-break-after-avoid {
         page-break-after: avoid;
+    }
+
+    header,
+    footer,
+    #viewQuiz > #titleRow > .col.s2 > h3 {
+        display: none;
     }
 }
