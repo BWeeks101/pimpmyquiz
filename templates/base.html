@@ -69,7 +69,7 @@
     </header>
 
     <!-- flash messages -->
-    <section id="flashSection">
+    <div id="flashSection">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
@@ -79,7 +79,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-    </section>
+    </div>
 
     <!-- Modal Structure -->
     <section>
@@ -127,7 +127,7 @@
                 <!-- title and close button -->
                 <div class="modal-title-row row">
                     <div class="col s11">
-                        <h5 id="modalTitle"><!-- change confirmation title here --></h5>
+                        <h5 id="modalTitle">Title</h5>
                     </div>
                     <div class="col s1 modal-close-button">
                         <a id="modalClose" class="modal-action modal-close light-blue-text text-darken-4" href="#!">&times;</a>
@@ -135,7 +135,7 @@
                 </div>
                 <div class="row">
                     <div class="col s12">
-                        <h6 id="modalMessage"><!-- change confirmation message here --></h6>
+                        <h6 id="modalMessage">Message</h6>
                     </div>
                 </div>
                 <!-- save changes -->
@@ -186,23 +186,21 @@
     </main>
 
     <footer class="footer text-shadow light-blue darken-4 center-align">
-        <h5>
-            <a class="tooltipped" data-position="top" data-tooltip="Facebook" href="https://www.facebook.com">
-                <i class="fab fa-facebook fa-fw"></i>
-            </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Instagram" href="https://www.instagram.com">
-                <i class="fab fa-instagram fa-fw"></i>
-            </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Twitter" href="https://www.twitter.com">
-                <i class="fab fa-twitter fa-fw"></i>
-            </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Youtube" href="https://www.youtube.com">
-                <i class="fab fa-youtube fa-fw"></i>
-            </a>
-            <a class="tooltipped" data-position="top" data-tooltip="Contact Us" href="mailto://admins@pimp-my-quiz.herokuapp.com">
-                <i class="fas fa-envelope fa-fw"></i>
-            </a>
-        </h5>
+        <a class="tooltipped" data-position="top" data-tooltip="Facebook" href="https://www.facebook.com">
+            <i class="fab fa-facebook fa-fw"></i>
+        </a>
+        <a class="tooltipped" data-position="top" data-tooltip="Instagram" href="https://www.instagram.com">
+            <i class="fab fa-instagram fa-fw"></i>
+        </a>
+        <a class="tooltipped" data-position="top" data-tooltip="Twitter" href="https://www.twitter.com">
+            <i class="fab fa-twitter fa-fw"></i>
+        </a>
+        <a class="tooltipped" data-position="top" data-tooltip="Youtube" href="https://www.youtube.com">
+            <i class="fab fa-youtube fa-fw"></i>
+        </a>
+        <a class="tooltipped" data-position="top" data-tooltip="Contact Us" href="mailto://admins@pimp-my-quiz.herokuapp.com">
+            <i class="fas fa-envelope fa-fw"></i>
+        </a>
     </footer>
 
     <!-- jQuery -->
