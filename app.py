@@ -788,7 +788,7 @@ def buildUserHtml(user_data):
                     </h6>
                 </div>
                 <div class="right-align col s4 m2 xl1">
-                    <h5>
+                    <div class="h5">
                         <a ''' + editLink + '''>'''
             if (user['locked']):
                 html += '''
@@ -799,7 +799,7 @@ def buildUserHtml(user_data):
             html += '''
                             <i class="fas fa-user-edit"></i>
                         </a>
-                    </h5>
+                    </div>
                 </div>
             </div>
         </li>'''
@@ -808,10 +808,10 @@ def buildUserHtml(user_data):
         html += '''
         <li class="collection-item search-no-results '''
         html += 'light-blue-text text-darken-4 ' + '''center-align">
-            <h5>
+            <div class="h5">
                 <i class="fas fa-info fa-fw"></i>
                 <span class="title">No Results.</span>
-            </h5>
+            </div>
         </li>'''
 
     # finalise the html string
