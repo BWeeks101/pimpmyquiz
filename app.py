@@ -45,6 +45,12 @@ def auth_user(auth_criteria):
             {'user_id': session['user'].lower()},
             {'_id': 1, 'role_id': 1, 'locked': 1})
 
+        # If the user account does not exist, log them out and return false
+        if is_admin is None:
+            session.pop('user')
+            session.pop('user_role')
+            return {'auth': False, 'reason': 'Account Does Not Exist'}
+
         # If the user account is locked, log them out and return false
         if is_admin['locked']:
             session.pop('user')
