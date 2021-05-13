@@ -556,4 +556,4 @@ I received inspiration for this project from my wife and our friends, who have s
 [Back to Table of contents](#table-of-contents)
 ___
 # Screenshots
-<img src="wireframes/c4-screenshot-mobile-composite.png">
+<img src="wireframes/pimpmyquiz-screenshot-mobile-composite.png">
