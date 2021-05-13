@@ -45,6 +45,9 @@ All testing was conducted manually, making extensive use of Dev Tools within Moz
 4. Quizzes should be saved online so that they can be edited or deleted at a later date.
     * When saved, a quiz is stored in mongoDB and associated with a user account.
     * Quizzes can be edited or deleted by the author, or by a Global Administrator or Content Administrator.
+    * Quizzes will persist in the database until they are manually deleted.
+    * Once they have logged in, users have access to edit or delete any quiz associated with their account.
+    <img src="wireframes/my_quizzes.png">
 
 5. Quizzes should be discoverable via title and category.
     * The 'Quiz Search' and 'My Quizzes' page allow users to search by quiz title and filter results by category.
@@ -62,7 +65,6 @@ All testing was conducted manually, making extensive use of Dev Tools within Moz
     - From the search results on either the 'My Quizzes' page or the 'Quiz Search' page, a logged in user can click on the 'Copy Quiz' link to have a copy of any Quiz saved to their account.
     - If the user already has a Quiz with the same title, they will be prompted to change the title of the copy before it is created.
     - Once a user is logged in, a Copy Quiz link is also available in the top right corner of the Master Quiz Sheet ('View Quiz' page).  This works in exactly the same way, including prompting for a title change when required.
-        <img src="wireframes/view_quiz-copy-quiz.png">
         <img src="wireframes/view_quiz-copy-quiz-modal.png">
     - Once a user has created a copy of a Quiz, they have full access to edit or delete that copy.
 
@@ -133,8 +135,8 @@ All testing was conducted manually, making extensive use of Dev Tools within Moz
             - Once the entire quiz has been validated, if any invalid inputs are detected, the page is scrolled to the first such input and an explanation is displayed on the screen.
             <img src="wireframes/validation-error-modal.png">
             - Once all invalid inputs are corrected, the quiz will save successfully.
-        - Once saved a Flash message will appear at the top of the screen notifying the user, and the quiz will be opened for editing so that the user can continue working on it if they wish.
-        <img src="wireframes/new_quiz-saved.png">
+            - Once saved a Flash message will appear at the top of the screen notifying the user, and the quiz will be opened for editing so that the user can continue working on it if they wish.
+            <img src="wireframes/new_quiz-saved.png">
 
 2. * *As a Site Owner* I need users to be able to store their quizzes.
     * *As a New User* I wish to be able to save quizzes I create for later use/editing.
@@ -175,23 +177,31 @@ All testing was conducted manually, making extensive use of Dev Tools within Moz
 7. * *As a Site Owner* I need to have a configurable number of Global Administrator accounts that can alter user access and edit any quiz content.
         - Global Administrator users have access to the User Administration Console (/admin_users).
         - From here, they have access to all user accounts on the system.
+        <img src="wireframes/admin_users-global-admin.png">
         - Global Admins can alter the properties of any user account without restriction.
+        <img src="wireframes/edit-user-modal-global-admin.png">
         - Global Admins can use the standard 'Quiz Search' page to directly edit or remove Quizzes for any user.
+        <img src="wireframes/quiz_search-global-admin.png">
 
 8. * *As a Site Owner* I need to have a configurable number of User Administrator accounts that can alter user access.
         - User Account Administrator users have access to the User Administration Console (/admin_users).
         - From here, they have access to all Content Administrator Role and User Role member accounts.
+        <img src="wireframes/admin_users-user-admin.png">
         - User Account Admins can alter the properties of any user account they have access to.
         - When editing a user account, User Account Admins only have access to select the 'Content Administrator' or 'User' roles.
+        <img src="wireframes/edit-user-modal-user-admin.png">
         - User Account Admins have no additional access to alter Quiz content.
+        <img src="wireframes/quiz_search-logged-in.png">
 
 9. * *As a Site Owner* I need to have a configurable number of Content Administrator accounts that can edit any quiz content.
         - Content Administrator users can use the standard 'Quiz Search' page to directly edit or remove Quizzes for any user.
         - Content Admins do not have access to the User Administration Console (/admin_users)
+        <img src="wireframes/quiz_search-content-admin.png">
 
 10. * *As a Returning User* I need be able to search for, view and edit/delete any quizzes I have created.
         - Once logged in, users are redirected to the 'My Quizzes' page (/my_quizzes)
         - Here, users can search for, view, edit or delete any/all quizzes they have created.
+        <img src="wireframes/my_quizzes.png">
 
 11. * *As a Returning User* I need quiz sheets/master quiz sheets to automatically reflect changes I make to a quiz when it is saved.
         - Quiz Sheets and Master Quiz Sheets are build dynamically from the appropriate quiz data stored on the backend.
