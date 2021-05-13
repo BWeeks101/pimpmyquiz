@@ -38,10 +38,18 @@ All content is available to our Quiz Master community, and is easily accessible 
 	- [Performance Testing](#performance-testing)
 	- [Functionality Testing](#functionality-testing)
 - [Notable Challenges](#notable-challenges)
-	- [datagrid.js](#datagrid.js)
+	- [Database Design](#database-design)
+	- [AJAX](#ajax)
 	- [jQuery](#jquery)
-	- [JavaScript animations and dynamic scaling](#javascript-animations-and-dynamic-scaling)
+- [Database Diagram](#database-diagram)
 - [Deployment](#deployment)
+	- [Database](#database)
+		- [Create Database Indexes](#create-database-indexes)
+	- [Site](#site)
+		- [Pre-deployment](#pre-deployment)
+		- [Site Deployment](#site-deployment)
+		- [Post Deployment](#post-deployment)
+		- [Administrator Roles](#administrator-roles)
 - [Credits](#credits)
 	- [Content](#content)
 	- [Acknowledgements](#acknowledgements)
@@ -75,6 +83,7 @@ The site also needed a way to share quizzes with other users via inbuilt search 
 
 #### Returning User Goals:
 1. User can search for any content they have previously created, and view or edit it.
+2. User can delete quizzes created within/added to their own account.
 
 ## User Stories
 
@@ -100,7 +109,7 @@ The site also needed a way to share quizzes with other users via inbuilt search 
 7. I would like to be able to search for rounds and questions that other users have created, and use them to populate a quiz.
 
 #### As a Returning User:
-1. I need be able to search for, view and edit any quizzes I have created.
+1. I need be able to search for, view and edit/delete any quizzes I have created.
 2. I need quiz sheets/master quiz sheets to automatically reflect changes I make to a quiz when it is saved.
 
 ## Wireframes
@@ -129,73 +138,110 @@ The website consists of multiple pages built from templates using [Jinja](https:
 
 ## Desired Features based on User Stories
 
-1. The site must be small and lightweight.  It should avoid excessive use of images and external frameworks to keep data requirements low and performance high.
-2.  Fully responsive mobile first design allows for a functional site on mobile, tablet, laptop and desktop, with a minimum. resolution of 280px x 568px.
-3. User preferences should allow uploading of profile pictures, username customisation and colour selection for player tokens.
-4. User preferences should be stored and automatically loaded in future sessions without additional interaction.
-5. Local hotseat multiplayer to facilitate play on a single device.
-6. Online multiplayer
-7. User selected turn time limits allow players to decrease/increase the pressure in line with their own skill level/preferences.
-8. Functional single player UI with multiple difficulty levels allowing for a solo experience.
-9. Users should be able to start a game quickly with minimal interaction (less than 3 clicks).
-10. Rules available to read online for players unfamiliar with the game.
-11. User stat tracking allows users to monitor their progress, and find opponents of a similar skill level.10.
-12. Leaderboards!
+1.  Fully responsive design allows for a functional site on mobile, tablet, laptop and desktop, with a minimum width 360px.  Creating a quiz requires text entry - this is often more comfortable on devices with a physical keyboard, however this is not a requirement for use.
+2. Quizzes should allow the linking of images as well as text.
+3. Quizzes should allow the opportunity to create multiple choice questions.
+4. Quizzes should be saved online so that they can be edited or deleted at a later date.
+5. Quizzes should be discoverable via title and category.
+6. Users should be able to view and print master and player quiz sheets.
+7. Rounds should be discoverable via title and category.
+8. Questions should be discoverable via question/answer text or image url (including multiple choice option fields).
+9. Users should be able to make a duplicate of any quiz for editing within their own account.
+10. Users should be able to duplicate any round from any quiz into another quiz within their account.
+11. Users should be able to duplicate any question from any round into another round in a quiz within their account.
+12. Global Administrator accounts should have full access to alter any user account and any quiz content.
+13. User Account Administrator accounts should have full access to alter any user account that is a member of the Content Administrator or User roles.
+14. Global and User Account Administrators should be able to discover user accounts by Username and/or Email address.
+15. Content Administrator accounts should have full access to alter/delete any quiz content on the site.
+16. User Role member accounts should only be able to alter/delete quiz content within their own account.
+17. Administrators should be able to run a report tracking the provenance of a quiz/round/question to determine the original creator, and how/if it has been modified to settle any ownership/credit disputes.
+18. Quiz Sheets/Master Quiz Sheets should reflect any changes made to a Quiz when the quiz is saved.
 
 ## Existing Features
 
-1. The site must be small and lightweight.  It should avoid excessive use of images and external frameworks to keep data requirements low and performance high.
-	>The site features a single page, with content manipulated via JavaScript.  The only images are the favicon and 3 social media icons (hosted by Font Awesome).  Bootstrap is utilised via bootstrap-min to reduce the footprint.
+1. Fully responsive design allows for a functional site on mobile, tablet, laptop and desktop, with a minimum width 360px.
+	>The site is responsive on all devices up to the minimum width.  Devices below the minimum width will work, with horizontal scrolling.  Due to the nature of creating a quiz, data entry is more comfortable on devices with a physical keyboard, however this is not a requirement.  MaterializeCSS Collapsible elements help to keep the page organised.
 
-2. Fully responsive mobile first design allows for a functional site on mobile, tablet, laptop and desktop, with a minimum width of 280px, and minimum height of 568px.
-	>The site was designed mobile-first, and dynamically scales up to higher resolutions. The game renders and plays perfectly on modern mobile devices, which is the ideal way to play.
+2. Quizzes should allow the linking of images as well as text.
+	>Due to technical limitations, I was not able to offer image hosting with this project.  However, every question, answer and multiple choice option has an input to allow insertion of an image URL.  A question/answer/option requires input of either text or a URL.  It is possible to insert both if required.
+	>Any round consisting solely of multiple questions with image urls and no question text, will be styled as a 'Picture Round' on the Player Quiz Sheet.
 
-3. User preferences should allow uploading of profile pictures, username customisation and colour selection for player tokens.
-	>Due to technological limitations it was not possible to create a full user profile based experience.  However users can alter usernames and colour selection for both players, and these values are written to local storage.  The chosen colour mode for the site  - Dark (default) or Light is also stored, along with the selected Turn Time Limit.
+3. Quizzes should allow the opportunity to create multiple choice questions.
+	>By default, a question expects a single answer.  However there is a checkbox to toggle multiple choice.  A multiple choice question requires at least one option to be selected as correct.
+	>You may *not* select all options as correct or incorrect - doing so will cause the quiz to fail validation and prevent saving.
 
-4. User preferences should be stored and automatically loaded in future sessions without additional interaction.
-	>Stored preferences (Usernames, colours, turn time limit, and colour mode) are applied automatically when the site loads.
+4. Quizzes should be saved online so that they can be edited at a later date.
+	>Quiz data is written to the backend database, and associated with the users account.  A user may return to edit their content at any time.
 
-5. Local hotseat multiplayer to facilitate play on a single device.
-	>1. This feature is fully functional. In just 2 clicks, players can be in game.
-	>2. A game can be paused/resumed/reset at any time.
-	>3. If left to run without user interaction, each time a player fails to take an action during their turn, the game will automatically insert a token for that player into a random column.
-	>4. Once a win/draw has been determined, a rematch can be started (using the same turn time limit) directly from the game screen.
 
-6. User selected turn time limits allow players to decrease/increase the pressure in line with their own skill level/preferences.
-	>Time limits can be set in increments of 5 seconds, starting with the default of 5 to a maximum of 30.
+5. Quizzes should be discoverable via title and category.
+	>It is possible to search for quizzes by title, and filter by category.
 
-7. Users should be able to start a game quickly with minimal interaction (less than 3 clicks).
-	>Using the default settings, a player can get into a game with just 2 clicks ('Start Game'->'Ok').
+6. Users should be able to view and print master and player quiz sheets.
+	>Fully functional without requiring the user to log into the site.
+	>Visitors may use the Quiz Search function to search for any quiz by title, and filter by category.  They may then use the Quiz Sheet and View Quiz links from the results to view and/or print.  Print styling is included to facilitate better printing output.
+	>Quiz Sheet links can be saved and shared with players directly.
 
-8. Rules available to read online for players unfamiliar with the game.
-	>The rules are available to read from the side menu, or directly from the main page.
+7. Users should be able to duplicate any quiz within their own account for editing.
+	>Fully functional for any logged in user.
+	>When logged in, the Copy Quiz link is functional within Quiz Search results as well as on the View Quiz page.
 
+8. Global Administrator accounts should have full access to alter any user account and any quiz content.
+	>Fully functional.
+	>Global Administrators have the ability to directly edit or delete any quiz from the Quiz Search page.
+	>Global Administrators have access to the User Administration Console, where they can search for users, browse by role membership and make changes to accounts.  They may alter Usernames, email addresses, role memberships and passwords.  They may also lock accounts, preventing access to the system.
+
+9. User Account Administrator accounts should have full access to alter any user account that is a member of the Content Administrator or User roles.
+	>Fully functional
+	>User Account Administrators have access to the User Administration Console, where they can search for or browse users within the Content Administrator and User roles, and make changes to those accounts.  They may alter Usernames, email addresses, role memberships and passwords.  They may also lock accounts, preventing access to the system.
+
+10. Global and User Account Administrators should be able to discover user accounts by Username and/or Email address.
+	>Fully functional via the search tool within the User Administration Console.
+
+11. Content Administrator accounts should have full access to alter/delete any quiz content on the site.
+	>Fully functional.
+	>Content Administrators have the ability to directly edit or delete any quiz from the Quiz Search page.
+
+12. User Accounts should only be able to alter/delete quiz content within their own account.
+	>Fully functional.
+	>User Accounts only have access to the Edit Quiz and Delete Quiz links within Quiz Search results for quizzes that they are associated with their account.
+	>User Accounts do not have access to the Edit Quiz or Delete Quiz links within Quiz Search results for any quizzes that are not associated with their account.
+
+*NB: All Permissions are applied both via Jinja script when the template is delivered to the client, and reinforced by an authentication system built into the server Application.  Unauthorised requests are handled, denied and/or redirected.*
+
+13. Quiz Sheets/Master Quiz Sheets should reflect any changes made to a Quiz when the quiz is saved.
+	>Fully functional.
+	>If a user has the Quiz Sheet or Master Quiz Sheet open when a change is saved, simply refreshing the page will reflect all changes.
+	>Obviously if a user has printed the sheet they will need to print it again!
 ## Features Left to Implement
 
-1. Rules display during game play
-	>I would like to add a feature to display the rules in a pop-up whilst the game is paused. Currently the rules are not accessible during game play.
+1. Rounds should be discoverable via title and category.
+2. Questions should be discoverable via question/answer text or image url (including multiple choice option fields).
+3. Users should be able to duplicate any round from any quiz into another quiz within their account.
+4. Users should be able to duplicate any question from any round into another round in a quiz within their account.
+	>Unfortunately there was not enough time available to develop these features.  The database could support them (with an additional index), but the server and UI require additional functionality.
 
-2. Single Player AI
-	>I would like to add a single player AI. Unfortunately this moved out of scope due to time constraints.
-
-3. Online Multiplayer, Leaderboards/Stat Tracking
-	>I would like to add Online Multiplayer, with Leaderboards and player stat tracking. This will require a more comprehensive backend with database functionality that was not available for this project.
-
-4. User Accounts with personalised settings (such as uploading profile pictures)
-	>I would like to add a User Account system. This will assist with Leaderboards/Stat Tracking, and will also allow players to save their name/colours and a profile picture for use on multiple devices/browsers. This would also require a backend database.
+5. Administrators should be able to run a report tracking the provenance of a quiz/round/question to determine the original creator, and how/if it has been modified (and by whom) to settle any ownership/credit disputes.
+	>Unfortunately there was not enough time available to develop this feature.
+	>The database supports further development of this feature, as each quiz/round/question document records the document that it is a copy of (any document that refers to itself as the originator is an original element).  However the quiz deletion functionality would need to be reworked to prevent breaking the chain of ownership and additional database indexes may be required.  A UI would also need to be developed.
 
 ## Outstanding Issues
 
 1. When viewing the site through browser dev tools, changing the device or directly altering the device resolution can lead to rendering inconsistencies.
 	>Changing the device or directly altering the resolution values within dev tools does not seem to consistently trigger onresize, or consistently apply media queries.  Any rendering inconsistencies can be resolved by refreshing the page.
 
+2. When searching for a user by email address in the User Administration console, a search for the full address (user@domain.com) will never return results, as mongoDB treats the @ as a field terminator.
+	>I believe the solution to this will involve altering the configuration of the index on the users collection, and facilitating a regex search.<br>
+	>Workarounds exist - wildcard searches for either just the 'user' portion of the address, or the 'domain' portion will function as expected.<br>
+	>Unfortunately I did not have time to implement a solution for this issue.
+
 [Back to Table of contents](#table-of-contents)
 ___
 # Technologies Used
 
 * [Python](https://www.python.org)
-	- Python was linted with [autopep8](https://pypi.org/project/autopep8/) within **VSCode**.
+	- Python was formatted with [autopep8](https://pypi.org/project/autopep8/) and linted with [Pylint](https://pylint.org/) within **VSCode**.
+	- I also ran the Python code through [PEP8 Online](http://www.pep8online.com) which reported no issues.
 	- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
 		* The server is a **Flask** app
 	- [Jinja](https://jinja.palletsprojects.com/en/3.0.x/)
@@ -227,58 +273,38 @@ ___
 * [GNU Image Manipulation Program (GIMP)](https://www.gimp.org/)
 	- Used to create images for this readme.
 
+### MaterializeCSS Select Component HTML Validation Errors
+
+* The following HTML Validation errors are caused by the **MaterializeCSS** Select component, and are outside of the scope of this project to fix.
+	- *The Error is Returned for each instance of a MaterializeCSS Select component*
+
+* /quiz_search (not logged in, 1 select):
+	- <img src="wireframes/html-validation/quiz_search-not-logged-in.jpg">
+
+* /quiz_search (logged in, 1 select):
+	- <img src="wireframes/html-validation/quiz_search-logged-in.jpg">
+
+* /my_quizzes (1 select):
+	- <img src="wireframes/html-validation/my_quizzes.jpg">
+
+* /new_quiz (with 2 rounds, 3 selects):
+	- <img src="wireframes/html-validation/new_quiz.jpg">
+
+* /edit_quiz (with 3 rounds, 4 selects):
+	- <img src="wireframes/html-validation/edit_quiz.jpg">
+
+* /admin_users (1 select):
+	- <img src="wireframes/html-validation/admin_users.jpg">
+
 [Back to Table of contents](#table-of-contents)
 ___
 # Testing
 
-All testing was conducted manually, making extensive use of Dev Tools within Mozilla Firefox, Google Chrome and Microsoft Edge.
-
-## Functionality Testing
-Devices tested in browser dev tools include:
->Pixel 2
->Galaxy S5
->Moto G4
->iPhone 6/7/8
->Surface Duo
->iPhone 6/7/8 Plus
->Galaxy S9/S9+/S10e
->iPhone X/XS
->Pixel 2 XL
->720p Screens
->1080p Screens
->4k Screens
-
-Devices physically tested include:
->Galaxy S8
->Galaxy S10/S10e
->Galaxy Tab A 10.1 2019
->1080p Screens
->4k Screens
-
-The minimum supported width is 280px, and the minimum supported height is 568px.
-Testing was performed using the following flowcharts:
-
-1. Logo Animation
-	[logo-animation.pdf](wireframes/c4-logo-animation.pdf)
-
-2. Rules
-	[rules.pdf](wireframes/c4-rules.pdf)
-
-3. User Settings
-	[user-settings.pdf](wireframes/c4-user-settings.pdf)
-	[user-settings-validation-alert.pdf](wireframes/c4-user-settings-validation-alert.pdf)
-
-4. Side Navigation Menu:
-	[sidenav.pdf](wireframes/c4-sidenav.pdf)
-
-5. Start a Game
-	[start-game.pdf](wireframes/c4-start-game.pdf)
+[Testing](testing.md)
 
 [Back to Table of contents](#table-of-contents)
 ___
 # Notable Challenges
-
-## Database Design
 
 ## AJAX
 
@@ -296,6 +322,8 @@ ___
 
 <img src="wireframes/pimpmyquiz-database-diagram.png">
 
+[Back to Table of contents](#table-of-contents)
+___
 # Deployment
 
 ## Database
