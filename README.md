@@ -35,8 +35,6 @@ All content is available to our Quiz Master community, and is easily accessible 
 	- [Outstanding Issues](#outstanding-issues)
 - [Technologies Used](#technologies-used)
 - [Testing](#testing)
-	- [Performance Testing](#performance-testing)
-	- [Functionality Testing](#functionality-testing)
 - [Notable Challenges](#notable-challenges)
 	- [AJAX](#ajax)
 	- [Mutation Observers](#mutation-observers)
@@ -528,7 +526,9 @@ ___
 
 ## Content
 
-All text content written by myself.
+All site content created by myself.
+
+Sample quiz content created by myself and my wife.
 
 ## Acknowledgements
 
