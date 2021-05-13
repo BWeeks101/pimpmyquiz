@@ -9,7 +9,7 @@ Pimp my Quiz! is a website for Quiz Masters.  Users can create and edit quizzes 
 All content is available to our Quiz Master community, and is easily accessible via our search tool.  Any quiz can be copied to your own account and edited as you see fit.
 
 *(An account is only required to create, edit or copy quizzes.  Quiz content is viewable by all users).
-### View the live site [here](https://https://pimp-my-quiz.herokuapp.com/).
+### View the live site [here](https://pimp-my-quiz.herokuapp.com/).
 
 ---
 # Table of Contents
@@ -38,8 +38,8 @@ All content is available to our Quiz Master community, and is easily accessible 
 	- [Performance Testing](#performance-testing)
 	- [Functionality Testing](#functionality-testing)
 - [Notable Challenges](#notable-challenges)
-	- [Database Design](#database-design)
 	- [AJAX](#ajax)
+	- [Mutation Observers](#mutation-observers)
 	- [jQuery](#jquery)
 - [Database Diagram](#database-diagram)
 - [Deployment](#deployment)
@@ -235,6 +235,9 @@ The website consists of multiple pages built from templates using [Jinja](https:
 	>Workarounds exist - wildcard searches for either just the 'user' portion of the address, or the 'domain' portion will function as expected.<br>
 	>Unfortunately I did not have time to implement a solution for this issue.
 
+3. Print styling for Player and Master Quiz Sheets is not optimal
+	>With more experience producing printed media, I feel that I could dramatically improve the print styling for both quiz sheets.  However, as this is not essential for the project, I decided to rely on a basic implementation and spend time on higher priority issues.
+
 [Back to Table of contents](#table-of-contents)
 ___
 # Technologies Used
@@ -300,7 +303,7 @@ ___
 ___
 # Testing
 
-[Testing](testing.md)
+Test documentation [here](testing.md)
 
 [Back to Table of contents](#table-of-contents)
 ___
@@ -309,6 +312,8 @@ ___
 ## AJAX
 
 The design of the site necessitated being able to retrieve paginated results without reloading entire web pages.  This is not possible with a typical POST request, so I implemented xHTTP (AJAX) functions.  Despite using JQuery for much of the site, I did rely on JavaScript for much of these xHTTP functions.  Having not made use of AJAX previously, I wanted to become familiar with it without relying on jQuery shortcuts.
+
+## Mutation Observers
 
 As my results were to include active links and MaterializeCSS Tooltips, I also needed to find a way to enable/disable event listeners attached to these elements.  The answer was to utilise Mutation Observers attached to the results data containers which would initialise listeners and MaterializeCSS functions when the innerHTML property once results were loaded.
 
